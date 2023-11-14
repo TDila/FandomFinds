@@ -1,0 +1,11 @@
+<resources>
+    <string name="app_name">FandomFinds</string>
+    <string name="text_welcome_user">Welcome</string>
+    <string name="text_welcome_username">Tharusha Dilhara</string>
+    <string name="text_notify_count">1</string>
+    <string name="featured_sellers">Featured</string>
+    <string name="bottom_menu_explore">Explore</string>
+    <string name="bottom_menu_account">Account</string>
+    <string name="bottom_menu_cart">Cart</string>
+    <string name="bottom_menu_wishlist">Wishlist</string>
+</resources>
