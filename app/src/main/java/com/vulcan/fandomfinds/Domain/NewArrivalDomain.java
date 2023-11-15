@@ -2,7 +2,7 @@ package com.vulcan.fandomfinds.Domain;
 
 import java.io.Serializable;
 
-public class FeaturedDomain implements Serializable {
+public class NewArrivalDomain implements Serializable {
     private String title;
     private String description;
     private String picUrl;
@@ -11,13 +11,12 @@ public class FeaturedDomain implements Serializable {
     private int numberInCart;
     private double price;
 
-    public FeaturedDomain(String title, String description, String picUrl, int review, double score, int numberInCart, double price) {
+    public NewArrivalDomain(String title, String description, String picUrl, int review, double score, double price) {
         this.title = title;
         this.description = description;
         this.picUrl = picUrl;
         this.review = review;
         this.score = score;
-        this.numberInCart = numberInCart;
         this.price = price;
     }
 
