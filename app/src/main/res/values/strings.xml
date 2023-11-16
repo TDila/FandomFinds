@@ -10,5 +10,11 @@
     <string name="bottom_menu_wishlist">Wishlist</string>
     <string name="home_newArrival_title">title</string>
     <string name="home_newArrival_price">$123</string>
+    <string name="home_deals_oldPrice"><strike>$123</strike></string>
     <string name="home_newArrival_feedbacks">1</string>
+    <string name="home_searchbar_hint">Search</string>
+    <string name="deals">Deals</string>
+    <string name="new_arrival_seller">seller</string>
+    <string name="home_seller_name">Seller Name</string>
+    <string name="home_featured_sellers">Featured</string>
 </resources>

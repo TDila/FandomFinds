@@ -9,7 +9,7 @@
     android:elevation="3dp">
 
     <ImageView
-        android:id="@+id/pic"
+        android:id="@+id/dealsPic"
         android:layout_width="175dp"
         android:layout_height="155dp"
         android:src="@drawable/item_1"
@@ -28,7 +28,7 @@
         app:layout_constraintTop_toTopOf="parent">
 
         <TextView
-            android:id="@+id/scoreTxt"
+            android:id="@+id/dealsScoreTxt"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
@@ -45,7 +45,7 @@
             android:src="@drawable/star"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/scoreTxt"
+            app:layout_constraintStart_toEndOf="@+id/dealsScoreTxt"
             app:layout_constraintTop_toTopOf="parent" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -59,7 +59,7 @@
         app:layout_constraintStart_toStartOf="parent" />
 
     <TextView
-        android:id="@+id/titleTxt"
+        android:id="@+id/dealsTitleTxt"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textColor="@color/black"
@@ -70,22 +70,32 @@
         app:layout_constraintTop_toTopOf="@+id/view" />
 
     <TextView
-        android:id="@+id/feeTxt"
+        android:id="@+id/dealsFeeTxtOld"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/home_newArrival_price"
+        android:text="@string/home_deals_oldPrice"
         android:textColor="@color/purple"
-        app:layout_constraintStart_toStartOf="@+id/titleTxt"
-        app:layout_constraintTop_toBottomOf="@+id/titleTxt" />
+        app:layout_constraintStart_toStartOf="@+id/dealsTitleTxt"
+        app:layout_constraintTop_toBottomOf="@+id/dealsTitleTxt" />
 
     <TextView
-        android:id="@+id/sellertxt"
+        android:id="@+id/dealsFeeTxtNew"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:text="@string/home_newArrival_price"
+        android:textColor="@color/yellow"
+        app:layout_constraintStart_toEndOf="@+id/dealsFeeTxtOld"
+        app:layout_constraintTop_toTopOf="@+id/dealsFeeTxtOld" />
+
+    <TextView
+        android:id="@+id/dealsSellertxt"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/new_arrival_seller"
         android:textColor="@color/solidGrey"
-        app:layout_constraintStart_toStartOf="@+id/feeTxt"
-        app:layout_constraintTop_toBottomOf="@+id/feeTxt" />
+        app:layout_constraintStart_toStartOf="@+id/dealsFeeTxtOld"
+        app:layout_constraintTop_toBottomOf="@+id/dealsFeeTxtOld" />
 
     <ImageView
         android:id="@+id/imageView6"
@@ -93,11 +103,11 @@
         android:layout_height="wrap_content"
         android:layout_marginEnd="8dp"
         android:src="@drawable/review"
-        app:layout_constraintBottom_toBottomOf="@+id/feeTxt"
+        app:layout_constraintBottom_toBottomOf="@+id/dealsFeeTxtOld"
         app:layout_constraintEnd_toEndOf="parent" />
 
     <TextView
-        android:id="@+id/reviewTxt"
+        android:id="@+id/dealsReviewTxt"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="8dp"
