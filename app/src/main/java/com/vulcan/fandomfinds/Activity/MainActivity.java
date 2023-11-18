@@ -38,9 +38,10 @@ public class MainActivity extends AppCompatActivity {
 
     private void initSellerRecyclerView(){
         ArrayList<SellerDomain> items = new ArrayList<>();
-        items.add(new SellerDomain("Maniya Streams","seller_pic"));
-        items.add(new SellerDomain("Maniya Streams","seller_pic"));
-        items.add(new SellerDomain("Maniya Streams","seller_pic"));
+        items.add(new SellerDomain("Maniya Streams","maniya_streams_foreground"));
+        items.add(new SellerDomain("Maniya Streams","maniya_streams_round"));
+        items.add(new SellerDomain("Maniya Streams","maniya_streams_round"));
+        items.add(new SellerDomain("Maniya Streams","maniya_streams_round"));
 
         recyclerViewSeller = findViewById(R.id.featured);
         recyclerViewSeller.setLayoutManager(new LinearLayoutManager(this,LinearLayoutManager.HORIZONTAL,false));

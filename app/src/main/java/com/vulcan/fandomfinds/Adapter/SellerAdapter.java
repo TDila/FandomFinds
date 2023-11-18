@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.bitmap.GranularRoundedCorners;
+import com.bumptech.glide.request.RequestOptions;
 import com.vulcan.fandomfinds.Activity.MainActivity;
 import com.vulcan.fandomfinds.Domain.SellerDomain;
 import com.vulcan.fandomfinds.R;
@@ -42,8 +43,7 @@ public class SellerAdapter extends RecyclerView.Adapter<SellerAdapter.ViewHolder
         int drawableResourceId = holder.itemView.getResources().getIdentifier(items.get(position).getSellerPicUrl(),
                 "mipmap",holder.itemView.getContext().getPackageName());
         Glide.with(holder.itemView.getContext())
-                .load(drawableResourceId)
-                .transform(new GranularRoundedCorners(30,30,0,0))
+                .load("https://firebasestorage.googleapis.com/v0/b/fir-storage-13496.appspot.com/o/unnamed%20(13)-modified.png?alt=media&token=800e71d0-6738-4e42-b7ea-c9ebf8b25727")
                 .into(holder.sellerPic);
     }
 

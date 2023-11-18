@@ -6,7 +6,7 @@
     android:layout_width="175dp"
     android:layout_height="175dp"
     android:layout_margin="8dp"
-    android:background="@drawable/white_background"
+    android:background="@drawable/white_background3"
     android:elevation="3dp">
 
     <ImageView
@@ -14,8 +14,8 @@
         android:layout_width="115dp"
         android:layout_height="115dp"
         android:layout_marginTop="5dp"
-        android:layout_marginBottom="5dp"
         android:src="@drawable/item_1"
+        android:scaleType="fitXY"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -24,7 +24,7 @@
         android:id="@+id/homeSellerView"
         android:layout_width="wrap_content"
         android:layout_height="50dp"
-        android:background="@drawable/white_background"
+        android:background="@drawable/white_background3"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
@@ -33,7 +33,7 @@
         android:id="@+id/homeSellerName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_margin="8dp"
+        android:layout_margin="4dp"
         android:singleLine="true"
         android:text="@string/home_seller_name"
         android:textColor="@color/purple"
@@ -42,5 +42,15 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="@+id/homeSellerView"
         app:layout_constraintTop_toTopOf="@+id/homeSellerView" />
+
+    <TextView
+        android:id="@+id/seller_tag"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/seller_tag"
+        android:textSize="8sp"
+        app:layout_constraintEnd_toEndOf="@+id/homeSellerView"
+        app:layout_constraintStart_toStartOf="@+id/homeSellerView"
+        app:layout_constraintTop_toBottomOf="@+id/homeSellerName" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
