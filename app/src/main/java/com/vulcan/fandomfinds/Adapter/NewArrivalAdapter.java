@@ -1,6 +1,8 @@
 package com.vulcan.fandomfinds.Adapter;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,6 +14,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.bitmap.GranularRoundedCorners;
+import com.vulcan.fandomfinds.Activity.SingleProductViewActivity;
 import com.vulcan.fandomfinds.Domain.NewArrivalDomain;
 import com.vulcan.fandomfinds.R;
 
@@ -34,7 +37,7 @@ public class NewArrivalAdapter extends RecyclerView.Adapter<NewArrivalAdapter.Vi
     }
 
     @Override
-    public void onBindViewHolder(@NonNull NewArrivalAdapter.ViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull NewArrivalAdapter.ViewHolder holder, @SuppressLint("RecyclerView") int position) {
         holder.titleTxt.setText(items.get(position).getTitle());
         holder.feeTxt.setText("$"+String.valueOf(items.get(position).getPrice()));
         holder.scoreTxt.setText(""+items.get(position).getScore());
@@ -46,6 +49,15 @@ public class NewArrivalAdapter extends RecyclerView.Adapter<NewArrivalAdapter.Vi
                 .load(drawableResourceId)
                 .transform(new GranularRoundedCorners(30,30,0,0))
                 .into(holder.pic);
+
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(holder.itemView.getContext(), SingleProductViewActivity.class);
+                intent.putExtra("newArrival",items.get(position));
+                holder.itemView.getContext().startActivity(intent);
+            }
+        });
     }
 
     @Override

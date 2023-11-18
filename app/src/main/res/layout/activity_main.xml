@@ -196,6 +196,7 @@
                 android:orientation="horizontal">
 
                 <LinearLayout
+                    android:id="@+id/bottom_nav_home"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="0.25"
@@ -207,10 +208,10 @@
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
                         android:layout_margin="4dp"
-                        app:tint="@color/purple"
                         android:layout_weight="1"
                         android:padding="6dp"
-                        android:src="@drawable/bottom_bar_home" />
+                        android:src="@drawable/bottom_bar_home"
+                        app:tint="@color/purple" />
 
                     <TextView
                         android:id="@+id/text_explore"
@@ -224,6 +225,7 @@
                 </LinearLayout>
 
                 <LinearLayout
+                    android:id="@+id/bottom_nav_explore"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="0.25"
@@ -250,6 +252,7 @@
                 </LinearLayout>
 
                 <LinearLayout
+                    android:id="@+id/bottom_nav_cart"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="0.25"
@@ -276,6 +279,7 @@
                 </LinearLayout>
 
                 <LinearLayout
+                    android:id="@+id/bottom_nav_account"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="0.25"
