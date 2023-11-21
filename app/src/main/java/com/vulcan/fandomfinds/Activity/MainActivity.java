@@ -97,6 +97,9 @@ public class MainActivity extends AppCompatActivity {
     private void initDealsRecyclerView(){
         ArrayList<ProductsDomain> items = new ArrayList<>();
         items.add(new ProductsDomain("T-shirt black","","item_1",15,4,410,10,"Maniya Streams"));
+        items.add(new ProductsDomain("T-shirt black","","item_1",15,4,410,2,"Maniya Streams"));
+        items.add(new ProductsDomain("T-shirt black","","item_1",15,4,410,2.3,"Maniya Streams"));
+        items.add(new ProductsDomain("T-shirt black","","item_1",15,4,410,5.7,"Maniya Streams"));
 
         recyclerViewDeals = findViewById(R.id.deals);
         recyclerViewDeals.setLayoutManager(new LinearLayoutManager(this,LinearLayoutManager.HORIZONTAL,false));

@@ -73,6 +73,17 @@
                     app:layout_constraintStart_toStartOf="@+id/single_product_image_view"
                     app:layout_constraintTop_toTopOf="@+id/single_product_image_view" />
 
+                <TextView
+                    android:id="@+id/single_product_discount"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@color/yellow"
+                    android:text="@string/home_deals_discount_percentage_text"
+                    android:textColor="@color/white"
+                    android:textSize="30dp"
+                    app:layout_constraintBottom_toBottomOf="@+id/single_product_img"
+                    app:layout_constraintEnd_toEndOf="@+id/single_product_img" />
+
                 <LinearLayout
                     android:id="@+id/linearLayout"
                     android:layout_width="match_parent"
@@ -93,6 +104,17 @@
                         android:text="@string/single_product_title"
                         android:textColor="@color/black"
                         android:textSize="23dp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/single_product_new_price"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/single_product_price"
+                        android:textColor="@color/white"
+                        android:background="@color/purple"
+                        android:textSize="22sp"
+                        android:layout_marginRight="3dp"
                         android:textStyle="bold" />
 
                     <TextView

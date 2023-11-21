@@ -1,5 +1,6 @@
 package com.vulcan.fandomfinds.Adapter;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -41,10 +42,22 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.ViewHolder> {
     }
 
     @Override
-    public void onBindViewHolder(@NonNull CartAdapter.ViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull CartAdapter.ViewHolder holder, @SuppressLint("RecyclerView") int position) {
         holder.cart_product_title.setText(items.get(position).getTitle());
-        holder.cart_product_price.setText("$"+String.valueOf(items.get(position).getPrice()));
-        double total_value = Math.round((items.get(position).getNumberInCart()*items.get(position).getPrice()));
+
+        double price = items.get(position).getPrice();
+
+        holder.cart_product_price.setText("$"+String.valueOf(price));
+
+        double discount =items.get(position).getDiscount();
+        double total_value;
+        if(discount != 0){
+            double newPrice = price - (price * discount / 100);
+            total_value = Math.round((items.get(position).getNumberInCart()*newPrice));
+        }else{
+            total_value = Math.round((items.get(position).getNumberInCart()*price));
+        }
+
         holder.cart_total_product_price.setText("$"+String.valueOf(total_value));
         holder.cart_product_count.setText(String.valueOf(items.get(position).getNumberInCart()));
 

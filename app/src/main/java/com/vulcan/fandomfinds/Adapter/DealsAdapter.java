@@ -1,6 +1,8 @@
 package com.vulcan.fandomfinds.Adapter;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Paint;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,6 +15,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.bitmap.GranularRoundedCorners;
+import com.vulcan.fandomfinds.Activity.SingleProductViewActivity;
 import com.vulcan.fandomfinds.Domain.ProductsDomain;
 import com.vulcan.fandomfinds.R;
 
@@ -29,16 +32,16 @@ public class DealsAdapter extends RecyclerView.Adapter<DealsAdapter.ViewHolder> 
     @NonNull
     @Override
     public DealsAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        context=parent.getContext();
         View inflater = LayoutInflater.from(parent.getContext()).inflate(R.layout.viewholder_deals_list,parent,false);
         return new ViewHolder(inflater);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull DealsAdapter.ViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull DealsAdapter.ViewHolder holder, @SuppressLint("RecyclerView") int position) {
         double oldPrice = items.get(position).getPrice();
         double discount = items.get(position).getDiscount();
         double newPrice = oldPrice - (oldPrice * discount/100);
+
         holder.titleTxt.setText(items.get(position).getTitle());
         holder.feeTxtOld.setText("$"+String.valueOf(oldPrice));
         holder.feeTxtNew.setText("$"+String.valueOf(newPrice));
@@ -52,6 +55,15 @@ public class DealsAdapter extends RecyclerView.Adapter<DealsAdapter.ViewHolder> 
                 .load(drawableResourceId)
                 .transform(new GranularRoundedCorners(30,30,0,0))
                 .into(holder.pic);
+
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(holder.itemView.getContext(), SingleProductViewActivity.class);
+                intent.putExtra("newArrival",items.get(position));
+                holder.itemView.getContext().startActivity(intent);
+            }
+        });
     }
 
     @Override
@@ -67,7 +79,9 @@ public class DealsAdapter extends RecyclerView.Adapter<DealsAdapter.ViewHolder> 
 
             titleTxt = itemView.findViewById(R.id.dealsTitleTxt);
             feeTxtOld = itemView.findViewById(R.id.dealsFeeTxtOld);
+
             feeTxtOld.setPaintFlags(feeTxtOld.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
+
             feeTxtNew = itemView.findViewById(R.id.dealsFeeTxtNew);
             scoreTxt = itemView.findViewById(R.id.dealsScoreTxt);
             sellerTxt = itemView.findViewById(R.id.dealsSellertxt);

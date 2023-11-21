@@ -42,7 +42,12 @@ public class ManagementCart {
         ArrayList<ProductsDomain> listItem = getListCart();
         double fee = 0;
         for (int i = 0;i < listItem.size();i++){
-            fee = fee + (listItem.get(i).getPrice() * listItem.get(i).getNumberInCart());
+            if(listItem.get(i).getDiscount() != 0){
+                double oldPrice = listItem.get(i).getPrice();
+                fee = fee + ((oldPrice - (oldPrice * listItem.get(i).getDiscount()/100))  * listItem.get(i).getNumberInCart());
+            }else{
+                fee = fee + (listItem.get(i).getPrice() * listItem.get(i).getNumberInCart());
+            }
         }
         return fee;
     }
