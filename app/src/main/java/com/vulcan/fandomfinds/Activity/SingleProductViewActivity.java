@@ -9,7 +9,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
-import com.vulcan.fandomfinds.Domain.NewArrivalDomain;
+import com.vulcan.fandomfinds.Domain.ProductsDomain;
 import com.vulcan.fandomfinds.Helper.ManagementCart;
 import com.vulcan.fandomfinds.R;
 
@@ -18,7 +18,7 @@ public class SingleProductViewActivity extends AppCompatActivity {
     private TextView single_product_title,single_product_price
             ,single_product_star_num,single_product_feedback_count,single_product_description;
     private ImageView single_product_backArrow,single_product_img;
-    private NewArrivalDomain newArrival;
+    private ProductsDomain newArrival;
     private int numberOrder = 1;
     private ManagementCart managementCart;
     @Override
@@ -31,7 +31,7 @@ public class SingleProductViewActivity extends AppCompatActivity {
         getBundle();
     }
     private void getBundle(){
-        newArrival = (NewArrivalDomain) getIntent().getSerializableExtra("newArrival");
+        newArrival = (ProductsDomain) getIntent().getSerializableExtra("newArrival");
         int drawableResourceId = this.getResources().getIdentifier(newArrival.getPicUrl(),"drawable",this.getPackageName());
 
         Glide.with(this)

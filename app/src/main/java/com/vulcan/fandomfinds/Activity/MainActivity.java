@@ -12,8 +12,7 @@ import android.widget.LinearLayout;
 import com.vulcan.fandomfinds.Adapter.DealsAdapter;
 import com.vulcan.fandomfinds.Adapter.NewArrivalAdapter;
 import com.vulcan.fandomfinds.Adapter.SellerAdapter;
-import com.vulcan.fandomfinds.Domain.DealsDomain;
-import com.vulcan.fandomfinds.Domain.NewArrivalDomain;
+import com.vulcan.fandomfinds.Domain.ProductsDomain;
 import com.vulcan.fandomfinds.Domain.SellerDomain;
 import com.vulcan.fandomfinds.R;
 
@@ -82,11 +81,11 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void initNewArrivalRecyclerView(){
-        ArrayList<NewArrivalDomain> items = new ArrayList<>();
-        items.add(new NewArrivalDomain("T-shirt black","This is a T-shirt black","item_4",7,4.5,500,"Maniya Streams"));
-        items.add(new NewArrivalDomain("Apple Watch","This is a Apple Watch","item_2",14,3,200,"Maniya Streams"));
-        items.add(new NewArrivalDomain("Mobile Phone","This is a Mobile Phone","item_3",9,2.1,1200,"Maniya Streams"));
-        items.add(new NewArrivalDomain("Samsung TV","This is a Samsung TV","item_4",1,3.4,670,"Maniya Streams"));
+        ArrayList<ProductsDomain> items = new ArrayList<>();
+        items.add(new ProductsDomain("T-shirt black","This is a T-shirt black","item_4",7,4.5,500,0,"Maniya Streams"));
+        items.add(new ProductsDomain("Apple Watch","This is a Apple Watch","item_2",14,3,200,0,"Maniya Streams"));
+        items.add(new ProductsDomain("Mobile Phone","This is a Mobile Phone","item_3",9,2.1,1200,0,"Maniya Streams"));
+        items.add(new ProductsDomain("Samsung TV","This is a Samsung TV","item_4",1,3.4,670,0,"Maniya Streams"));
 
         recyclerViewNewArrival = findViewById(R.id.new_arrival);
         recyclerViewNewArrival.setLayoutManager(new LinearLayoutManager(this,LinearLayoutManager.HORIZONTAL,false));
@@ -96,11 +95,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void initDealsRecyclerView(){
-        ArrayList<DealsDomain> items = new ArrayList<>();
-        items.add(new DealsDomain("T-shirt black","","item_1",15,4,500,410,"Maniya Streams"));
-        items.add(new DealsDomain("T-shirt black","","item_2",15,4,500,410,"Maniya Streams"));
-        items.add(new DealsDomain("T-shirt black","","item_3",15,4,500,410,"Maniya Streams"));
-        items.add(new DealsDomain("T-shirt black","","item_4",15,4,500,410,"Maniya Streams"));
+        ArrayList<ProductsDomain> items = new ArrayList<>();
+        items.add(new ProductsDomain("T-shirt black","","item_1",15,4,410,10,"Maniya Streams"));
 
         recyclerViewDeals = findViewById(R.id.deals);
         recyclerViewDeals.setLayoutManager(new LinearLayoutManager(this,LinearLayoutManager.HORIZONTAL,false));

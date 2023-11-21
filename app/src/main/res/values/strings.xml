@@ -64,4 +64,5 @@
     <string name="sign_up_as_seller_text">Seller</string>
     <string name="sign_up_sign_up_with_google">Sign Up with Google</string>
     <string name="sign_up_btn">SIGN UP</string>
+    <string name="home_deals_discount_percentage_text">10% OFF</string>
 </resources>

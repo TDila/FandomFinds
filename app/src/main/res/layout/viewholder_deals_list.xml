@@ -19,6 +19,25 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/discount_background"
+        app:layout_constraintBottom_toBottomOf="@+id/dealsPic"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:padding="2dp">
+
+        <TextView
+            android:id="@+id/deals_dis_percentage"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/home_deals_discount_percentage_text"
+            android:textColor="@color/white"
+            android:textSize="12dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/constraintLayout"
         android:layout_width="55dp"
         android:layout_height="22dp"
@@ -46,7 +65,8 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/dealsScoreTxt"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"
+            app:tint="@color/yellow" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <View
@@ -74,7 +94,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/home_deals_oldPrice"
-        android:textColor="@color/purple"
+        android:textColor="@color/solidGrey"
         app:layout_constraintStart_toStartOf="@+id/dealsTitleTxt"
         app:layout_constraintTop_toBottomOf="@+id/dealsTitleTxt" />
 
@@ -83,8 +103,11 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
+        android:background="@color/purple"
+        android:padding="1dp"
         android:text="@string/home_newArrival_price"
-        android:textColor="@color/yellow"
+        android:textColor="@color/white"
+        app:layout_constraintBottom_toTopOf="@+id/dealsSellertxt"
         app:layout_constraintStart_toEndOf="@+id/dealsFeeTxtOld"
         app:layout_constraintTop_toTopOf="@+id/dealsFeeTxtOld" />
 

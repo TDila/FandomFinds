@@ -15,16 +15,16 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.bitmap.GranularRoundedCorners;
 import com.vulcan.fandomfinds.Activity.SingleProductViewActivity;
-import com.vulcan.fandomfinds.Domain.NewArrivalDomain;
+import com.vulcan.fandomfinds.Domain.ProductsDomain;
 import com.vulcan.fandomfinds.R;
 
 import java.util.ArrayList;
 
 public class NewArrivalAdapter extends RecyclerView.Adapter<NewArrivalAdapter.ViewHolder> {
-    ArrayList<NewArrivalDomain> items;
+    ArrayList<ProductsDomain> items;
     Context context;
 
-    public NewArrivalAdapter(ArrayList<NewArrivalDomain> items) {
+    public NewArrivalAdapter(ArrayList<ProductsDomain> items) {
         this.items = items;
     }
 

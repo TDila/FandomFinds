@@ -32,7 +32,7 @@ import android.text.TextUtils;
 import android.util.Log;
 
 import com.google.gson.Gson;
-import com.vulcan.fandomfinds.Domain.NewArrivalDomain;
+import com.vulcan.fandomfinds.Domain.ProductsDomain;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -326,14 +326,14 @@ public class TinyDB {
     }
 
 
-    public ArrayList<NewArrivalDomain> getListObject(String key){
+    public ArrayList<ProductsDomain> getListObject(String key){
         Gson gson = new Gson();
 
         ArrayList<String> objStrings = getListString(key);
-        ArrayList<NewArrivalDomain> playerList =  new ArrayList<NewArrivalDomain>();
+        ArrayList<ProductsDomain> playerList = new ArrayList<>();
 
         for(String jObjString : objStrings){
-            NewArrivalDomain player  = gson.fromJson(jObjString,  NewArrivalDomain.class);
+            ProductsDomain player  = gson.fromJson(jObjString,  ProductsDomain.class);
             playerList.add(player);
         }
         return playerList;
@@ -488,11 +488,11 @@ public class TinyDB {
     	putString(key, gson.toJson(obj));
     }
 
-    public void putListObject(String key, ArrayList<NewArrivalDomain> playerList){
+    public void putListObject(String key, ArrayList<ProductsDomain> playerList){
         checkForNullKey(key);
         Gson gson = new Gson();
         ArrayList<String> objStrings = new ArrayList<String>();
-        for(NewArrivalDomain player: playerList){
+        for(ProductsDomain player: playerList){
             objStrings.add(gson.toJson(player));
         }
         putListString(key, objStrings);

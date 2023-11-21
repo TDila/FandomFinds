@@ -12,22 +12,20 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.bitmap.GranularRoundedCorners;
-import com.vulcan.fandomfinds.Domain.NewArrivalDomain;
+import com.vulcan.fandomfinds.Domain.ProductsDomain;
 import com.vulcan.fandomfinds.Helper.ChangeNumberitemsListener;
 import com.vulcan.fandomfinds.Helper.ManagementCart;
 import com.vulcan.fandomfinds.R;
 
-import org.w3c.dom.Text;
-
 import java.util.ArrayList;
 
 public class CartAdapter extends RecyclerView.Adapter<CartAdapter.ViewHolder> {
-    ArrayList<NewArrivalDomain> items;
+    ArrayList<ProductsDomain> items;
     private ManagementCart managementCart;
     ChangeNumberitemsListener changeNumberitemsListener;
     Context context;
 
-    public CartAdapter(ArrayList<NewArrivalDomain> items, Context context,ChangeNumberitemsListener changeNumberitemsListener) {
+    public CartAdapter(ArrayList<ProductsDomain> items, Context context,ChangeNumberitemsListener changeNumberitemsListener) {
         this.items = items;
         this.changeNumberitemsListener = changeNumberitemsListener;
         managementCart = new ManagementCart(context);
