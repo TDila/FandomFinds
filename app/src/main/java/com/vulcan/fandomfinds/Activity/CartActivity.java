@@ -1,6 +1,7 @@
 package com.vulcan.fandomfinds.Activity;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.FragmentContainerView;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -11,6 +12,7 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.vulcan.fandomfinds.Adapter.CartAdapter;
+import com.vulcan.fandomfinds.Fragments.bottomNavigation;
 import com.vulcan.fandomfinds.Helper.ChangeNumberitemsListener;
 import com.vulcan.fandomfinds.Helper.ManagementCart;
 import com.vulcan.fandomfinds.R;
@@ -34,6 +36,7 @@ public class CartActivity extends AppCompatActivity{
         setVariable();
         calculateCart();
         initList();
+        loadBottomNavigationBar();
     }
 
     private void initList() {
@@ -93,6 +96,12 @@ public class CartActivity extends AppCompatActivity{
         cart_back_btn = findViewById(R.id.cart_back_btn);
         cart_empty_txt = findViewById(R.id.cart_empty_txt);
         empty_cart_img = findViewById(R.id.empty_cart_img);
+    }
+    private void loadBottomNavigationBar(){
+        getSupportFragmentManager()
+                .beginTransaction()
+                .add(R.id.fragmentContainerView2, bottomNavigation.class,null)
+                .commit();
     }
 
 }

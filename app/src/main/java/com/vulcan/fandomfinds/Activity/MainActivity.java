@@ -14,6 +14,7 @@ import com.vulcan.fandomfinds.Adapter.NewArrivalAdapter;
 import com.vulcan.fandomfinds.Adapter.SellerAdapter;
 import com.vulcan.fandomfinds.Domain.ProductsDomain;
 import com.vulcan.fandomfinds.Domain.SellerDomain;
+import com.vulcan.fandomfinds.Fragments.bottomNavigation;
 import com.vulcan.fandomfinds.R;
 
 import java.util.ArrayList;
@@ -36,34 +37,14 @@ public class MainActivity extends AppCompatActivity {
         initNewArrivalRecyclerView();
         initDealsRecyclerView();
         initSellerRecyclerView();
-        bottomNavigation();
+        loadBottomNavigationBar();
     }
 
-    private void bottomNavigation() {
-        LinearLayout home_buttom = findViewById(R.id.bottom_nav_home);
-        LinearLayout cart_buttom = findViewById(R.id.bottom_nav_cart);
-        LinearLayout cart_account = findViewById(R.id.bottom_nav_account);
-
-        home_buttom.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startActivity(new Intent(getApplicationContext(),MainActivity.class));
-            }
-        });
-
-        cart_buttom.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startActivity(new Intent(getApplicationContext(), CartActivity.class));
-            }
-        });
-
-        cart_account.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startActivity(new Intent(getApplicationContext(), SignUpInActivity.class));
-            }
-        });
+    private void loadBottomNavigationBar() {
+        getSupportFragmentManager()
+                .beginTransaction()
+                .add(R.id.fragmentContainerView3, bottomNavigation.class,null)
+                .commit();
     }
 
     private void initSellerRecyclerView(){
