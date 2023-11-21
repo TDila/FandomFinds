@@ -1,4 +1,4 @@
-package com.vulcan.fandomfinds;
+package com.vulcan.fandomfinds.Activity;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -13,6 +13,7 @@ import android.widget.TextView;
 import com.vulcan.fandomfinds.Adapter.CartAdapter;
 import com.vulcan.fandomfinds.Helper.ChangeNumberitemsListener;
 import com.vulcan.fandomfinds.Helper.ManagementCart;
+import com.vulcan.fandomfinds.R;
 
 public class CartActivity extends AppCompatActivity{
     private RecyclerView.Adapter adapter;
@@ -21,7 +22,7 @@ public class CartActivity extends AppCompatActivity{
     private TextView cart_subtotal,cart_delivery,cart_total_tax,cart_total,cart_empty_txt;
     private double tax;
     private ScrollView scrollView;
-    private ImageView cart_back_btn;
+    private ImageView cart_back_btn,empty_cart_img;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -38,9 +39,11 @@ public class CartActivity extends AppCompatActivity{
     private void initList() {
         if(managementCart.getListCart().isEmpty()){
             cart_empty_txt.setVisibility(View.VISIBLE);
+            empty_cart_img.setVisibility(View.VISIBLE);
             scrollView.setVisibility(View.GONE);
         }else{
             cart_empty_txt.setVisibility(View.GONE);
+            empty_cart_img.setVisibility(View.GONE);
             scrollView.setVisibility(View.VISIBLE);
         }
 
@@ -89,6 +92,7 @@ public class CartActivity extends AppCompatActivity{
         scrollView = findViewById(R.id.cart_scrollView);
         cart_back_btn = findViewById(R.id.cart_back_btn);
         cart_empty_txt = findViewById(R.id.cart_empty_txt);
+        empty_cart_img = findViewById(R.id.empty_cart_img);
     }
 
 }

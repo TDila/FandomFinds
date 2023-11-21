@@ -50,4 +50,18 @@
     <string name="cart_minus_button">-</string>
     <string name="cart_plus_button">+</string>
     <string name="cart_product_count">0</string>
+    <string name="log_in_txt">LOG IN</string>
+    <string name="sign_up_txt">SIGN UP</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="log_in_btn">LOG IN</string>
+    <string name="sign_in_enter_email">Enter Email</string>
+    <string name="sign_in_enter_password">Enter Password</string>
+    <string name="sign_in_log_in_with_google">Log In with Google</string>
+    <string name="sign_up_in_or_text">OR</string>
+    <string name="sign_up_as_text">Sign Up As :</string>
+    <string name="sign_up_as_customer_text">Customer</string>
+    <string name="sign_up_as_seller_text">Seller</string>
+    <string name="sign_up_sign_up_with_google">Sign Up with Google</string>
+    <string name="sign_up_btn">SIGN UP</string>
 </resources>
