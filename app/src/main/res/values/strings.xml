@@ -65,4 +65,16 @@
     <string name="sign_up_sign_up_with_google">Sign Up with Google</string>
     <string name="sign_up_btn">SIGN UP</string>
     <string name="home_deals_discount_percentage_text">10% OFF</string>
+    <string name="seller_public_profile_streamer_name">ManiYa Streams</string>
+    <string name="seller_public_profile_follower_count">150K followers</string>
+    <string name="seller_public_profile_store">STORE</string>
+    <string name="seller_public_profile_about">ABOUT</string>
+    <string name="seller_about_frag_about_me_title">About Me</string>
+    <string name="seller_about_frag_description">Description</string>
+    <string name="seller_about_frag_social_media_title">Social Media</string>
+    <string name="social_media_name">Social Meida Name</string>
+    <string name="social_media_link">Social Media Link</string>
+    <string name="seller_about_frag_social_media">Social Media</string>
+    <string name="seller_store_fragment_deals_title">Deals</string>
+    <string name="seller_store_fragment_other_title">Other</string>
 </resources>

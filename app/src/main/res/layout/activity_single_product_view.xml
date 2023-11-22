@@ -77,10 +77,11 @@
                     android:id="@+id/single_product_discount"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:background="@color/yellow"
+                    android:padding="3dp"
+                    android:background="@drawable/discount_yellow_background"
                     android:text="@string/home_deals_discount_percentage_text"
                     android:textColor="@color/white"
-                    android:textSize="30dp"
+                    android:textSize="20dp"
                     app:layout_constraintBottom_toBottomOf="@+id/single_product_img"
                     app:layout_constraintEnd_toEndOf="@+id/single_product_img" />
 
@@ -111,11 +112,11 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/single_product_price"
+                        android:padding="3dp"
                         android:textColor="@color/white"
-                        android:background="@color/purple"
+                        android:background="@drawable/discount_purple_background"
                         android:textSize="22sp"
-                        android:layout_marginRight="3dp"
-                        android:textStyle="bold" />
+                        android:layout_marginRight="3dp" />
 
                     <TextView
                         android:id="@+id/single_product_price"
@@ -123,8 +124,7 @@
                         android:layout_height="wrap_content"
                         android:text="@string/single_product_price"
                         android:textColor="@color/black"
-                        android:textSize="22sp"
-                        android:textStyle="bold" />
+                        android:textSize="22sp" />
                 </LinearLayout>
 
             </androidx.constraintlayout.widget.ConstraintLayout>

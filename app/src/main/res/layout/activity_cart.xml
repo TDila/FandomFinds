@@ -303,7 +303,8 @@
                     android:background="@drawable/btn_purple_background"
                     android:text="@string/cart_order_now_btn"
                     android:textColor="@color/white"
-                    android:textSize="18sp" />
+                    android:textSize="18sp"
+                    android:layout_marginBottom="60dp"/>
             </LinearLayout>
         </ScrollView>
 

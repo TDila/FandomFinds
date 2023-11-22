@@ -25,24 +25,21 @@
                 android:orientation="vertical">
 
                 <ImageView
-                    android:id="@+id/bottom_navbar_img_explore"
+                    android:id="@+id/bottom_navbar_img_home"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:layout_margin="4dp"
                     android:layout_weight="1"
                     android:padding="6dp"
-                    android:src="@drawable/bottom_bar_home"
-                    app:tint="@color/purple" />
+                    android:src="@drawable/bottom_bar_home" />
 
                 <TextView
                     android:id="@+id/bottom_navbar_text_explore"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="@string/bottom_menu_home"
-                    android:textAlignment="center"
-                    android:textColor="@color/purple"
-                    android:textStyle="bold" />
+                    android:textAlignment="center" />
 
             </LinearLayout>
 
@@ -54,7 +51,7 @@
                 android:orientation="vertical">
 
                 <ImageView
-                    android:id="@+id/bottom_navbar_img_wishlist"
+                    android:id="@+id/bottom_navbar_img_explore"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
