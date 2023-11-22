@@ -19,6 +19,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 
 import com.vulcan.fandomfinds.Activity.CartActivity;
+import com.vulcan.fandomfinds.Activity.ExploreActivity;
 import com.vulcan.fandomfinds.Activity.MainActivity;
 import com.vulcan.fandomfinds.R;
 
@@ -65,6 +66,15 @@ public class bottomNavigation extends Fragment {
             @Override
             public void onClick(View v) {
                 intent = new Intent(getContext(),CartActivity.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+                startActivity(intent);
+            }
+        });
+
+        bottom_navbar_explore.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                intent = new Intent(getContext(), ExploreActivity.class);
                 intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
                 startActivity(intent);
             }

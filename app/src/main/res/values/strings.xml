@@ -77,4 +77,11 @@
     <string name="seller_about_frag_social_media">Social Media</string>
     <string name="seller_store_fragment_deals_title">Deals</string>
     <string name="seller_store_fragment_other_title">Other</string>
+    <string name="seller_public_profile_follow">follow</string>
+    <string name="explore_product_title">Title</string>
+    <string name="explore_product_price">Price</string>
+    <string name="explore_product_new_price">New Price</string>
+    <string name="explore_product_seller_name">Seller Name</string>
+    <string name="explore_title">EXPLORE</string>
+    <string name="explore_seller_name" >Seller Name</string>
 </resources>

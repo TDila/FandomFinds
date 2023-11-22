@@ -46,6 +46,19 @@
             android:text="@string/seller_public_profile_follower_count"
             android:textSize="16sp" />
 
+        <TextView
+            android:id="@+id/seller_public_profile_follow"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="@drawable/discount_purple_background"
+            android:gravity="center"
+            android:paddingTop="3dp"
+            android:paddingBottom="3dp"
+            android:text="@string/seller_public_profile_follow"
+            android:textColor="@color/white"
+            android:textSize="16sp" />
+
     </LinearLayout>
 
     <LinearLayout
