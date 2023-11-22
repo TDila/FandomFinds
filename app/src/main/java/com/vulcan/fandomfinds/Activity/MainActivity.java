@@ -4,13 +4,9 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.content.Intent;
 import android.os.Bundle;
-import android.view.View;
-import android.widget.LinearLayout;
 
 import com.vulcan.fandomfinds.Adapter.DealsAdapter;
-import com.vulcan.fandomfinds.Adapter.NewArrivalAdapter;
 import com.vulcan.fandomfinds.Adapter.SellerAdapter;
 import com.vulcan.fandomfinds.Domain.ProductsDomain;
 import com.vulcan.fandomfinds.Domain.SellerDomain;
@@ -20,15 +16,6 @@ import com.vulcan.fandomfinds.R;
 import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
-
-    private RecyclerView.Adapter adapterNewArrival;
-    private RecyclerView recyclerViewNewArrival;
-    private RecyclerView.Adapter adapterDeals;
-    private RecyclerView recyclerViewDeals;
-
-    private RecyclerView.Adapter adapterSeller;
-    private RecyclerView recyclerViewSeller;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -54,10 +41,10 @@ public class MainActivity extends AppCompatActivity {
         items.add(new SellerDomain("Maniya Streams","maniya_streams_round"));
         items.add(new SellerDomain("Maniya Streams","maniya_streams_round"));
 
-        recyclerViewSeller = findViewById(R.id.featured);
+        RecyclerView recyclerViewSeller = findViewById(R.id.featured);
         recyclerViewSeller.setLayoutManager(new LinearLayoutManager(this,LinearLayoutManager.HORIZONTAL,false));
 
-        adapterSeller = new SellerAdapter(items);
+        SellerAdapter adapterSeller = new SellerAdapter(items);
         recyclerViewSeller.setAdapter(adapterSeller);
     }
 
@@ -68,11 +55,11 @@ public class MainActivity extends AppCompatActivity {
         items.add(new ProductsDomain("Mobile Phone","This is a Mobile Phone","item_3",9,2.1,1200,0,"Maniya Streams"));
         items.add(new ProductsDomain("Samsung TV","This is a Samsung TV","item_4",1,3.4,670,0,"Maniya Streams"));
 
-        recyclerViewNewArrival = findViewById(R.id.new_arrival);
+        RecyclerView recyclerViewNewArrival = findViewById(R.id.new_arrival);
         recyclerViewNewArrival.setLayoutManager(new LinearLayoutManager(this,LinearLayoutManager.HORIZONTAL,false));
 
-        adapterNewArrival = new NewArrivalAdapter(items);
-        recyclerViewNewArrival.setAdapter(adapterNewArrival);
+        DealsAdapter dealsAdapter = new DealsAdapter(items);
+        recyclerViewNewArrival.setAdapter(dealsAdapter);
     }
 
     private void initDealsRecyclerView(){
@@ -82,10 +69,10 @@ public class MainActivity extends AppCompatActivity {
         items.add(new ProductsDomain("T-shirt black","","item_1",15,4,410,2.3,"Maniya Streams"));
         items.add(new ProductsDomain("T-shirt black","","item_1",15,4,410,5.7,"Maniya Streams"));
 
-        recyclerViewDeals = findViewById(R.id.deals);
+        RecyclerView recyclerViewDeals = findViewById(R.id.deals);
         recyclerViewDeals.setLayoutManager(new LinearLayoutManager(this,LinearLayoutManager.HORIZONTAL,false));
 
-        adapterDeals = new DealsAdapter(items);
-        recyclerViewDeals.setAdapter(adapterDeals);
+        DealsAdapter dealsAdapter = new DealsAdapter(items);
+        recyclerViewDeals.setAdapter(dealsAdapter);
     }
 }

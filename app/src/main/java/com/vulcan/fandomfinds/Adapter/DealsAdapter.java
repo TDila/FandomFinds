@@ -43,12 +43,21 @@ public class DealsAdapter extends RecyclerView.Adapter<DealsAdapter.ViewHolder> 
         double newPrice = oldPrice - (oldPrice * discount/100);
 
         holder.titleTxt.setText(items.get(position).getTitle());
-        holder.feeTxtOld.setText("$"+String.valueOf(oldPrice));
-        holder.feeTxtNew.setText("$"+String.valueOf(newPrice));
         holder.scoreTxt.setText(""+items.get(position).getScore());
         holder.sellerTxt.setText("#"+items.get(position).getSellerName());
-        holder.deals_dis_percentage.setText(discount+"% OFF");
+        if(discount == 0){
+            holder.feeTxtOld.setText("$"+String.valueOf(oldPrice));
+            holder.feeTxtNew.setVisibility(View.GONE);
+            holder.deals_dis_percentage.setVisibility(View.GONE);
+        }else{
+            holder.feeTxtOld.setText("$"+String.valueOf(oldPrice));
+            holder.feeTxtOld.setPaintFlags(holder.feeTxtOld.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
 
+            holder.feeTxtNew.setVisibility(View.VISIBLE);
+            holder.deals_dis_percentage.setVisibility(View.VISIBLE);
+            holder.feeTxtNew.setText("$"+String.valueOf(newPrice));
+            holder.deals_dis_percentage.setText(discount+"% OFF");
+        }
         int drawableResourceId = holder.itemView.getResources().getIdentifier(items.get(position).getPicUrl(),
                 "drawable",holder.itemView.getContext().getPackageName());
         Glide.with(holder.itemView.getContext())
@@ -79,9 +88,6 @@ public class DealsAdapter extends RecyclerView.Adapter<DealsAdapter.ViewHolder> 
 
             titleTxt = itemView.findViewById(R.id.dealsTitleTxt);
             feeTxtOld = itemView.findViewById(R.id.dealsFeeTxtOld);
-
-            feeTxtOld.setPaintFlags(feeTxtOld.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
-
             feeTxtNew = itemView.findViewById(R.id.dealsFeeTxtNew);
             scoreTxt = itemView.findViewById(R.id.dealsScoreTxt);
             sellerTxt = itemView.findViewById(R.id.dealsSellertxt);
