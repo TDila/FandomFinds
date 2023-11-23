@@ -47,6 +47,16 @@ public class AccountActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+
+        LinearLayout purchaseHistory = findViewById(R.id.account_purchase_history);
+        purchaseHistory.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(AccountActivity.this,PurchaseHistoryActivity.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+                startActivity(intent);
+            }
+        });
     }
 
     private void loadBottomNavigationBar() {
