@@ -37,6 +37,16 @@ public class AccountActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+
+        LinearLayout accountBillingShipping = findViewById(R.id.account_payment_methods);
+        accountBillingShipping.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(AccountActivity.this,BillingShippingActivity.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+                startActivity(intent);
+            }
+        });
     }
 
     private void loadBottomNavigationBar() {

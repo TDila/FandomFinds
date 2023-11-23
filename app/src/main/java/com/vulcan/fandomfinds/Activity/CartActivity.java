@@ -5,6 +5,7 @@ import androidx.fragment.app.FragmentContainerView;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageView;
@@ -24,7 +25,7 @@ public class CartActivity extends AppCompatActivity{
     private TextView cart_subtotal,cart_delivery,cart_total_tax,cart_total,cart_empty_txt;
     private double tax;
     private ScrollView scrollView;
-    private ImageView cart_back_btn,empty_cart_img;
+    private ImageView cart_back_btn,empty_cart_img,billingShipping_address,billingShipping_paymentMethod;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -37,6 +38,26 @@ public class CartActivity extends AppCompatActivity{
         calculateCart();
         initList();
         loadBottomNavigationBar();
+
+        billingShipping_address.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                loadBillingShipping();
+            }
+        });
+
+        billingShipping_paymentMethod.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                loadBillingShipping();
+            }
+        });
+    }
+
+    private void loadBillingShipping(){
+        Intent intent = new Intent(CartActivity.this,BillingShippingActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+        startActivity(intent);
     }
 
     private void initList() {
@@ -96,6 +117,8 @@ public class CartActivity extends AppCompatActivity{
         cart_back_btn = findViewById(R.id.cart_back_btn);
         cart_empty_txt = findViewById(R.id.cart_empty_txt);
         empty_cart_img = findViewById(R.id.empty_cart_img);
+        billingShipping_address = findViewById(R.id.cart_to_billingShipping_address);
+        billingShipping_paymentMethod = findViewById(R.id.cart_to_billingShipping_paymentMethod);
     }
     private void loadBottomNavigationBar(){
         getSupportFragmentManager()

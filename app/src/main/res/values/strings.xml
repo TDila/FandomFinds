@@ -93,7 +93,7 @@
     <string name="profile_info_fname_text">First Name</string>
     <string name="profile_info_lname_text">Last Name</string>
     <string name="profile_info_fname_hint">Enter First Name</string>
-    <string name="profile_info_lname_hint" >Enter Last Name</string>
+    <string name="profile_info_lname_hint">Enter Last Name</string>
     <string name="profile_info_email_text">Email</string>
     <string name="profile_info_public_name_seller">Public Name (requried*)</string>
     <string name="profile_info_seller_public_profile">Enter public name</string>
@@ -109,4 +109,15 @@
     <string name="profile_info_password_change_button">Set Password</string>
     <string name="profile_info_change_password_hint">Enter New Password</string>
     <string name="profile_info_save_changes_button">Save Changes</string>
+    <string name="bs_title">Billing and Shipping</string>
+    <string name="bp_shipping_address">Shipping Address</string>
+    <string name="bs_shipping_address_hint">Enter Shipping Address</string>
+    <string name="bs_postal_code_title">Postal Code</string>
+    <string name="bs_postal_code_hint">Enter Postal Code</string>
+    <string name="bs_mobile_number_title">Mobile Number</string>
+    <string name="bs_mobile_number_hint">Enter Mobile Number</string>
+    <string name="bs_save_details_button_text">Save Details</string>
+    <string name="bs_payment_methods_title">Payment Methods</string>
+    <string name="bs_paypal_address_hint">Enter your PayPal address</string>
+    <string name="bs_paypal_address_set_button">SAVE</string>
 </resources>

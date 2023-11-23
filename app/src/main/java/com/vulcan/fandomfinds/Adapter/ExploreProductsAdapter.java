@@ -1,17 +1,21 @@
 package com.vulcan.fandomfinds.Adapter;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Paint;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.vulcan.fandomfinds.Activity.SingleProductViewActivity;
 import com.vulcan.fandomfinds.Domain.ProductsDomain;
 import com.vulcan.fandomfinds.R;
 
@@ -37,7 +41,7 @@ public class ExploreProductsAdapter extends RecyclerView.Adapter<ExploreProducts
     }
 
     @Override
-    public void onBindViewHolder(@NonNull ExploreProductsAdapter.ViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull ExploreProductsAdapter.ViewHolder holder, @SuppressLint("RecyclerView") int position) {
         holder.explore_product_title.setText(items.get(position).getTitle());
         double price = items.get(position).getPrice();
         double discount = items.get(position).getDiscount();
@@ -60,6 +64,16 @@ public class ExploreProductsAdapter extends RecyclerView.Adapter<ExploreProducts
         Glide.with(holder.itemView.getContext())
                 .load(drawableResourceId)
                 .into(holder.explore_product_img);
+
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(holder.itemView.getContext(), SingleProductViewActivity.class);
+                intent.putExtra("newArrival",items.get(position));
+                intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+                holder.itemView.getContext().startActivity(intent);
+            }
+        });
     }
 
     @Override

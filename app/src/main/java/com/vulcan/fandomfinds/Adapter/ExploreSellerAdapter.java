@@ -1,6 +1,8 @@
 package com.vulcan.fandomfinds.Adapter;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,6 +13,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.vulcan.fandomfinds.Activity.SellerPublicProfileActivity;
 import com.vulcan.fandomfinds.Domain.SellerDomain;
 import com.vulcan.fandomfinds.R;
 
@@ -34,7 +37,7 @@ public class ExploreSellerAdapter extends RecyclerView.Adapter<ExploreSellerAdap
     }
 
     @Override
-    public void onBindViewHolder(@NonNull ExploreSellerAdapter.ViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull ExploreSellerAdapter.ViewHolder holder, @SuppressLint("RecyclerView") int position) {
         holder.explore_seller_name.setText(items.get(position).getSellerName());
         holder.explore_seller_followers.setText(items.get(position).getFollowers()+" followers");
 
@@ -43,6 +46,16 @@ public class ExploreSellerAdapter extends RecyclerView.Adapter<ExploreSellerAdap
         Glide.with(holder.itemView.getContext())
                 .load("https://firebasestorage.googleapis.com/v0/b/fir-storage-13496.appspot.com/o/unnamed%20(13)-modified.png?alt=media&token=800e71d0-6738-4e42-b7ea-c9ebf8b25727")
                 .into(holder.explore_seller_img);
+
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(holder.itemView.getContext(), SellerPublicProfileActivity.class);
+                intent.putExtra("seller",items.get(position));
+                intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+                holder.itemView.getContext().startActivity(intent);
+            }
+        });
     }
 
     @Override
