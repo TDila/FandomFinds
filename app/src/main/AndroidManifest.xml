@@ -15,6 +15,12 @@
         android:theme="@style/Theme.FandomFinds"
         tools:targetApi="31">
         <activity
+            android:name=".Activity.ProfileInformationActivity"
+            android:exported="false" />
+        <activity
+            android:name=".Activity.AccountActivity"
+            android:exported="false" />
+        <activity
             android:name=".Activity.ExploreActivity"
             android:exported="false" />
         <activity

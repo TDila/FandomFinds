@@ -18,6 +18,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 
+import com.vulcan.fandomfinds.Activity.AccountActivity;
 import com.vulcan.fandomfinds.Activity.CartActivity;
 import com.vulcan.fandomfinds.Activity.ExploreActivity;
 import com.vulcan.fandomfinds.Activity.MainActivity;
@@ -26,12 +27,9 @@ import com.vulcan.fandomfinds.R;
 public class bottomNavigation extends Fragment {
     private LinearLayout bottom_navbar_home,bottom_navbar_explore,bottom_navbar_cart,bottom_navbar_account;
     private ImageView home_img,explore_img,cart_img,account_img;
-    private Context context;
-    private Intent intent;
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        context = getContext();
         return inflater.inflate(R.layout.fragment_bottom_navigation,container,false);
     }
 
@@ -56,7 +54,7 @@ public class bottomNavigation extends Fragment {
         bottom_navbar_home.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                intent = new Intent(getContext(), MainActivity.class);
+                Intent intent = new Intent(requireContext(), MainActivity.class);
                 intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
                 startActivity(intent);
             }
@@ -65,7 +63,7 @@ public class bottomNavigation extends Fragment {
         bottom_navbar_cart.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                intent = new Intent(getContext(),CartActivity.class);
+                Intent intent = new Intent(requireContext(),CartActivity.class);
                 intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
                 startActivity(intent);
             }
@@ -74,7 +72,16 @@ public class bottomNavigation extends Fragment {
         bottom_navbar_explore.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                intent = new Intent(getContext(), ExploreActivity.class);
+                Intent intent = new Intent(requireContext(), ExploreActivity.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+                startActivity(intent);
+            }
+        });
+
+        bottom_navbar_account.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(requireContext(), AccountActivity.class);
                 intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
                 startActivity(intent);
             }
