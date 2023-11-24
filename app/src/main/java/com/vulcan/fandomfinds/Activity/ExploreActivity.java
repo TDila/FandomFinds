@@ -15,6 +15,7 @@ import com.vulcan.fandomfinds.Domain.SellerDomain;
 import com.vulcan.fandomfinds.R;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class ExploreActivity extends AppCompatActivity {
     @Override
@@ -47,10 +48,12 @@ public class ExploreActivity extends AppCompatActivity {
     }
 
     private void loadProducts() {
+        String[] sizes = {"XL","M"};
+
         ArrayList<ProductsDomain> items = new ArrayList<>();
-        items.add(new ProductsDomain("T-shirt black","","item_1",15,4,410,10,"Maniya Streams"));
-        items.add(new ProductsDomain("T-shirt black","","item_1",15,4,410,0,"Maniya Streams"));
-        items.add(new ProductsDomain("T-shirt black","","item_1",15,4,410,10,"Maniya Streams"));
+        items.add(new ProductsDomain("T-shirt black","","item_1",15,4,410,10,"Maniya Streams",null));
+        items.add(new ProductsDomain("T-shirt black","","item_1",15,4,410,0,"Maniya Streams",sizes));
+        items.add(new ProductsDomain("T-shirt black","","item_1",15,4,410,10,"Maniya Streams",sizes));
 
         RecyclerView recyclerView = findViewById(R.id.explore_product_list);
         recyclerView.setLayoutManager(new LinearLayoutManager(ExploreActivity.this,LinearLayoutManager.VERTICAL,false));

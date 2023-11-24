@@ -1,6 +1,8 @@
 package com.vulcan.fandomfinds.Domain;
 
 import java.io.Serializable;
+import java.lang.reflect.Array;
+import java.util.List;
 
 public class ProductsDomain implements Serializable {
     private String title;
@@ -12,8 +14,9 @@ public class ProductsDomain implements Serializable {
     private double price;
     private double discount;
     private String sellerName;
-
-    public ProductsDomain(String title, String description, String picUrl, int review, double score, double price, double discount, String sellerName) {
+    private String[] sizes;
+    private String selectedSize = null;
+    public ProductsDomain(String title, String description, String picUrl, int review, double score, double price, double discount, String sellerName, String[] sizes) {
         this.title = title;
         this.description = description;
         this.picUrl = picUrl;
@@ -22,6 +25,7 @@ public class ProductsDomain implements Serializable {
         this.price = price;
         this.discount = discount;
         this.sellerName = sellerName;
+        this.sizes = sizes;
     }
 
     public double getPrice() {
@@ -94,5 +98,21 @@ public class ProductsDomain implements Serializable {
 
     public void setNumberInCart(int numberInCart) {
         this.numberInCart = numberInCart;
+    }
+
+    public String[] getSizes() {
+        return sizes;
+    }
+
+    public void setSizes(String[] sizes) {
+        this.sizes = sizes;
+    }
+
+    public String getSelectedSize() {
+        return selectedSize;
+    }
+
+    public void setSelectedSize(String selectedSize) {
+        this.selectedSize = selectedSize;
     }
 }

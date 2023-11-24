@@ -35,11 +35,12 @@ public class SellerStoreFragment extends Fragment {
     }
 
     public void loadDeals(View view){
+        String[] sizes = {"XL","M"};
         ArrayList<ProductsDomain> items = new ArrayList<>();
-        items.add(new ProductsDomain("T-shirt black","","item_1",15,4,410,10,"Maniya Streams"));
-        items.add(new ProductsDomain("T-shirt black","","item_1",15,4,410,2,"Maniya Streams"));
-        items.add(new ProductsDomain("T-shirt black","","item_1",15,4,410,2.3,"Maniya Streams"));
-        items.add(new ProductsDomain("T-shirt black","","item_1",15,4,410,5.7,"Maniya Streams"));
+        items.add(new ProductsDomain("T-shirt black","","item_1",15,4,410,10,"Maniya Streams",sizes));
+        items.add(new ProductsDomain("T-shirt black","","item_1",15,4,410,2,"Maniya Streams",null));
+        items.add(new ProductsDomain("T-shirt black","","item_1",15,4,410,2.3,"Maniya Streams",sizes));
+        items.add(new ProductsDomain("T-shirt black","","item_1",15,4,410,5.7,"Maniya Streams",null));
 
         RecyclerView deals_list = view.findViewById(R.id.seller_store_frag_deals_list);
         deals_list.setLayoutManager(new LinearLayoutManager(getContext(),LinearLayoutManager.HORIZONTAL,false));
@@ -48,15 +49,17 @@ public class SellerStoreFragment extends Fragment {
     }
 
     public void loadOther(View view){
+        String[] sizes = {"XL","M"};
+
         ArrayList<ProductsDomain> items = new ArrayList<>();
-        items.add(new ProductsDomain("T-shirt black","","item_1",15,4,410,0,"Maniya Streams"));
-        items.add(new ProductsDomain("T-shirt black","","item_1",15,4,410,0,"Maniya Streams"));
-        items.add(new ProductsDomain("T-shirt black","","item_1",15,4,410,0,"Maniya Streams"));
-        items.add(new ProductsDomain("T-shirt black","","item_1",15,4,410,0,"Maniya Streams"));
-        items.add(new ProductsDomain("T-shirt black","","item_1",15,4,410,0,"Maniya Streams"));
-        items.add(new ProductsDomain("T-shirt black","","item_1",15,4,410,0,"Maniya Streams"));
-        items.add(new ProductsDomain("T-shirt black","","item_1",15,4,410,0,"Maniya Streams"));
-        items.add(new ProductsDomain("T-shirt black","","item_1",15,4,410,0,"Maniya Streams"));
+        items.add(new ProductsDomain("T-shirt black","","item_1",15,4,410,0,"Maniya Streams",sizes));
+        items.add(new ProductsDomain("T-shirt black","","item_1",15,4,410,0,"Maniya Streams",sizes));
+        items.add(new ProductsDomain("T-shirt black","","item_1",15,4,410,0,"Maniya Streams",sizes));
+        items.add(new ProductsDomain("T-shirt black","","item_1",15,4,410,0,"Maniya Streams",sizes));
+        items.add(new ProductsDomain("T-shirt black","","item_1",15,4,410,0,"Maniya Streams",sizes));
+        items.add(new ProductsDomain("T-shirt black","","item_1",15,4,410,0,"Maniya Streams",sizes));
+        items.add(new ProductsDomain("T-shirt black","","item_1",15,4,410,0,"Maniya Streams",sizes));
+        items.add(new ProductsDomain("T-shirt black","","item_1",15,4,410,0,"Maniya Streams",sizes));
 
         RecyclerView other_list = view.findViewById(R.id.seller_store_frag_other_list);
         other_list.setLayoutManager(new LinearLayoutManager(getContext(),LinearLayoutManager.HORIZONTAL,false));

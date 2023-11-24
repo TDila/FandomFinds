@@ -5,22 +5,32 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.graphics.Paint;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.vulcan.fandomfinds.Domain.ProductsDomain;
 import com.vulcan.fandomfinds.Helper.ManagementCart;
 import com.vulcan.fandomfinds.R;
 
+import java.lang.reflect.Array;
+import java.util.List;
+
 public class SingleProductViewActivity extends AppCompatActivity {
     private Button single_product_buynow;
     private TextView single_product_title,single_product_price
             ,single_product_star_num,single_product_feedback_count,single_product_description,single_product_new_price
             ,single_product_discount;
+    private Spinner spinner;
     private ImageView single_product_backArrow,single_product_img;
     private ProductsDomain newArrival;
+    private LinearLayout sizeLayout;
     private int numberOrder = 1;
     private ManagementCart managementCart;
     @Override
@@ -59,6 +69,29 @@ public class SingleProductViewActivity extends AppCompatActivity {
             single_product_discount.setVisibility(View.GONE);
         }
 
+        String[] sizes = newArrival.getSizes();
+        if(sizes != null){
+//            spinner.setVisibility(View.VISIBLE);
+            sizeLayout.setVisibility(View.VISIBLE);
+            ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, sizes);
+            adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+            spinner.setAdapter(adapter);
+
+            spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                @Override
+                public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                    newArrival.setSelectedSize(String.valueOf(parent.getItemAtPosition(position)));
+                }
+
+                @Override
+                public void onNothingSelected(AdapterView<?> parent) {
+                }
+            });
+        }else{
+//            spinner.setVisibility(View.GONE);
+            sizeLayout.setVisibility(View.GONE);
+        }
+
         single_product_buynow.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -84,5 +117,7 @@ public class SingleProductViewActivity extends AppCompatActivity {
         single_product_img = findViewById(R.id.single_product_img);
         single_product_new_price = findViewById(R.id.single_product_new_price);
         single_product_discount = findViewById(R.id.single_product_discount);
+        spinner = findViewById(R.id.single_product_sizes);
+        sizeLayout = findViewById(R.id.single_product_sizeLayout);
     }
 }

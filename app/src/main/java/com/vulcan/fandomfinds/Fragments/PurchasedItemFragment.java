@@ -21,7 +21,8 @@ import java.util.ArrayList;
 
 public class PurchasedItemFragment extends Fragment {
     private ImageView phItemProductImg,phItemSellerImg;
-    TextView phItemProductTitle,phItemProductCount,phItemTotalPrice,phItemPurchasedDate,phItemOrderId,phItemDeliveryAddress,phItemSellerName;
+    TextView phItemProductTitle,phItemProductCount,phItemTotalPrice,phItemPurchasedDate,phItemOrderId
+            ,phItemDeliveryAddress,phItemSellerName,phItemOrderStatus;
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -60,6 +61,7 @@ public class PurchasedItemFragment extends Fragment {
             phItemOrderId.setText(orderDomain.getId());
             phItemDeliveryAddress.setText(orderDomain.getAddress());
             phItemSellerName.setText(orderDomain.getSeller().getSellerName());
+            phItemOrderStatus.setText(String.valueOf(orderDomain.getStatus()));
 
             int productPicId = view.getContext().getResources()
                     .getIdentifier(orderDomain.getProduct().getPicUrl(),"drawable",view.getContext().getPackageName());
@@ -85,5 +87,6 @@ public class PurchasedItemFragment extends Fragment {
         phItemDeliveryAddress = view.findViewById(R.id.phItemDeliveryAddress);//
         phItemSellerImg = view.findViewById(R.id.phItemSellerImg);
         phItemSellerName = view.findViewById(R.id.phItemSellerName);//
+        phItemOrderStatus= view.findViewById(R.id.phItemOrderStatus);
     }
 }

@@ -136,4 +136,7 @@
     <string name="ph_item_delivery_address_text">Delivery Address :</string>
     <string name="ph_item_seller_text">Seller :</string>
     <string name="ph_item_seller_name">Seller Name</string>
+    <string name="ph_item_order_status">Order Status :</string>
+    <string name="ph_item_order_status_value">(order status)</string>
+    <string name="single_product_size_text">Size :</string>
 </resources>

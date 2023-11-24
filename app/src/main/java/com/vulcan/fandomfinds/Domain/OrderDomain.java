@@ -5,6 +5,8 @@ import android.os.Parcelable;
 
 import androidx.annotation.NonNull;
 
+import com.vulcan.fandomfinds.Enum.OrderStatus;
+
 import java.io.Serializable;
 import java.time.LocalDateTime;
 
@@ -18,6 +20,7 @@ public class OrderDomain implements Serializable, Parcelable {
     private int itemCount;
     private String address;
     private int postalCode;
+    private OrderStatus status = OrderStatus.ONGOING;
 
     public OrderDomain(String id, ProductsDomain product, SellerDomain seller, CustomerDomain customer, String dateTime, String totalPrice, int itemCount, String address, int postalCode) {
         this.id = id;
@@ -122,6 +125,14 @@ public class OrderDomain implements Serializable, Parcelable {
 
     public void setPostalCode(int postalCode) {
         this.postalCode = postalCode;
+    }
+
+    public OrderStatus getStatus() {
+        return status;
+    }
+
+    public void setStatus(OrderStatus status) {
+        this.status = status;
     }
 
     @Override
