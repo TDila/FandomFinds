@@ -139,4 +139,9 @@
     <string name="ph_item_order_status">Order Status :</string>
     <string name="ph_item_order_status_value">(order status)</string>
     <string name="single_product_size_text">Size :</string>
+    <string name="seller_store_title">MY STORE</string>
+    <string name="seller_store_item_status">Product Status</string>
+    <string name="seller_store_discount">Discount : None</string>
+    <string name="seller_store_item_price" >$ (Price)</string>
+    <string name="seller_store_add_product_button">Add New Product</string>
 </resources>

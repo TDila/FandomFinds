@@ -57,6 +57,16 @@ public class AccountActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+
+        LinearLayout sellerStore = findViewById(R.id.account_seller_store);
+        sellerStore.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(AccountActivity.this, SellerStoreActivity.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+                startActivity(intent);
+            }
+        });
     }
 
     private void loadBottomNavigationBar() {

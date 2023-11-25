@@ -8,22 +8,16 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
-import androidx.fragment.app.FragmentController;
 import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
-import com.bumptech.glide.GlideContext;
-import com.vulcan.fandomfinds.Activity.PurchaseHistoryActivity;
 import com.vulcan.fandomfinds.Domain.OrderDomain;
 import com.vulcan.fandomfinds.Fragments.PurchasedItemFragment;
-import com.vulcan.fandomfinds.Fragments.PurchasedItemListFragment;
 import com.vulcan.fandomfinds.R;
 
 import java.util.ArrayList;
@@ -91,9 +85,9 @@ public class PurchasedHistoryListAdapter extends RecyclerView.Adapter<PurchasedH
             super(itemView);
             phProductImg = itemView.findViewById(R.id.ph_product_img);
             phListProductTitle = itemView.findViewById(R.id.phListProductTitle);
-            phListOrderId = itemView.findViewById(R.id.phListOrderId);
-            phListDateAndTime = itemView.findViewById(R.id.phListDateAndTime);
-            phTotalPrice = itemView.findViewById(R.id.phTotalPrice);
+            phListOrderId = itemView.findViewById(R.id.sellerStoreItemStatus);
+            phListDateAndTime = itemView.findViewById(R.id.sellerStoreItemDiscount);
+            phTotalPrice = itemView.findViewById(R.id.sellerStoreItemPrice);
         }
     }
 }
