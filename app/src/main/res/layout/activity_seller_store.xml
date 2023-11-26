@@ -65,7 +65,7 @@
         tools:ignore="BottomAppBar">
 
         <Button
-            android:id="@+id/button"
+            android:id="@+id/sellerStoreAddNewProductButton"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:backgroundTint="@color/yellow"

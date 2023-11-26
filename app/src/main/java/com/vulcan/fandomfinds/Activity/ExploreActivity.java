@@ -51,9 +51,9 @@ public class ExploreActivity extends AppCompatActivity {
         String[] sizes = {"XL","M"};
 
         ArrayList<ProductsDomain> items = new ArrayList<>();
-        items.add(new ProductsDomain("T-shirt black","","item_1",15,4,410,10,"Maniya Streams",null));
-        items.add(new ProductsDomain("T-shirt black","","item_1",15,4,410,0,"Maniya Streams",sizes));
-        items.add(new ProductsDomain("T-shirt black","","item_1",15,4,410,10,"Maniya Streams",sizes));
+        items.add(new ProductsDomain("T-shirt black","","item_1",15,4,410,10,"Maniya Streams",null,"Gaming Gear"));
+        items.add(new ProductsDomain("T-shirt black","","item_1",15,4,410,0,"Maniya Streams",sizes,"Apparel"));
+        items.add(new ProductsDomain("T-shirt black","","item_1",15,4,410,10,"Maniya Streams",sizes,"Apparel"));
 
         RecyclerView recyclerView = findViewById(R.id.explore_product_list);
         recyclerView.setLayoutManager(new LinearLayoutManager(ExploreActivity.this,LinearLayoutManager.VERTICAL,false));

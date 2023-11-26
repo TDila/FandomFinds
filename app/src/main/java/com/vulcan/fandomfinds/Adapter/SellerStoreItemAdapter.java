@@ -1,6 +1,7 @@
 package com.vulcan.fandomfinds.Adapter;
 
 import android.content.Context;
+import android.content.Intent;
 import android.media.Image;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,6 +13,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.vulcan.fandomfinds.Activity.SellerStoreSaveUpdateActivity;
 import com.vulcan.fandomfinds.Domain.ProductsDomain;
 import com.vulcan.fandomfinds.Enum.ProductStatus;
 import com.vulcan.fandomfinds.R;
@@ -51,6 +53,16 @@ public class SellerStoreItemAdapter extends RecyclerView.Adapter<SellerStoreItem
         Glide.with(holder.itemView.getContext())
                 .load(drawableId)
                 .into(holder.sellerStoreItemImg);
+
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(context, SellerStoreSaveUpdateActivity.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+                intent.putExtra("item",items.get(position));
+                holder.itemView.getContext().startActivity(intent);
+            }
+        });
     }
 
     @Override

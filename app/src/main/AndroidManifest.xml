@@ -15,6 +15,9 @@
         android:theme="@style/Theme.FandomFinds"
         tools:targetApi="31">
         <activity
+            android:name=".Activity.SellerStoreSaveUpdateActivity"
+            android:exported="false" />
+        <activity
             android:name=".Activity.SellerStoreActivity"
             android:exported="false" />
         <activity

@@ -37,7 +37,7 @@ public class PurchasedItemListFragment extends Fragment {
 
         String[] sizes = {"XL","M"};
         SellerDomain sellerDomain = new SellerDomain("ManiYa Streams","maniya_streams_round",444);
-        ProductsDomain productsDomain = new ProductsDomain("T-shirt black","","item_1",15,4,410,10,"Maniya Streams",sizes);
+        ProductsDomain productsDomain = new ProductsDomain("T-shirt black","","item_1",15,4,410,10,"Maniya Streams",sizes,"Apparel");
         CustomerDomain customerDomain = new CustomerDomain("CUS_574865","customer@gmail.com");
 
         ArrayList<OrderDomain> items = new ArrayList<>();

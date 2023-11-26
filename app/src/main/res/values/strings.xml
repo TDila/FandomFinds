@@ -142,6 +142,23 @@
     <string name="seller_store_title">MY STORE</string>
     <string name="seller_store_item_status">Product Status</string>
     <string name="seller_store_discount">Discount : None</string>
-    <string name="seller_store_item_price" >$ (Price)</string>
+    <string name="seller_store_item_price">$ (Price)</string>
     <string name="seller_store_add_product_button">Add New Product</string>
+    <string name="seller_store_save_update_title_text">Title :</string>
+    <string name="seller_store_save_update_title_hint">Enter the item title</string>
+    <string name="seller_store_save_update_item_description">Description</string>
+    <string name="seller_store_save_update_description_hint">Enter the description of the item</string>
+    <string name="seller_store_save_update_item_price">Price :</string>
+    <string name="seller_store_save_update_dollor">$</string>
+    <string name="seller_store_save_update_discount_text">Discount :</string>
+    <string name="seller_store_save_update_percentage">%</string>
+    <string name="seller_store_save_update_iten_new_price">$ (New Price)</string>
+    <string name="seller_store_save_update_type_text">Select type :</string>
+    <string name="seller_store_save_update_small">S</string>
+    <string name="seller_store_save_update_medium">M</string>
+    <string name="seller_store_save_update_large">L</string>
+    <string name="seller_store_save_update_extra_large">XL</string>
+    <string name="seller_store_save_update_extra_small">XS</string>
+    <string name="seller_store_save_upate_extra_extra_large">XXL</string>
+    <string name="seller_store_save_update_button_text">SAVE</string>
 </resources>

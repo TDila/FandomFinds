@@ -14,12 +14,13 @@ public class ProductsDomain implements Serializable {
     private double score;
     private int numberInCart;
     private double price;
-    private double discount;
+    private double discount = 0;
     private String sellerName;
     private String[] sizes;
     private String selectedSize = null;
     private ProductStatus status = ProductStatus.AVAILABLE;
-    public ProductsDomain(String title, String description, String picUrl, int review, double score, double price, double discount, String sellerName, String[] sizes) {
+    private String type;
+    public ProductsDomain(String title, String description, String picUrl, int review, double score, double price, double discount, String sellerName, String[] sizes,String type) {
         this.title = title;
         this.description = description;
         this.picUrl = picUrl;
@@ -29,6 +30,7 @@ public class ProductsDomain implements Serializable {
         this.discount = discount;
         this.sellerName = sellerName;
         this.sizes = sizes;
+        this.type = type;
     }
 
     public double getPrice() {
@@ -125,5 +127,13 @@ public class ProductsDomain implements Serializable {
 
     public void setStatus(ProductStatus status) {
         this.status = status;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
     }
 }
