@@ -36,7 +36,6 @@ public class loginFragment extends Fragment {
     private TextInputEditText loginEmailText,loginPasswordText;
     private Button login_button;
     private LinearLayout loginWithGoogle;
-    private ProgressBar loginProgressBar;
     FirebaseFirestore firestore;
     FirebaseAuth firebaseAuth;
     @Nullable
@@ -56,8 +55,6 @@ public class loginFragment extends Fragment {
         loginPasswordText = view.findViewById(R.id.loginPasswordText);
         login_button = view.findViewById(R.id.login_button);
         loginWithGoogle = view.findViewById(R.id.loginWithGoogle);
-        loginProgressBar = view.findViewById(R.id.loginProgressBar);
-        loginProgressBar.setVisibility(View.VISIBLE);
 
         firestore = FirebaseFirestore.getInstance();
         firebaseAuth = FirebaseAuth.getInstance();
