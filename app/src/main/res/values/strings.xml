@@ -161,4 +161,10 @@
     <string name="seller_store_save_update_extra_small">XS</string>
     <string name="seller_store_save_upate_extra_extra_large">XXL</string>
     <string name="seller_store_save_update_button_text">SAVE</string>
+    <string name="sign_up_in_skip_button_text">SKIP</string>
+    <string name="sign_up_frag_email_hint">Email Address</string>
+    <string name="signup_frag_password_hint">Password</string>
+    <string name="login_frag_email_hint">Email Address</string>
+    <string name="helper_text">Required*</string>
+    <string name="login_frag_password_hint">Password</string>
 </resources>

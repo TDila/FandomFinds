@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "857812291987",
+    "project_id": "fandomfinds-86d31",
+    "storage_bucket": "fandomfinds-86d31.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:857812291987:android:73857cf544760e0ecc5866",
+        "android_client_info": {
+          "package_name": "com.vulcan.fandomfinds"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCrD4Zm7lyoilFXOM9K2esJfJq2dwWZRCU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

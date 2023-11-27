@@ -3,11 +3,15 @@ package com.vulcan.fandomfinds.Domain;
 import java.io.Serializable;
 
 public class SellerDomain implements Serializable {
+    private String id;
+    private String email;
     private String sellerName;
     private String sellerPicUrl;
     private int followers;
 
-    public SellerDomain() {
+    public SellerDomain(String id, String email) {
+        this.id = id;
+        this.email = email;
     }
 
     public SellerDomain(String sellerName, String sellerPicUrl, int followers) {
@@ -38,5 +42,21 @@ public class SellerDomain implements Serializable {
 
     public void setFollowers(int followers) {
         this.followers = followers;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
     }
 }
