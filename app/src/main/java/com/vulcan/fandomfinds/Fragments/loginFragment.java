@@ -8,6 +8,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Lifecycle;
 
+import android.os.Handler;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
@@ -30,12 +31,14 @@ import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.vulcan.fandomfinds.Activity.MainActivity;
+import com.vulcan.fandomfinds.Animations.LoadingDialog;
 import com.vulcan.fandomfinds.R;
 public class loginFragment extends Fragment {
     private TextInputLayout loginEmailLayout,loginPasswordLayout;
     private TextInputEditText loginEmailText,loginPasswordText;
     private Button login_button;
     private LinearLayout loginWithGoogle;
+    private LoadingDialog loadingDialog;
     FirebaseFirestore firestore;
     FirebaseAuth firebaseAuth;
     @Nullable
@@ -58,6 +61,8 @@ public class loginFragment extends Fragment {
 
         firestore = FirebaseFirestore.getInstance();
         firebaseAuth = FirebaseAuth.getInstance();
+        loadingDialog = new LoadingDialog(getContext());
+
 
         loginEmailText.addTextChangedListener(new TextWatcher() {
             @Override
@@ -104,6 +109,7 @@ public class loginFragment extends Fragment {
 
                 if(!email.isEmpty()){
                     if(!password.isEmpty()){
+                        loadingDialog.show();
                         firebaseAuth.signInWithEmailAndPassword(email,password)
                                 .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                                     @Override
@@ -116,14 +122,13 @@ public class loginFragment extends Fragment {
                                 }).addOnFailureListener(new OnFailureListener() {
                                     @Override
                                     public void onFailure(@NonNull Exception e) {
+                                        loadingDialog.cancel();
                                         String errorMessage = "Login Failure! Try Again Later.";
                                         if(e instanceof FirebaseAuthInvalidCredentialsException){
                                             errorMessage = "Invalid Credentials!";
                                         }
                                         Toast.makeText(getContext(),errorMessage,Toast.LENGTH_LONG).show();
-                                        loginEmailText.setText("");
-                                        loginPasswordText.setText("");
-                                        loginEmailText.requestFocus();
+                                        clearFields();
                                     }
                                 });
                     }else{
@@ -136,16 +141,28 @@ public class loginFragment extends Fragment {
         });
     }
 
+    private void clearFields() {
+        loginEmailText.setText("");
+        loginPasswordText.setText("");
+        loginEmailText.requestFocus();
+    }
+
     private void checkVerification(FirebaseUser user){
         if(user != null){
             if(user.isEmailVerified()){
+                loadingDialog.cancel();
                 Toast.makeText(getContext(),"Login Successful!",Toast.LENGTH_LONG).show();
                 loadHome();
             }else{
+                loadingDialog.cancel();
                 Toast.makeText(getContext(),"Please Verify Your Email",Toast.LENGTH_LONG).show();
             }
         }else{
+            loadingDialog.cancel();
             Toast.makeText(getContext(),"Login Failed! Try again Later.",Toast.LENGTH_LONG).show();
+            clearFields();
+            loginEmailLayout.setError(null);
+            loginPasswordLayout.setError(null);
         }
     }
 

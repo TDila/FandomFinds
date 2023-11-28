@@ -35,6 +35,7 @@ import com.google.firebase.auth.FirebaseAuthUserCollisionException;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.vulcan.fandomfinds.Animations.LoadingDialog;
 import com.vulcan.fandomfinds.Domain.CustomerDomain;
 import com.vulcan.fandomfinds.Domain.SellerDomain;
 import com.vulcan.fandomfinds.R;
@@ -46,6 +47,7 @@ public class signupFragment extends Fragment {
     private TextInputEditText emailEditText,passwordEditText;
     private Button sign_up_button;
     private RadioButton sign_up_as_customer,sign_up_as_seller;
+    private LoadingDialog loadingDialog;
     CoordinatorLayout coordinatorLayout;
     FirebaseAuth firebaseAuth;
     FirebaseFirestore firestore;
@@ -60,6 +62,8 @@ public class signupFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
 
         firebaseAuth = FirebaseAuth.getInstance();
+        firestore = FirebaseFirestore.getInstance();
+        loadingDialog = new LoadingDialog(getContext());
 
         //initializing the components
         emailEditText = view.findViewById(R.id.emailEditText);
@@ -71,7 +75,6 @@ public class signupFragment extends Fragment {
         passwordLayout = view.findViewById(R.id.passwordLayout);
         coordinatorLayout = view.findViewById(R.id.coordinatorSignUp);
 
-        firestore = FirebaseFirestore.getInstance();
 
         //password character length error listener
         passwordEditText.addTextChangedListener(new TextWatcher() {
@@ -119,6 +122,7 @@ public class signupFragment extends Fragment {
                 if(!email.isEmpty()){
                     if(!password.isEmpty()){
                         if (password.length() >= 8) {
+                            loadingDialog.show();
                             firebaseAuth.createUserWithEmailAndPassword(email,password)
                                     .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                                         @Override
@@ -132,6 +136,7 @@ public class signupFragment extends Fragment {
                                     }).addOnFailureListener(new OnFailureListener() {
                                         @Override
                                         public void onFailure(@NonNull Exception e) {
+                                            loadingDialog.cancel();
                                             String errorMessage = "Registration Failed!";
                                             if(e instanceof FirebaseAuthUserCollisionException){
                                                 errorMessage = "This email has already registered!";
@@ -155,7 +160,7 @@ public class signupFragment extends Fragment {
 
     private void loadLoginFragment() {
         for(Fragment fragment : getActivity().getSupportFragmentManager().getFragments()){
-            getActivity().getSupportFragmentManager().getFragments().remove(fragment);
+            getActivity().getSupportFragmentManager().beginTransaction().remove(fragment).commit();
         }
         getActivity().getSupportFragmentManager()
                 .beginTransaction()
@@ -174,6 +179,7 @@ public class signupFragment extends Fragment {
     public void verfication(FirebaseUser user){
         if(user != null){
             user.sendEmailVerification();
+            loadingDialog.cancel();
             @SuppressLint("ShowToast")
             Snackbar snackbar = Snackbar.make(coordinatorLayout,"Verify Your Email",Snackbar.LENGTH_LONG);
             snackbar.setAction("Open Email", new View.OnClickListener() {
@@ -183,6 +189,15 @@ public class signupFragment extends Fragment {
                     intent.setData(Uri.parse("mailto:"));
                     if (intent.resolveActivity(requireActivity().getPackageManager()) != null) {
                         startActivity(Intent.createChooser(intent, "Choose an email app"));
+                    }
+                }
+            });
+            snackbar.addCallback(new Snackbar.Callback(){
+                @Override
+                public void onDismissed(Snackbar transientBottomBar, int event) {
+                    super.onDismissed(transientBottomBar, event);
+                    if (event == Snackbar.Callback.DISMISS_EVENT_TIMEOUT){
+                        loadingDialog.show();
                     }
                 }
             });
@@ -197,20 +212,20 @@ public class signupFragment extends Fragment {
         // have to check that the email is verified
         if(user != null){
             if(customer){
-                Toast.makeText(getContext(),String.valueOf(customer),Toast.LENGTH_LONG).show();
                 String userId = "CUS_"+ UUID.randomUUID();
                 CustomerDomain customerDetails = new CustomerDomain(userId,email);
                 firestore.collection("Customers").add(customerDetails)
                         .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
                             @Override
                             public void onSuccess(DocumentReference documentReference) {
+                                loadingDialog.cancel();
                                 Toast.makeText(getContext(),"Signed Up Successfully!",Toast.LENGTH_LONG).show();
-                                clearFields();
                                 loadLoginFragment();
                             }
                         }).addOnFailureListener(new OnFailureListener() {
                             @Override
                             public void onFailure(@NonNull Exception e) {
+                                loadingDialog.cancel();
                                 Toast.makeText(getContext(),"Registration Failed!",Toast.LENGTH_LONG).show();
                             }
                         });
@@ -221,13 +236,14 @@ public class signupFragment extends Fragment {
                         .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
                             @Override
                             public void onSuccess(DocumentReference documentReference) {
+                                loadingDialog.cancel();
                                 Toast.makeText(getContext(),"Signed Up Successfully!",Toast.LENGTH_LONG).show();
-                                clearFields();
                                 loadLoginFragment();
                             }
                         }).addOnFailureListener(new OnFailureListener() {
                             @Override
                             public void onFailure(@NonNull Exception e) {
+                                loadingDialog.cancel();
                                 Toast.makeText(getContext(),"Registration Failed!",Toast.LENGTH_LONG).show();
                             }
                         });
