@@ -18,10 +18,19 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 import com.vulcan.fandomfinds.Activity.AccountActivity;
 import com.vulcan.fandomfinds.Activity.CartActivity;
 import com.vulcan.fandomfinds.Activity.ExploreActivity;
 import com.vulcan.fandomfinds.Activity.MainActivity;
+import com.vulcan.fandomfinds.Domain.CustomerDomain;
+import com.vulcan.fandomfinds.Domain.SellerDomain;
 import com.vulcan.fandomfinds.R;
 
 public class bottomNavigation extends Fragment {

@@ -57,4 +57,12 @@ dependencies {
     //Lottie
     def lottieVersion = "6.2.0"
     implementation "com.airbnb.android:lottie:$lottieVersion"
+    //Firebase Storage
+    implementation("com.google.firebase:firebase-storage")
+    //Picasso
+    implementation 'com.squareup.picasso:picasso:2.8'
+    //image cropper
+    implementation("com.vanniktech:android-image-cropper:4.5.0")
+    implementation 'com.karumi:dexter:6.2.3'
+    implementation 'de.hdodenhof:circleimageview:3.1.0'
 }

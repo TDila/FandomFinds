@@ -42,7 +42,7 @@ public class SellerAdapter extends RecyclerView.Adapter<SellerAdapter.ViewHolder
     public void onBindViewHolder(@NonNull SellerAdapter.ViewHolder holder, int position) {
         holder.sellerName.setText(items.get(position).getSellerName());
 
-        int drawableResourceId = holder.itemView.getResources().getIdentifier(items.get(position).getSellerPicUrl(),
+        int drawableResourceId = holder.itemView.getResources().getIdentifier(items.get(position).getProfilePicUrl(),
                 "mipmap",holder.itemView.getContext().getPackageName());
         Glide.with(holder.itemView.getContext())
                 .load("https://firebasestorage.googleapis.com/v0/b/fir-storage-13496.appspot.com/o/unnamed%20(13)-modified.png?alt=media&token=800e71d0-6738-4e42-b7ea-c9ebf8b25727")

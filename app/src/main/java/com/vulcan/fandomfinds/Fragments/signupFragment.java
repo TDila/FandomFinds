@@ -38,6 +38,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.vulcan.fandomfinds.Animations.LoadingDialog;
 import com.vulcan.fandomfinds.Domain.CustomerDomain;
 import com.vulcan.fandomfinds.Domain.SellerDomain;
+import com.vulcan.fandomfinds.Domain.SocialMedia;
 import com.vulcan.fandomfinds.R;
 
 import java.util.UUID;
@@ -232,13 +233,26 @@ public class signupFragment extends Fragment {
             }else if(seller){
                 String userId = "SEL_"+UUID.randomUUID();
                 SellerDomain sellerDetails = new SellerDomain(userId,email);
+                SocialMedia socialMedia = new SocialMedia();
                 firestore.collection("Sellers").add(sellerDetails)
                         .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
                             @Override
                             public void onSuccess(DocumentReference documentReference) {
-                                loadingDialog.cancel();
-                                Toast.makeText(getContext(),"Signed Up Successfully!",Toast.LENGTH_LONG).show();
-                                loadLoginFragment();
+                                documentReference.collection("Social-Media").add(socialMedia)
+                                                .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
+                                                    @Override
+                                                    public void onSuccess(DocumentReference documentReference) {
+                                                        loadingDialog.cancel();
+                                                        Toast.makeText(getContext(),"Signed Up Successfully!",Toast.LENGTH_LONG).show();
+                                                        loadLoginFragment();
+                                                    }
+                                                }).addOnFailureListener(new OnFailureListener() {
+                                            @Override
+                                            public void onFailure(@NonNull Exception e) {
+                                                loadingDialog.cancel();
+                                                Toast.makeText(getContext(),"Registration Failed!",Toast.LENGTH_LONG).show();
+                                            }
+                                        });
                             }
                         }).addOnFailureListener(new OnFailureListener() {
                             @Override

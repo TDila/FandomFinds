@@ -1,7 +1,7 @@
 <resources>
     <string name="app_name">FandomFinds</string>
     <string name="text_welcome_user">Welcome</string>
-    <string name="text_welcome_username">Tharusha Dilhara</string>
+    <string name="text_welcome_username">Join &amp; Unlock new features</string>
     <string name="text_notify_count">1</string>
     <string name="new_arrival">New Arrival</string>
     <string name="bottom_menu_explore">Explore</string>
@@ -167,4 +167,7 @@
     <string name="login_frag_email_hint">Email Address</string>
     <string name="helper_text">Required*</string>
     <string name="login_frag_password_hint">Password</string>
+    <string name="activity_main_login_or_sign_up_msg_text"><![CDATA[Sign Up & Login to purchase \nyour first product.]]></string>
+    <string name="activity_main_signup_or_login"><u>Sign Up or Login</u></string>
+    <string name="profile_info_last_name_hint">Enter Last Name</string>
 </resources>

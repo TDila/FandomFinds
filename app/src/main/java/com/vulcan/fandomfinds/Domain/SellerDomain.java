@@ -2,40 +2,10 @@ package com.vulcan.fandomfinds.Domain;
 
 import java.io.Serializable;
 
-public class SellerDomain implements Serializable {
-    private String id;
-    private String email;
-    private String sellerName;
-    private String sellerPicUrl;
+public class SellerDomain extends BaseDomain{
     private int followers;
-
-    public SellerDomain(String id, String email) {
-        this.id = id;
-        this.email = email;
-    }
-
-    public SellerDomain(String sellerName, String sellerPicUrl, int followers) {
-        this.sellerName = sellerName;
-        this.sellerPicUrl = sellerPicUrl;
-        this.followers = followers;
-    }
-
-    public String getSellerName() {
-        return sellerName;
-    }
-
-    public void setSellerName(String sellerName) {
-        this.sellerName = sellerName;
-    }
-
-    public String getSellerPicUrl() {
-        return sellerPicUrl;
-    }
-
-    public void setSellerPicUrl(String sellerPicUrl) {
-        this.sellerPicUrl = sellerPicUrl;
-    }
-
+    private String sellerName;
+    private String bio;
     public int getFollowers() {
         return followers;
     }
@@ -44,19 +14,46 @@ public class SellerDomain implements Serializable {
         this.followers = followers;
     }
 
-    public String getId() {
-        return id;
+    public String getSellerName() {
+        return sellerName;
     }
 
-    public void setId(String id) {
-        this.id = id;
+    public String getBio() {
+        return bio;
     }
 
-    public String getEmail() {
-        return email;
+    public void setBio(String bio) {
+        this.bio = bio;
     }
 
-    public void setEmail(String email) {
-        this.email = email;
+    public SellerDomain() {
     }
+
+    public void setSellerName(String sellerName) {
+        this.sellerName = sellerName;
+    }
+
+    public SellerDomain(String sellerName, String profilePicUrl, int followers) {
+        super(profilePicUrl);
+        this.followers = followers;
+        this.sellerName = sellerName;
+    }
+
+    public SellerDomain(String id, String email) {
+        super(id, email);
+    }
+
+
+    public SellerDomain(String id, String email, String fname, String lname, String profilePicUrl, int followers) {
+        super(id, email, fname, lname, profilePicUrl);
+        this.followers = followers;
+    }
+
+    public SellerDomain(String id, String email, String fname, String lname, String profilePicUrl, int followers, String sellerName, String bio) {
+        super(id, email, fname, lname, profilePicUrl);
+        this.followers = followers;
+        this.sellerName = sellerName;
+        this.bio = bio;
+    }
+
 }

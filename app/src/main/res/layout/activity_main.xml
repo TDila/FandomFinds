@@ -51,7 +51,7 @@
                         app:layout_constraintTop_toTopOf="parent" />
 
                     <TextView
-                        android:id="@+id/textView2"
+                        android:id="@+id/username"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/text_welcome_username"
@@ -111,6 +111,37 @@
                     android:inputType="text"
                     android:padding="8dp" />
 
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/signUpInLayout"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginTop="4dp"
+                android:padding="10dp"
+                android:layout_marginStart="4dp"
+                android:layout_marginEnd="4dp"
+                android:background="@drawable/main_signup_msg_layout"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/textView2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
+                    android:layout_weight="1"
+                    android:textColor="@color/purple"
+                    android:text="@string/activity_main_login_or_sign_up_msg_text" />
+
+                <TextView
+                    android:id="@+id/signUpInButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginEnd="16dp"
+                    android:textStyle="bold"
+                    android:textColor="@color/purple"
+                    android:text="@string/activity_main_signup_or_login" />
             </LinearLayout>
 
             <TextView

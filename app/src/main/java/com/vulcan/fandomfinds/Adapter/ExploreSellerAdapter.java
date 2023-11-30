@@ -41,7 +41,7 @@ public class ExploreSellerAdapter extends RecyclerView.Adapter<ExploreSellerAdap
         holder.explore_seller_name.setText(items.get(position).getSellerName());
         holder.explore_seller_followers.setText(items.get(position).getFollowers()+" followers");
 
-        int drawableResourceId = holder.itemView.getResources().getIdentifier(items.get(position).getSellerPicUrl(),
+        int drawableResourceId = holder.itemView.getResources().getIdentifier(items.get(position).getProfilePicUrl(),
                 "drawable",holder.itemView.getContext().getPackageName());
         Glide.with(holder.itemView.getContext())
                 .load("https://firebasestorage.googleapis.com/v0/b/fir-storage-13496.appspot.com/o/unnamed%20(13)-modified.png?alt=media&token=800e71d0-6738-4e42-b7ea-c9ebf8b25727")

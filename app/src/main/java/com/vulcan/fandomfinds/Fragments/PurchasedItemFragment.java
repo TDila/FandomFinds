@@ -70,7 +70,7 @@ public class PurchasedItemFragment extends Fragment {
                     .into(phItemProductImg);
 
             int sellerPicId = view.getContext().getResources()
-                    .getIdentifier(orderDomain.getSeller().getSellerPicUrl(),"drawable",view.getContext().getPackageName());
+                    .getIdentifier(orderDomain.getSeller().getProfilePicUrl(),"drawable",view.getContext().getPackageName());
             Glide.with(view.getContext())
                     .load("https://firebasestorage.googleapis.com/v0/b/fir-storage-13496.appspot.com/o/unnamed%20(13)-modified.png?alt=media&token=800e71d0-6738-4e42-b7ea-c9ebf8b25727")
                     .into(phItemSellerImg);
