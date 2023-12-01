@@ -170,4 +170,5 @@
     <string name="activity_main_login_or_sign_up_msg_text"><![CDATA[Sign Up & Login to purchase \nyour first product.]]></string>
     <string name="activity_main_signup_or_login"><u>Sign Up or Login</u></string>
     <string name="profile_info_last_name_hint">Enter Last Name</string>
+    <string name="cart_error_message">Please fill your delievery details and payment method in order to make the order.</string>
 </resources>

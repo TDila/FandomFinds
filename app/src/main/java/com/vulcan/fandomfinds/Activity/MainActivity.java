@@ -2,6 +2,7 @@ package com.vulcan.fandomfinds.Activity;
 
 import androidx.annotation.ArrayRes;
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -17,7 +18,10 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.DocumentChange;
+import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.vulcan.fandomfinds.Adapter.DealsAdapter;
@@ -148,17 +152,31 @@ public class MainActivity extends AppCompatActivity {
 
         SellerAdapter adapterSeller = new SellerAdapter(items);
         recyclerViewSeller.setAdapter(adapterSeller);
-        firestore.collection("Sellers").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+
+        firestore.collection("Sellers").addSnapshotListener(new EventListener<QuerySnapshot>() {
             @Override
-            public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                items.clear();
-                if(task.isSuccessful()){
-                    for(QueryDocumentSnapshot snapshot : task.getResult()){
-                        SellerDomain sellersDetails = snapshot.toObject(SellerDomain.class);
-                        items.add(sellersDetails);
+            public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException error) {
+                for (DocumentChange change : value.getDocumentChanges()){
+                    SellerDomain item = change.getDocument().toObject(SellerDomain.class);
+                    switch (change.getType()){
+                        case ADDED:
+                            items.add(item);
+                        case MODIFIED:
+                            SellerDomain old = items.stream().filter(i -> i.getId().equals(item.getId())).findFirst().orElse(null);
+                            if(old != null){
+                                old.setSellerName(item.getSellerName());
+                                old.setFname(item.getFname());
+                                old.setLname(item.getLname());
+                                old.setBio(item.getBio());
+                                old.setFollowers(item.getFollowers());
+                                old.setProfilePicUrl(item.getProfilePicUrl());
+                            }
+                            break;
+                        case REMOVED:
+                            items.remove(item);
                     }
-                    adapterSeller.notifyDataSetChanged();
                 }
+                adapterSeller.notifyDataSetChanged();
             }
         });
     }

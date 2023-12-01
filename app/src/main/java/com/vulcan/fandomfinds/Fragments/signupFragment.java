@@ -36,6 +36,7 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.vulcan.fandomfinds.Animations.LoadingDialog;
+import com.vulcan.fandomfinds.Domain.BillingShippingDomain;
 import com.vulcan.fandomfinds.Domain.CustomerDomain;
 import com.vulcan.fandomfinds.Domain.SellerDomain;
 import com.vulcan.fandomfinds.Domain.SocialMedia;
@@ -234,6 +235,7 @@ public class signupFragment extends Fragment {
                 String userId = "SEL_"+UUID.randomUUID();
                 SellerDomain sellerDetails = new SellerDomain(userId,email);
                 SocialMedia socialMedia = new SocialMedia();
+                BillingShippingDomain billingShipping = new BillingShippingDomain();
                 firestore.collection("Sellers").add(sellerDetails)
                         .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
                             @Override

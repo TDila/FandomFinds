@@ -41,8 +41,8 @@ public class AccountActivity extends AppCompatActivity {
     FirebaseFirestore firestore;
     FirebaseStorage firebaseStorage;
     private ImageView accountBackButton,accountProfileImg;
-    private CustomerDomain customer;
-    private SellerDomain seller;
+    private CustomerDomain customer = null;
+    private SellerDomain seller = null;
     private TextView account_username;
     private LinearLayout accountProfileInfo,accountBillingShipping,purchaseHistory,sellerStore;
     private SocialMedia socialMedia;
@@ -66,6 +66,11 @@ public class AccountActivity extends AppCompatActivity {
         }else{
             loadingDialog.show();
             searchUserProcess();
+            if(seller != null){
+                sellerStore.setVisibility(View.VISIBLE);
+            }else if(customer != null){
+                sellerStore.setVisibility(View.GONE);
+            }
         }
 
         loadBottomNavigationBar();
@@ -100,7 +105,13 @@ public class AccountActivity extends AppCompatActivity {
             public void onClick(View v) {
                 Intent intent = new Intent(AccountActivity.this,BillingShippingActivity.class);
                 intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+                if(customer != null){
+                    intent.putExtra("customerId",customer.getId());
+                }else if(seller != null){
+                    intent.putExtra("sellerId",seller.getId());
+                }
                 startActivity(intent);
+                finish();
             }
         });
         purchaseHistory.setOnClickListener(new View.OnClickListener() {
@@ -147,7 +158,6 @@ public class AccountActivity extends AppCompatActivity {
                     @Override
                     public void onComplete(@NonNull Task<QuerySnapshot> task) {
                         if(task.isSuccessful()){
-                            sellerStore.setVisibility(View.GONE);
                             for (QueryDocumentSnapshot snapshot : task.getResult()){
                                 customer = snapshot.toObject(CustomerDomain.class);
                                 if(customer != null) {
@@ -172,7 +182,6 @@ public class AccountActivity extends AppCompatActivity {
                     @Override
                     public void onComplete(@NonNull Task<QuerySnapshot> task) {
                         if(task.isSuccessful()){
-                            sellerStore.setVisibility(View.VISIBLE);
                             for (QueryDocumentSnapshot snapshot : task.getResult()){
                                 seller = snapshot.toObject(SellerDomain.class);
                                 if(seller != null){
@@ -185,7 +194,6 @@ public class AccountActivity extends AppCompatActivity {
                                                     if(task.isSuccessful()){
                                                         for (QueryDocumentSnapshot snapshot1 : task.getResult()){
                                                             socialMedia = snapshot1.toObject(SocialMedia.class);
-                                                            System.out.println(snapshot1.getData());
                                                         }
                                                     }
                                                 }

@@ -36,6 +36,10 @@ public class SignUpInActivity extends AppCompatActivity {
                 .add(R.id.fragmentContainerView, loginFragment.class,null)
                 .commit();
 
+        setListeners();
+    }
+
+    private void setListeners() {
         login.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
