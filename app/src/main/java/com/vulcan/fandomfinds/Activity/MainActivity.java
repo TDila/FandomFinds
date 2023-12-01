@@ -142,16 +142,25 @@ public class MainActivity extends AppCompatActivity {
 
     private void initSellerRecyclerView(){
         ArrayList<SellerDomain> items = new ArrayList<>();
-        items.add(new SellerDomain("Maniya Streams","maniya_streams_foreground",444));
-        items.add(new SellerDomain("Maniya Streams","maniya_streams_round",444));
-        items.add(new SellerDomain("Maniya Streams","maniya_streams_round",444));
-        items.add(new SellerDomain("Maniya Streams","maniya_streams_round",444));
 
         RecyclerView recyclerViewSeller = findViewById(R.id.featured);
         recyclerViewSeller.setLayoutManager(new LinearLayoutManager(this,LinearLayoutManager.HORIZONTAL,false));
 
         SellerAdapter adapterSeller = new SellerAdapter(items);
         recyclerViewSeller.setAdapter(adapterSeller);
+        firestore.collection("Sellers").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                items.clear();
+                if(task.isSuccessful()){
+                    for(QueryDocumentSnapshot snapshot : task.getResult()){
+                        SellerDomain sellersDetails = snapshot.toObject(SellerDomain.class);
+                        items.add(sellersDetails);
+                    }
+                    adapterSeller.notifyDataSetChanged();
+                }
+            }
+        });
     }
 
     private void initNewArrivalRecyclerView(){

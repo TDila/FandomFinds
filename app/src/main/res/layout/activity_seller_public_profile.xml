@@ -8,11 +8,11 @@
     tools:context=".Activity.SellerPublicProfileActivity">
 
     <ImageView
-        android:id="@+id/imageView12"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:id="@+id/publicProfileSellerImg"
+        android:layout_width="70dp"
+        android:layout_height="70dp"
         android:layout_marginTop="16dp"
-        android:src="@mipmap/maniya_streams_round"
+        android:src="@drawable/account_default_profile_img"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/seller_public_profile_title"/>
@@ -22,10 +22,10 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        app:layout_constraintBottom_toBottomOf="@+id/imageView12"
+        app:layout_constraintBottom_toBottomOf="@+id/publicProfileSellerImg"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/imageView12"
-        app:layout_constraintTop_toTopOf="@+id/imageView12">
+        app:layout_constraintStart_toEndOf="@+id/publicProfileSellerImg"
+        app:layout_constraintTop_toTopOf="@+id/publicProfileSellerImg">
 
         <TextView
             android:id="@+id/seller_public_profile_streamer_name"
@@ -38,7 +38,7 @@
             android:textSize="24sp" />
 
         <TextView
-            android:id="@+id/textView11"
+            android:id="@+id/followerCount"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
@@ -70,7 +70,7 @@
         android:orientation="horizontal"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/imageView12">
+        app:layout_constraintTop_toBottomOf="@+id/publicProfileSellerImg">
 
         <TextView
             android:id="@+id/seller_public_profile_store_text"

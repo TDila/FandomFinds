@@ -11,17 +11,21 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.vulcan.fandomfinds.Fragments.loginFragment;
 import com.vulcan.fandomfinds.Fragments.signupFragment;
 import com.vulcan.fandomfinds.R;
 
 public class SignUpInActivity extends AppCompatActivity {
-
+    FirebaseAuth firebaseAuth;
     private TextView login,signUp,skipButton;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sign_up_in);
+
+        checkLoggedIn();
 
         initComponents();
 
@@ -63,6 +67,17 @@ public class SignUpInActivity extends AppCompatActivity {
                 finish();
             }
         });
+    }
+
+    private void checkLoggedIn() {
+        firebaseAuth = FirebaseAuth.getInstance();
+        FirebaseUser user = firebaseAuth.getCurrentUser();
+        if(user != null){
+            Intent intent = new Intent(SignUpInActivity.this,MainActivity.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+            startActivity(intent);
+            finish();
+        }
     }
 
     private void initComponents() {

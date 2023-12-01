@@ -14,7 +14,7 @@
         android:layout_width="115dp"
         android:layout_height="115dp"
         android:layout_marginTop="5dp"
-        android:src="@drawable/item_1"
+        android:src="@drawable/account_default_profile_img"
         android:scaleType="fitXY"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -44,11 +44,11 @@
         app:layout_constraintTop_toTopOf="@+id/homeSellerView" />
 
     <TextView
-        android:id="@+id/seller_tag"
+        android:id="@+id/follower_count"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/seller_tag"
-        android:textSize="8sp"
+        android:textSize="10sp"
         app:layout_constraintEnd_toEndOf="@+id/homeSellerView"
         app:layout_constraintStart_toStartOf="@+id/homeSellerView"
         app:layout_constraintTop_toBottomOf="@+id/homeSellerName" />
