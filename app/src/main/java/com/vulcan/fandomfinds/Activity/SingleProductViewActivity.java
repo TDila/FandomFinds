@@ -1,8 +1,10 @@
 package com.vulcan.fandomfinds.Activity;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.graphics.Paint;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
@@ -15,6 +17,11 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.resource.bitmap.GranularRoundedCorners;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.squareup.picasso.Picasso;
 import com.vulcan.fandomfinds.Domain.ProductsDomain;
 import com.vulcan.fandomfinds.Helper.ManagementCart;
 import com.vulcan.fandomfinds.R;
@@ -33,22 +40,46 @@ public class SingleProductViewActivity extends AppCompatActivity {
     private LinearLayout sizeLayout;
     private int numberOrder = 1;
     private ManagementCart managementCart;
+    FirebaseStorage firebaseStorage;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_single_product_view);
         managementCart = new ManagementCart(this);
 
+        firebaseStorage = FirebaseStorage.getInstance();
+
         initView();
         getBundle();
     }
     private void getBundle(){
         newArrival = (ProductsDomain) getIntent().getSerializableExtra("newArrival");
-        int drawableResourceId = this.getResources().getIdentifier(newArrival.getPicUrl(),"drawable",this.getPackageName());
 
-        Glide.with(this)
-                .load(drawableResourceId)
-                .into(single_product_img);
+        if(newArrival.getPicUrl() != null){
+            firebaseStorage.getReference("product-images/"+newArrival.getPicUrl())
+                    .getDownloadUrl()
+                    .addOnSuccessListener(new OnSuccessListener<Uri>() {
+                        @Override
+                        public void onSuccess(Uri uri) {
+                            Picasso.get()
+                                    .load(uri)
+                                    .into(single_product_img);
+                        }
+                    }).addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            int drawableResourceId = getResources().getIdentifier("product_default", "drawable",getPackageName());
+                            Glide.with(SingleProductViewActivity.this)
+                                    .load(drawableResourceId)
+                                    .into(single_product_img);
+                        }
+                    });
+        }else{
+            int drawableResourceId = getResources().getIdentifier("product_default", "drawable",getPackageName());
+            Glide.with(SingleProductViewActivity.this)
+                    .load(drawableResourceId)
+                    .into(single_product_img);
+        }
 
         single_product_title.setText(newArrival.getTitle());
         double price = newArrival.getPrice();
@@ -69,27 +100,29 @@ public class SingleProductViewActivity extends AppCompatActivity {
             single_product_discount.setVisibility(View.GONE);
         }
 
-        String[] sizes = newArrival.getSizes();
-        if(sizes != null){
+        if(newArrival.getSizesList() != null){
+            String[] sizes = newArrival.getSizesList().toArray(new String[0]);
+            if(sizes.length != 0){
 //            spinner.setVisibility(View.VISIBLE);
-            sizeLayout.setVisibility(View.VISIBLE);
-            ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, sizes);
-            adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-            spinner.setAdapter(adapter);
+                sizeLayout.setVisibility(View.VISIBLE);
+                ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, sizes);
+                adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                spinner.setAdapter(adapter);
 
-            spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-                @Override
-                public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                    newArrival.setSelectedSize(String.valueOf(parent.getItemAtPosition(position)));
-                }
+                spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                    @Override
+                    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                        newArrival.setSelectedSize(String.valueOf(parent.getItemAtPosition(position)));
+                    }
 
-                @Override
-                public void onNothingSelected(AdapterView<?> parent) {
-                }
-            });
-        }else{
+                    @Override
+                    public void onNothingSelected(AdapterView<?> parent) {
+                    }
+                });
+            }else{
 //            spinner.setVisibility(View.GONE);
-            sizeLayout.setVisibility(View.GONE);
+                sizeLayout.setVisibility(View.GONE);
+            }
         }
 
         single_product_buynow.setOnClickListener(new View.OnClickListener() {

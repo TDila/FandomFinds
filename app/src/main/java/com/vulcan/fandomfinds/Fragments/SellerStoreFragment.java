@@ -12,13 +12,21 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.Firebase;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 import com.vulcan.fandomfinds.Adapter.DealsAdapter;
 import com.vulcan.fandomfinds.Domain.ProductsDomain;
 import com.vulcan.fandomfinds.R;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class SellerStoreFragment extends Fragment {
+    FirebaseFirestore firestore;
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -30,39 +38,74 @@ public class SellerStoreFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+        firestore = FirebaseFirestore.getInstance();
         loadDeals(view);
         loadOther(view);
     }
 
     public void loadDeals(View view){
-        String[] sizes = {"XL","M"};
         ArrayList<ProductsDomain> items = new ArrayList<>();
-        items.add(new ProductsDomain("T-shirt black","","item_1",15,4,410,10,"Maniya Streams",sizes,"Apparel"));
-        items.add(new ProductsDomain("T-shirt black","","item_1",15,4,410,2,"Maniya Streams",null,"Gaming Gear"));
-        items.add(new ProductsDomain("T-shirt black","","item_1",15,4,410,2.3,"Maniya Streams",sizes,"Apparel"));
-        items.add(new ProductsDomain("T-shirt black","","item_1",15,4,410,5.7,"Maniya Streams",null,"Gaming Gear"));
 
         RecyclerView deals_list = view.findViewById(R.id.seller_store_frag_deals_list);
         deals_list.setLayoutManager(new LinearLayoutManager(getContext(),LinearLayoutManager.HORIZONTAL,false));
         DealsAdapter adapter = new DealsAdapter(items);
         deals_list.setAdapter(adapter);
+
+        firestore.collection("Products").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                if(task.isSuccessful()){
+                    for(QueryDocumentSnapshot snapshot : task.getResult()){
+                        ProductsDomain product = snapshot.toObject(ProductsDomain.class);
+                        if(product != null){
+                            if(product.getDiscount() != 0){
+                                if(product.getType().equals("Apparel")){
+                                    List<String> sizes = product.getSizesList();
+                                    items.add(new ProductsDomain(product.getId(),product.getTitle(),product.getDescription(),product.getPicUrl(),product.getReview()
+                                            ,product.getScore(),product.getPrice(),product.getDiscount(),product.getSellerName(),sizes,product.getStatus(),product.getType(),product.getSellerId()));
+                                }else{
+                                    items.add(new ProductsDomain(product.getId(),product.getTitle(),product.getDescription(),product.getPicUrl(),product.getReview()
+                                            ,product.getScore(),product.getPrice(),product.getDiscount(),product.getSellerName(),product.getSizesList(),product.getStatus(),product.getType(),product.getSellerId()));
+                                }
+                            }
+                        }
+                    }
+                    adapter.notifyDataSetChanged();
+                }
+            }
+        });
     }
 
     public void loadOther(View view){
-        String[] sizes = {"XL","M"};
-
         ArrayList<ProductsDomain> items = new ArrayList<>();
-        items.add(new ProductsDomain("T-shirt black","","item_1",15,4,410,0,"Maniya Streams",sizes,"Apparel"));
-        items.add(new ProductsDomain("T-shirt black","","item_1",15,4,410,0,"Maniya Streams",sizes,"Apparel"));
-        items.add(new ProductsDomain("T-shirt black","","item_1",15,4,410,0,"Maniya Streams",sizes,"Apparel"));
-        items.add(new ProductsDomain("T-shirt black","","item_1",15,4,410,0,"Maniya Streams",sizes,"Apparel"));
-        items.add(new ProductsDomain("T-shirt black","","item_1",15,4,410,0,"Maniya Streams",sizes,"Apparel"));
-        items.add(new ProductsDomain("T-shirt black","","item_1",15,4,410,0,"Maniya Streams",sizes,"Apparel"));
-        items.add(new ProductsDomain("T-shirt black","","item_1",15,4,410,0,"Maniya Streams",sizes,"Apparel"));
 
         RecyclerView other_list = view.findViewById(R.id.seller_store_frag_other_list);
         other_list.setLayoutManager(new LinearLayoutManager(getContext(),LinearLayoutManager.HORIZONTAL,false));
         DealsAdapter adapter = new DealsAdapter(items);
         other_list.setAdapter(adapter);
+
+        firestore.collection("Products").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                if(task.isSuccessful()){
+                    for(QueryDocumentSnapshot snapshot : task.getResult()){
+                        ProductsDomain product = snapshot.toObject(ProductsDomain.class);
+                        if(product != null){
+                            if(product.getDiscount() == 0){
+                                if(product.getType().equals("Apparel")){
+                                    List<String> sizes = product.getSizesList();
+                                    items.add(new ProductsDomain(product.getId(),product.getTitle(),product.getDescription(),product.getPicUrl(),product.getReview()
+                                            ,product.getScore(),product.getPrice(),product.getDiscount(),product.getSellerName(),sizes,product.getStatus(),product.getType(),product.getSellerId()));
+                                }else{
+                                    items.add(new ProductsDomain(product.getId(),product.getTitle(),product.getDescription(),product.getPicUrl(),product.getReview()
+                                            ,product.getScore(),product.getPrice(),product.getDiscount(),product.getSellerName(),product.getSizesList(),product.getStatus(),product.getType(),product.getSellerId()));
+                                }
+                            }
+                        }
+                    }
+                    adapter.notifyDataSetChanged();
+                }
+            }
+        });
     }
 }

@@ -145,9 +145,17 @@ public class SellerPublicProfileActivity extends AppCompatActivity {
                 .commit();
     }
     public void loadAbout(){
+        String sellerString = (new Gson()).toJson(seller);
+
+        Bundle bundle = new Bundle();
+        bundle.putString("seller", sellerString);
+
+        Fragment sellerAboutFragment = new SellerAboutFragment();
+        sellerAboutFragment.setArguments(bundle);
+
         getSupportFragmentManager()
                 .beginTransaction()
-                .add(R.id.fragmentContainerView5,SellerAboutFragment.class,null)
+                .add(R.id.fragmentContainerView5,sellerAboutFragment,null)
                 .commit();
     }
     private void initComponents() {

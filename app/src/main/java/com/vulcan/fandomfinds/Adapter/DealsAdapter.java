@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Paint;
+import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,6 +16,10 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.bitmap.GranularRoundedCorners;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.squareup.picasso.Picasso;
 import com.vulcan.fandomfinds.Activity.SingleProductViewActivity;
 import com.vulcan.fandomfinds.Domain.ProductsDomain;
 import com.vulcan.fandomfinds.R;
@@ -23,10 +28,12 @@ import java.util.ArrayList;
 
 public class DealsAdapter extends RecyclerView.Adapter<DealsAdapter.ViewHolder> {
     ArrayList<ProductsDomain> items;
+    FirebaseStorage firebaseStorage;
     Context context;
 
     public DealsAdapter(ArrayList<ProductsDomain> items) {
         this.items = items;
+        this.firebaseStorage = FirebaseStorage.getInstance();
     }
 
     @NonNull
@@ -58,12 +65,37 @@ public class DealsAdapter extends RecyclerView.Adapter<DealsAdapter.ViewHolder> 
             holder.feeTxtNew.setText("$"+String.valueOf(newPrice));
             holder.deals_dis_percentage.setText(discount+"% OFF");
         }
-        int drawableResourceId = holder.itemView.getResources().getIdentifier(items.get(position).getPicUrl(),
-                "drawable",holder.itemView.getContext().getPackageName());
-        Glide.with(holder.itemView.getContext())
-                .load(drawableResourceId)
-                .transform(new GranularRoundedCorners(30,30,0,0))
-                .into(holder.pic);
+
+        if(items.get(position).getPicUrl() != null){
+            firebaseStorage.getReference("product-images/"+items.get(position).getPicUrl())
+                    .getDownloadUrl()
+                    .addOnSuccessListener(new OnSuccessListener<Uri>() {
+                        @Override
+                        public void onSuccess(Uri uri) {
+                            Picasso.get()
+                                    .load(uri)
+                                    .into(holder.pic);
+                        }
+                    }).addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            int drawableResourceId = holder.itemView.getResources().getIdentifier("product_default",
+                                    "drawable",holder.itemView.getContext().getPackageName());
+                            Glide.with(holder.itemView.getContext())
+                                    .load(drawableResourceId)
+                                    .transform(new GranularRoundedCorners(30,30,0,0))
+                                    .into(holder.pic);
+                        }
+                    });
+        }else{
+            int drawableResourceId = holder.itemView.getResources().getIdentifier("product_default",
+                    "drawable",holder.itemView.getContext().getPackageName());
+            Glide.with(holder.itemView.getContext())
+                    .load(drawableResourceId)
+                    .transform(new GranularRoundedCorners(30,30,0,0))
+                    .into(holder.pic);
+        }
+
 
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -73,6 +105,7 @@ public class DealsAdapter extends RecyclerView.Adapter<DealsAdapter.ViewHolder> 
                 holder.itemView.getContext().startActivity(intent);
             }
         });
+
     }
 
     @Override

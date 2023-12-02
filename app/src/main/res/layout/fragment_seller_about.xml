@@ -28,7 +28,7 @@
                 app:layout_constraintTop_toTopOf="parent" />
 
             <TextView
-                android:id="@+id/textView12"
+                android:id="@+id/seller_about_frag_desc"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
@@ -48,8 +48,8 @@
                 android:text="@string/seller_about_frag_social_media"
                 android:textSize="24dp"
                 android:textStyle="italic|bold"
-                app:layout_constraintStart_toStartOf="@+id/textView12"
-                app:layout_constraintTop_toBottomOf="@+id/textView12" />
+                app:layout_constraintStart_toStartOf="@+id/seller_about_frag_desc"
+                app:layout_constraintTop_toBottomOf="@+id/seller_about_frag_desc" />
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/social_media_list"

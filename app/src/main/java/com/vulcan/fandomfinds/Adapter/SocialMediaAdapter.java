@@ -42,7 +42,7 @@ public class SocialMediaAdapter extends RecyclerView.Adapter<SocialMediaAdapter.
         int drawableResourceId = holder.itemView.getResources().getIdentifier(items.get(position).getImgUrl(),
                 "drawable",holder.itemView.getContext().getPackageName());
         Glide.with(holder.itemView.getContext())
-                .load("https://firebasestorage.googleapis.com/v0/b/fir-storage-13496.appspot.com/o/youtube_32.png?alt=media&token=386910e1-2575-4314-b278-1b993e3768ea")
+                .load(drawableResourceId)
                 .into(holder.social_media_img);
     }
 
