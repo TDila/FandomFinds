@@ -22,7 +22,11 @@ public class ProductsDomain implements Serializable {
     private ProductStatus status = ProductStatus.AVAILABLE;
     private String type;
     private String sellerId;
-    public ProductsDomain(String title, String description, String picUrl, int review, double score, double price, double discount, String sellerName, String[] sizes,String type) {
+
+    public ProductsDomain() {
+    }
+
+    public ProductsDomain(String title, String description, String picUrl, int review, double score, double price, double discount, String sellerName, String[] sizes, String type) {
         this.title = title;
         this.description = description;
         this.picUrl = picUrl;
@@ -46,7 +50,6 @@ public class ProductsDomain implements Serializable {
         this.discount = discount;
         this.sellerName = sellerName;
         this.sizesList = sizesList;
-        this.selectedSize = selectedSize;
         this.status = status;
         this.type = type;
         this.sellerId = sellerId;

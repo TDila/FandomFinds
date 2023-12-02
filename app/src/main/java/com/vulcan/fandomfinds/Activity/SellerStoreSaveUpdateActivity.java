@@ -84,17 +84,21 @@ public class SellerStoreSaveUpdateActivity extends AppCompatActivity {
         loadUser();
         loadItemTypes();
 
-        ProductsDomain item = (ProductsDomain) getIntent().getSerializableExtra("item");
-        if(item != null){
-            sellerStoreSaveUpdateItemTitle.setText(item.getTitle());
-            sellerStoreSaveUpdateItemDes.setText(item.getDescription());
-            price.setText(String.valueOf(item.getPrice()));
+        loadProductDetails();
+    }
+
+    private void loadProductDetails() {
+        product = (ProductsDomain) getIntent().getSerializableExtra("item");
+        if(product != null){
+            sellerStoreSaveUpdateItemTitle.setText(product.getTitle());
+            sellerStoreSaveUpdateItemDes.setText(product.getDescription());
+            price.setText(String.valueOf(product.getPrice()));
 
 //            itemDiscount = item.getDiscount();
-            discount.setText(String.valueOf(item.getDiscount()));
+            discount.setText(String.valueOf(product.getDiscount()));
             calculateNewPrice();
 
-            String type = item.getType();
+            String type = product.getType();
             if(type.equals("Apparel")){
                 spinner.setSelection(0);
             }else if (type.equals("Collectibles")){
@@ -105,32 +109,51 @@ public class SellerStoreSaveUpdateActivity extends AppCompatActivity {
                 spinner.setSelection(3);
             }
 
-            String[] sizes = item.getSizes();
-            if(sizes != null){
-                for(int i = 0; i < sizes.length;i++){
-                    if(sizes[i].equals("XS")){
-                        sizeExraSmall.setChecked(true);
-                    }
-                    if(sizes[i].equals("S")){
-                        sizeSmall.setChecked(true);
-                    }
-                    if(sizes[i].equals("M")){
-                        sizeMedium.setChecked(true);
-                    }
-                    if(sizes[i].equals("L")){
-                        sizeLarge.setChecked(true);
-                    }
-                    if(sizes[i].equals("XL")){
-                        sizeExtraLarge.setChecked(true);
-                    }
-                    if(sizes[i].equals("XXL")){
-                        sizeExtraLarge.setChecked(true);
+            if(product.getSizesList() != null){
+                String[] sizes = product.getSizesList().toArray(new String[0]);
+                if(sizes.length != 0){
+                    for(int i = 0; i < sizes.length;i++){
+                        if(sizes[i].equals("XS")){
+                            sizeExraSmall.setChecked(true);
+                        }
+                        if(sizes[i].equals("S")){
+                            sizeSmall.setChecked(true);
+                        }
+                        if(sizes[i].equals("M")){
+                            sizeMedium.setChecked(true);
+                        }
+                        if(sizes[i].equals("L")){
+                            sizeLarge.setChecked(true);
+                        }
+                        if(sizes[i].equals("XL")){
+                            sizeExtraLarge.setChecked(true);
+                        }
+                        if(sizes[i].equals("XXL")){
+                            sizeExtraLarge.setChecked(true);
+                        }
                     }
                 }
             }
-        }else{
-            Toast.makeText(SellerStoreSaveUpdateActivity.this,"null",Toast.LENGTH_SHORT).show();
+            loadProductImage(product.getPicUrl());
         }
+    }
+
+    private void loadProductImage(String picUrl) {
+        firebaseStorage.getReference("product-images/"+picUrl)
+                .getDownloadUrl()
+                .addOnSuccessListener(new OnSuccessListener<Uri>() {
+                    @Override
+                    public void onSuccess(Uri uri) {
+                        Picasso.get()
+                                .load(uri)
+                                .into(sellerStoreSaveUpdateItemImg);
+                    }
+                }).addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Toast.makeText(SellerStoreSaveUpdateActivity.this,"Couldn't load the Product image!",Toast.LENGTH_LONG).show();
+                    }
+                });
     }
 
     private void loadUser() {
@@ -143,6 +166,8 @@ public class SellerStoreSaveUpdateActivity extends AppCompatActivity {
         findViewById(R.id.sellerStoreSaveUpdateBackButton).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                Intent intent = new Intent(SellerStoreSaveUpdateActivity.this,SellerStoreActivity.class);
+                startActivity(intent);
                 finish();
             }
         });
@@ -332,7 +357,31 @@ public class SellerStoreSaveUpdateActivity extends AppCompatActivity {
                 Toast.makeText(SellerStoreSaveUpdateActivity.this,"Please select an Image!",Toast.LENGTH_LONG).show();
             }
         }else{
-            productId = product.getId();
+            if(isNotEmpty(productTitle) && isNotEmpty(productDescription)){
+                if(productPrice != 0){
+                    if(productType.equals("Apparel") && selectedSizes.size() == 0){
+                        savingDataDialog.cancel();
+                        Toast.makeText(SellerStoreSaveUpdateActivity.this,"Please select at least one product size!",Toast.LENGTH_LONG).show();
+                    }else{
+                        ProductsDomain newProduct;
+                        if(imagePath == null){
+                            newProduct = new ProductsDomain(product.getId(),productTitle,productDescription,product.getPicUrl(),product.getReview(),product.getScore()
+                                    ,productPrice,productDiscount,product.getSellerName(),selectedSizes, product.getStatus(),productType,product.getSellerId());
+                        }else{
+                            imageId = UUID.randomUUID().toString();
+                            newProduct = new ProductsDomain(product.getId(),productTitle,productDescription,imageId,product.getReview(),product.getScore()
+                                    ,productPrice,productDiscount,product.getSellerName(),selectedSizes, product.getStatus(),productType,product.getSellerId());
+                        }
+                        updateProduct(newProduct);
+                    }
+                }else{
+                    savingDataDialog.cancel();
+                    Toast.makeText(SellerStoreSaveUpdateActivity.this,"Please set a price to the product!",Toast.LENGTH_LONG).show();
+                }
+            }else{
+                savingDataDialog.cancel();
+                Toast.makeText(SellerStoreSaveUpdateActivity.this,"Please fill the fields!",Toast.LENGTH_LONG).show();
+            }
         }
     }
 
@@ -343,6 +392,59 @@ public class SellerStoreSaveUpdateActivity extends AppCompatActivity {
             return false;
         }
     }
+    private void updateProduct(ProductsDomain product){
+        Map<String,Object> map = new HashMap<>();
+        map.put("title",product.getTitle());
+        map.put("description",product.getDescription());
+        map.put("price",product.getPrice());
+        map.put("discount",product.getDiscount());
+        map.put("status",product.getStatus());
+        map.put("type",product.getType());
+        if(product.getType().equals("Apparel")){
+            map.put("sizesList",product.getSizesList());
+        }else{
+            map.put("sizesList",null);
+            sizeExraSmall.setChecked(false);
+            sizeSmall.setChecked(false);
+            sizeMedium.setChecked(false);
+            sizeLarge.setChecked(false);
+            sizeExtraLarge.setChecked(false);
+            sizeExtraExtraLarge.setChecked(false);
+        }
+        if(imagePath != null){
+            map.put("picUrl",product.getPicUrl());
+        }
+        firestore.collection("Products").whereEqualTo("id",product.getId())
+                .get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if (task.isSuccessful()){
+                            for (QueryDocumentSnapshot snapshot : task.getResult()){
+                                snapshot.getReference().update(map).addOnSuccessListener(new OnSuccessListener<Void>() {
+                                    @Override
+                                    public void onSuccess(Void unused) {
+                                        if(imagePath != null){
+                                            uploadImage(product.getPicUrl());
+                                        }else{
+                                            savingDataDialog.cancel();
+                                            Toast.makeText(SellerStoreSaveUpdateActivity.this,"Product Successfully Updated!",Toast.LENGTH_LONG).show();
+                                        }
+                                    }
+                                }).addOnFailureListener(new OnFailureListener() {
+                                    @Override
+                                    public void onFailure(@NonNull Exception e) {
+                                        Toast.makeText(SellerStoreSaveUpdateActivity.this,"Failed to update product!",Toast.LENGTH_LONG).show();
+                                    }
+                                });
+                            }
+                        }
+                    }
+                });
+    }
+    private void updateProduct(ProductsDomain product,String imageId){
+        updateProduct(product);
+        uploadImage(imageId);
+    }
 
     private void addNewProduct(ProductsDomain newProduct,String imageId) {
         firestore.collection("Products").add(newProduct).addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
@@ -350,6 +452,7 @@ public class SellerStoreSaveUpdateActivity extends AppCompatActivity {
             public void onSuccess(DocumentReference documentReference) {
                 if(imagePath != null){
                     uploadImage(imageId);
+                    clearFields();
                 }
             }
         }).addOnFailureListener(new OnFailureListener() {
@@ -380,7 +483,6 @@ public class SellerStoreSaveUpdateActivity extends AppCompatActivity {
             reference.putFile(imagePath).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                 @Override
                 public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                    clearFields();
                     savingDataDialog.cancel();
                     Toast.makeText(SellerStoreSaveUpdateActivity.this,"Product Save Successfully!",Toast.LENGTH_LONG).show();
                 }
