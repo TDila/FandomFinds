@@ -3,10 +3,10 @@ package com.vulcan.fandomfinds.Domain;
 import com.vulcan.fandomfinds.Enum.ProductStatus;
 
 import java.io.Serializable;
-import java.lang.reflect.Array;
 import java.util.List;
 
 public class ProductsDomain implements Serializable {
+    private String id;
     private String title;
     private String description;
     private String picUrl;
@@ -17,9 +17,11 @@ public class ProductsDomain implements Serializable {
     private double discount = 0;
     private String sellerName;
     private String[] sizes;
+    private List<String> sizesList;
     private String selectedSize = null;
     private ProductStatus status = ProductStatus.AVAILABLE;
     private String type;
+    private String sellerId;
     public ProductsDomain(String title, String description, String picUrl, int review, double score, double price, double discount, String sellerName, String[] sizes,String type) {
         this.title = title;
         this.description = description;
@@ -31,6 +33,39 @@ public class ProductsDomain implements Serializable {
         this.sellerName = sellerName;
         this.sizes = sizes;
         this.type = type;
+    }
+
+    public ProductsDomain(String id, String title, String description, String picUrl, int review, double score, double price, double discount, String sellerName, List<String> sizesList, ProductStatus status, String type, String sellerId) {
+        this.id = id;
+        this.title = title;
+        this.description = description;
+        this.picUrl = picUrl;
+        this.review = review;
+        this.score = score;
+        this.price = price;
+        this.discount = discount;
+        this.sellerName = sellerName;
+        this.sizesList = sizesList;
+        this.selectedSize = selectedSize;
+        this.status = status;
+        this.type = type;
+        this.sellerId = sellerId;
+    }
+
+    public ProductsDomain(String id, String title, String description, String picUrl, int review, double score, double price, double discount, String sellerName, String[] sizes, ProductStatus status, String type, String sellerId) {
+        this.id = id;
+        this.title = title;
+        this.description = description;
+        this.picUrl = picUrl;
+        this.review = review;
+        this.score = score;
+        this.price = price;
+        this.discount = discount;
+        this.sellerName = sellerName;
+        this.sizes = sizes;
+        this.status = status;
+        this.type = type;
+        this.sellerId = sellerId;
     }
 
     public double getPrice() {
@@ -113,6 +148,14 @@ public class ProductsDomain implements Serializable {
         this.sizes = sizes;
     }
 
+    public List<String> getSizesList() {
+        return sizesList;
+    }
+
+    public void setSizesList(List<String> sizesList) {
+        this.sizesList = sizesList;
+    }
+
     public String getSelectedSize() {
         return selectedSize;
     }
@@ -135,5 +178,21 @@ public class ProductsDomain implements Serializable {
 
     public void setType(String type) {
         this.type = type;
+    }
+
+    public String getSellerId() {
+        return sellerId;
+    }
+
+    public void setSellerId(String sellerId) {
+        this.sellerId = sellerId;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
     }
 }

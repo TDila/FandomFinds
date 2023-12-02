@@ -30,6 +30,8 @@ public class SellerStoreActivity extends AppCompatActivity {
         });
 
         loadStoreItems();
+        Intent intent = getIntent();
+        String userString = intent.getStringExtra("user");
 
         Button button = findViewById(R.id.sellerStoreAddNewProductButton);
         button.setOnClickListener(new View.OnClickListener() {
@@ -37,6 +39,7 @@ public class SellerStoreActivity extends AppCompatActivity {
             public void onClick(View v) {
                 Intent intent = new Intent(SellerStoreActivity.this, SellerStoreSaveUpdateActivity.class);
                 intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+                intent.putExtra("user",userString);
                 startActivity(intent);
             }
         });
