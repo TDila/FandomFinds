@@ -4,11 +4,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
-import android.media.Image;
 import android.os.Bundle;
-import android.text.Editable;
-import android.text.TextWatcher;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -19,6 +15,8 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.material.textfield.TextInputEditText;
+import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.FirebaseException;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.PhoneAuthCredential;
@@ -28,7 +26,7 @@ import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
-import com.google.firebase.storage.FirebaseStorage;
+import com.hbb20.CountryCodePicker;
 import com.vulcan.fandomfinds.Animations.LoadingDialog;
 import com.vulcan.fandomfinds.Animations.SavingDataDialog;
 import com.vulcan.fandomfinds.Domain.BillingShippingDomain;
@@ -42,7 +40,7 @@ public class BillingShippingActivity extends AppCompatActivity {
     FirebaseAuth auth;
     FirebaseFirestore firestore;
     private ImageView backButton;
-    private EditText shippingAddressField,postalCodeField,mobileNumberField,paypalAddressField;
+    private EditText shippingAddressField,postalCodeField,paypalAddressField;
     private Button saveDetailsButton,savePaymentMethodButton;
     private PhoneAuthProvider.OnVerificationStateChangedCallbacks callbacks;
     private PhoneAuthProvider.ForceResendingToken resendingToken;
@@ -54,6 +52,9 @@ public class BillingShippingActivity extends AppCompatActivity {
     SavingDataDialog savingDataDialog;
     LoadingDialog loadingDialog;
     private String verificationId;
+    CountryCodePicker ccp;
+    TextInputEditText editTextCarrierNumber;
+    TextInputLayout phoneNumberLayout;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -63,6 +64,10 @@ public class BillingShippingActivity extends AppCompatActivity {
         loadingDialog.show();
         setListeners();
         loadBillingShippingDetails();
+
+//        IntentFilter intentFilter = new IntentFilter("com.vulcan.intent.VERIFICATION_CODE_RECEIVER");
+//        SMSReceiver smsReceiver = new SMSReceiver();
+//        registerReceiver(smsReceiver,intentFilter);
 
         callbacks = new PhoneAuthProvider.OnVerificationStateChangedCallbacks() {
             @Override
@@ -89,7 +94,6 @@ public class BillingShippingActivity extends AppCompatActivity {
         backButton = findViewById(R.id.bs_back_button);
         shippingAddressField = findViewById(R.id.bs_shipping_address);
         postalCodeField = findViewById(R.id.bs_postal_code);
-        mobileNumberField = findViewById(R.id.bs_mobile_number);
         saveDetailsButton = findViewById(R.id.bs_save_details);
         savingDataDialog = new SavingDataDialog(BillingShippingActivity.this);
         loadingDialog = new LoadingDialog(BillingShippingActivity.this);
@@ -100,6 +104,11 @@ public class BillingShippingActivity extends AppCompatActivity {
 
         auth = FirebaseAuth.getInstance();
         firestore = FirebaseFirestore.getInstance();
+
+        ccp = (CountryCodePicker) findViewById(R.id.ccp);
+        editTextCarrierNumber = findViewById(R.id.editText_carrierNumber);
+        ccp.registerCarrierNumberEditText(editTextCarrierNumber);
+        phoneNumberLayout= findViewById(R.id.phoneNumberLayout);
     }
     private void setListeners() {
         backButton.setOnClickListener(new View.OnClickListener() {
@@ -122,6 +131,23 @@ public class BillingShippingActivity extends AppCompatActivity {
             public void onClick(View v) {
                 savingDataDialog.show();
                 savePaymentMethod();
+            }
+        });
+        editTextCarrierNumber.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if(hasFocus){
+                    ccp.setPhoneNumberValidityChangeListener(new CountryCodePicker.PhoneNumberValidityChangeListener() {
+                        @Override
+                        public void onValidityChanged(boolean isValidNumber) {
+                            if(isValidNumber){
+                                phoneNumberLayout.setError(null);
+                            }else{
+                                phoneNumberLayout.setError("Invalid Phone Number");
+                            }
+                        }
+                    });
+                }
             }
         });
     }
@@ -207,7 +233,10 @@ public class BillingShippingActivity extends AppCompatActivity {
         if(billingShipping != null){
             shippingAddressField.setText(billingShipping.getShippingAddress() != null ? billingShipping.getShippingAddress() : "");
             postalCodeField.setText(billingShipping.getPostalCode() != 0 ? String.valueOf(billingShipping.getPostalCode()) : "");
-            mobileNumberField.setText(billingShipping.getMobileNumber() != null ? billingShipping.getMobileNumber() : "");
+//            mobileNumberField.setText(billingShipping.getMobileNumber() != null ? billingShipping.getMobileNumber() : "");
+            if(billingShipping.getMobileNumber() != null && !billingShipping.getMobileNumber().isEmpty()){
+                ccp.setFullNumber(billingShipping.getMobileNumber());
+            }
             paypalAddressField.setText(billingShipping.getPaymentMethod() != null ? billingShipping.getPaymentMethod() : "");
         }
         loadingDialog.cancel();
@@ -215,7 +244,7 @@ public class BillingShippingActivity extends AppCompatActivity {
     private void saveDetails() {
         String shippingAddress= shippingAddressField.getText().toString();
         String postalCode = postalCodeField.getText().toString();
-        String mobileNumber = mobileNumberField.getText().toString();
+        String mobileNumber = ccp.getFullNumberWithPlus();
 
         billingShipping.setShippingAddress(shippingAddress);
         billingShipping.setPostalCode(Integer.parseInt(postalCode));
@@ -287,15 +316,20 @@ public class BillingShippingActivity extends AppCompatActivity {
 
     private void verifyAndStoreMobile(QueryDocumentSnapshot snapshot1) {
         String mobileNumber = billingShipping.getMobileNumber();
-        PhoneAuthProvider.verifyPhoneNumber(
-                PhoneAuthOptions.newBuilder(auth)
-                        .setPhoneNumber("+94710934295")
-                        .setTimeout(60L, TimeUnit.SECONDS)
-                        .setActivity(this)
-                        .setCallbacks(callbacks)
-                        .build());
-
-        savingDataDialog.cancel();
+        if(ccp.isValidFullNumber()){
+            PhoneAuthProvider.verifyPhoneNumber(
+                    PhoneAuthOptions.newBuilder(auth)
+                            .setPhoneNumber(mobileNumber)
+                            .setTimeout(60L, TimeUnit.SECONDS)
+                            .setActivity(this)
+                            .setCallbacks(callbacks)
+                            .build());
+            savingDataDialog.cancel();
+        }else{
+            savingDataDialog.cancel();
+            billingShipping.setMobileNumber(null);
+            Toast.makeText(BillingShippingActivity.this,"Please Enter Valid Phone Number",Toast.LENGTH_LONG).show();
+        }
     }
 
     public void savePaymentMethod(){

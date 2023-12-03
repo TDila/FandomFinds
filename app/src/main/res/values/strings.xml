@@ -171,4 +171,9 @@
     <string name="activity_main_signup_or_login"><u>Sign Up or Login</u></string>
     <string name="profile_info_last_name_hint">Enter Last Name</string>
     <string name="cart_error_message">Please fill your delievery details and payment method in order to make the order.</string>
+    <string name="sellerAboutBusinessInqTitle">For Business Inquiries</string>
+    <string name="sellerAboutPhoneTitle">Contact Me :</string>
+    <string name="sellerAboutEmailTitle">Email :</string>
+    <string name="sellerAboutEmailValue">example@gmail.com</string>
+    <string name="sellerAboutPhoneValue">+94 71 093 4205</string>
 </resources>

@@ -11,7 +11,7 @@
         android:layout_height="match_parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" >
+        app:layout_constraintTop_toTopOf="parent">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -48,18 +48,18 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:orientation="vertical"
                 android:layout_marginStart="16dp"
+                android:layout_marginTop="16dp"
                 android:layout_marginEnd="16dp"
-                android:layout_marginTop="16dp">
+                android:orientation="vertical">
 
                 <TextView
                     android:id="@+id/textView30"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:text="@string/bp_shipping_address"
                     android:textSize="18sp"
-                    android:textStyle="bold|italic"
-                    android:text="@string/bp_shipping_address" />
+                    android:textStyle="bold|italic" />
 
                 <EditText
                     android:id="@+id/bs_shipping_address"
@@ -71,9 +71,9 @@
 
                 <TextView
                     android:id="@+id/textView31"
-                    android:layout_marginTop="8dp"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
                     android:text="@string/bs_postal_code_title"
                     android:textSize="18sp"
                     android:textStyle="bold|italic" />
@@ -95,19 +95,140 @@
                     android:textSize="18sp"
                     android:textStyle="bold|italic" />
 
-                <EditText
-                    android:id="@+id/bs_mobile_number"
-                    android:layout_width="200dp"
+                <LinearLayout
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:ems="10"
-                    android:hint="@string/bs_mobile_number_hint"
-                    android:inputType="phone" />
+                    android:orientation="horizontal">
+
+                    <com.hbb20.CountryCodePicker
+                        android:id="@+id/ccp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        app:ccp_countryPreference="us,in" />
+
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:id="@+id/phoneNumberLayout"
+                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        app:errorEnabled="true"
+                        app:errorIconTint="@color/red">
+
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/editText_carrierNumber"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:hint="@string/bs_mobile_number_hint"
+                            android:inputType="phone"
+                            android:singleLine="true" />
+                    </com.google.android.material.textfield.TextInputLayout>
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/verificationCodeFieldLayout"
+                    android:layout_width="match_parent"
+                    android:layout_gravity="center"
+                    android:gravity="center"
+                    android:layout_height="match_parent"
+                    android:orientation="horizontal">
+
+                    <com.google.android.material.textfield.TextInputLayout
+                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                        android:padding="1dp"
+                        android:layout_width="50dp"
+                        android:layout_height="match_parent">
+
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/verificationCodeField1"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:maxLength="1"
+                            android:gravity="center"
+                            android:inputType="number"/>
+                    </com.google.android.material.textfield.TextInputLayout>
+
+                    <com.google.android.material.textfield.TextInputLayout
+                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                        android:padding="1dp"
+                        android:layout_width="50dp"
+                        android:layout_height="match_parent">
+
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/verificationCodeField2"
+                            android:layout_width="match_parent"
+                            android:gravity="center"
+                            android:maxLength="1"
+                            android:inputType="number"
+                            android:layout_height="wrap_content" />
+                    </com.google.android.material.textfield.TextInputLayout>
+
+                    <com.google.android.material.textfield.TextInputLayout
+                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                        android:padding="1dp"
+                        android:layout_width="50dp"
+                        android:layout_height="match_parent">
+
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/verificationCodeField3"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:gravity="center"
+                            android:maxLength="1"
+                            android:inputType="number"/>
+                    </com.google.android.material.textfield.TextInputLayout>
+
+                    <com.google.android.material.textfield.TextInputLayout
+                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                        android:padding="1dp"
+                        android:layout_width="50dp"
+                        android:layout_height="match_parent">
+
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/verificationCodeField4"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:gravity="center"
+                            android:maxLength="1"
+                            android:inputType="number"/>
+                    </com.google.android.material.textfield.TextInputLayout>
+
+                    <com.google.android.material.textfield.TextInputLayout
+                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                        android:padding="1dp"
+                        android:layout_width="50dp"
+                        android:layout_height="match_parent">
+
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/verificationCodeField5"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:gravity="center"
+                            android:maxLength="1"
+                            android:inputType="number"/>
+                    </com.google.android.material.textfield.TextInputLayout>
+
+                    <com.google.android.material.textfield.TextInputLayout
+                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                        android:padding="1dp"
+                        android:layout_width="50dp"
+                        android:layout_height="match_parent">
+
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/verificationCodeField6"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:gravity="center"
+                            android:maxLength="1"
+                            android:inputType="number"/>
+                    </com.google.android.material.textfield.TextInputLayout>
+                </LinearLayout>
 
                 <Button
                     android:id="@+id/bs_save_details"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="10dp"
+                    android:layout_marginTop="14dp"
                     android:backgroundTint="@color/yellow"
                     android:text="@string/bs_save_details_button_text"
                     android:textColor="@color/black"
@@ -116,9 +237,9 @@
                 <View
                     android:id="@+id/view8"
                     android:layout_width="match_parent"
+                    android:layout_height="1dp"
                     android:layout_marginTop="8dp"
-                    android:background="@color/solidGrey"
-                    android:layout_height="1dp" />
+                    android:background="@color/solidGrey" />
 
                 <TextView
                     android:id="@+id/textView33"
@@ -144,9 +265,9 @@
                     <EditText
                         android:id="@+id/bs_paypal_address"
                         android:layout_width="wrap_content"
-                        android:layout_marginStart="8dp"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
+                        android:layout_marginStart="8dp"
                         android:layout_weight="1"
                         android:ems="10"
                         android:hint="@string/bs_paypal_address_hint"

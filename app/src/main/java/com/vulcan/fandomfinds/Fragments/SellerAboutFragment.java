@@ -1,5 +1,8 @@
 package com.vulcan.fandomfinds.Fragments;
 
+import android.content.Intent;
+import android.graphics.Paint;
+import android.net.Uri;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -21,7 +24,9 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.google.gson.Gson;
+import com.vulcan.fandomfinds.Activity.BillingShippingActivity;
 import com.vulcan.fandomfinds.Adapter.SocialMediaAdapter;
+import com.vulcan.fandomfinds.Domain.BillingShippingDomain;
 import com.vulcan.fandomfinds.Domain.SellerDomain;
 import com.vulcan.fandomfinds.Domain.SocialMedia;
 import com.vulcan.fandomfinds.Domain.SocialMediaDomain;
@@ -32,6 +37,7 @@ import java.util.ArrayList;
 public class SellerAboutFragment extends Fragment {
     FirebaseFirestore firestore;
     SellerDomain seller;
+    TextView description,sellerAboutPhone,sellerAboutEmail;
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -49,8 +55,24 @@ public class SellerAboutFragment extends Fragment {
         seller = (new Gson()).fromJson(sellerString,SellerDomain.class);
 
         if(seller != null){
-            TextView description = fragment.findViewById(R.id.seller_about_frag_desc);
-            description.setText(seller.getBio());
+            description = fragment.findViewById(R.id.seller_about_frag_desc);
+            sellerAboutPhone = fragment.findViewById(R.id.sellerAboutPhone);
+            sellerAboutEmail = fragment.findViewById(R.id.sellerAboutEmail);
+
+            description.setText(seller.getBio() != null ? seller.getBio() : "NONE");
+            sellerAboutEmail.setText(seller.getEmail() != null ? seller.getEmail() : "NONE");
+            sellerAboutEmail.setPaintFlags(sellerAboutEmail.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
+            sellerAboutEmail.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(Intent.ACTION_SENDTO);
+                    intent.setData(Uri.parse("mailto:"));
+                    intent.putExtra(Intent.EXTRA_EMAIL, seller.getEmail());
+                    if (intent.resolveActivity(requireActivity().getPackageManager()) != null) {
+                        startActivity(Intent.createChooser(intent, "Choose an email app"));
+                    }
+                }
+            });
 
             ArrayList<SocialMediaDomain> items = new ArrayList<>();
 
@@ -95,6 +117,25 @@ public class SellerAboutFragment extends Fragment {
                                                 @Override
                                                 public void onFailure(@NonNull Exception e) {
                                                     Toast.makeText(getContext(),"Seller Details Loading Failed!",Toast.LENGTH_LONG).show();
+                                                }
+                                            });
+
+                                    snapshot.getReference().collection("Billing-Shipping").get()
+                                            .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                                                @Override
+                                                public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                                                    if(task.isSuccessful()){
+                                                        for (QueryDocumentSnapshot snapshot1 : task.getResult()){
+                                                            BillingShippingDomain billingShipping = snapshot1.toObject(BillingShippingDomain.class);
+                                                            String mobileNumber = billingShipping.getMobileNumber();
+                                                            sellerAboutPhone.setText(mobileNumber != null ? mobileNumber : "NONE");
+                                                        }
+                                                    }
+                                                }
+                                            }).addOnFailureListener(new OnFailureListener() {
+                                                @Override
+                                                public void onFailure(@NonNull Exception e) {
+                                                    Toast.makeText(getContext(),"Details Loading Failed! Try Again Later.",Toast.LENGTH_LONG).show();
                                                 }
                                             });
                                 }

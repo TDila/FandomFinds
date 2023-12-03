@@ -1,6 +1,7 @@
 package com.vulcan.fandomfinds.Activity;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 
@@ -17,12 +18,20 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.DocumentChange;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.gson.Gson;
 import com.squareup.picasso.Picasso;
+import com.vulcan.fandomfinds.Animations.LoadingDialog;
+import com.vulcan.fandomfinds.Domain.Follower;
 import com.vulcan.fandomfinds.Domain.SellerDomain;
 import com.vulcan.fandomfinds.Fragments.SellerAboutFragment;
 import com.vulcan.fandomfinds.Fragments.SellerStoreFragment;
@@ -37,6 +46,10 @@ public class SellerPublicProfileActivity extends AppCompatActivity {
     private SellerDomain seller;
     private ImageView profileSellerImg;
     private TextView store_text,about_text,sellerName,followerCount,followButton;
+    private int currentFollowerCount;
+    FirebaseUser user;
+    FirebaseAuth firebaseAuth;
+    LoadingDialog loadingDialog;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -48,16 +61,30 @@ public class SellerPublicProfileActivity extends AppCompatActivity {
         String sellerDetails = intent.getStringExtra("seller");
         seller = (new Gson()).fromJson(sellerDetails, SellerDomain.class);
 
+        setListeners();
+
+        loadingDialog.show();
         loadStreamerDetails();
         loadStore();
 
-        setListeners();
+
+        firestore.collection("Sellers").whereEqualTo("id",seller.getId()).addSnapshotListener(new EventListener<QuerySnapshot>() {
+            @Override
+            public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException error) {
+                for(DocumentChange change : value.getDocumentChanges()){
+                    SellerDomain sellerChange = change.getDocument().toObject(SellerDomain.class);
+                    followerCount.setText(sellerChange.getFollowers()+" followers");
+                    currentFollowerCount = sellerChange.getFollowers();
+                }
+            }
+        });
     }
 
     private void setListeners() {
         about_text.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                loadingDialog.show();
                 for (Fragment fragment : getSupportFragmentManager().getFragments()){
                     getSupportFragmentManager().beginTransaction().remove(fragment).commit();
                 }
@@ -68,6 +95,7 @@ public class SellerPublicProfileActivity extends AppCompatActivity {
         store_text.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                loadingDialog.show();
                 for (Fragment fragment : getSupportFragmentManager().getFragments()){
                     getSupportFragmentManager().beginTransaction().remove(fragment).commit();
                 }
@@ -77,14 +105,16 @@ public class SellerPublicProfileActivity extends AppCompatActivity {
         followButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                followProcess();
+                if(followButton.getText().equals("follow")){
+                    loadingDialog.show();
+                    followProcess();
+                }
             }
         });
     }
 
     private void followProcess() {
         if(seller != null){
-            int currentFollowerCount = seller.getFollowers();
             int newFollowerCount = currentFollowerCount + 1;
             seller.setFollowers(newFollowerCount);
             Map<String,Object> map = new HashMap<>();
@@ -96,10 +126,24 @@ public class SellerPublicProfileActivity extends AppCompatActivity {
                         public void onComplete(@NonNull Task<QuerySnapshot> task) {
                             if(task.isSuccessful()){
                                 for (QueryDocumentSnapshot snapshot : task.getResult()){
-                                    snapshot.getReference().update(map).addOnSuccessListener(new OnSuccessListener<Void>() {
+                                    Follower follower = new Follower(user.getEmail());
+                                    snapshot.getReference().collection("Followers").add(follower).addOnCompleteListener(new OnCompleteListener<DocumentReference>() {
                                         @Override
-                                        public void onSuccess(Void unused) {
-                                            
+                                        public void onComplete(@NonNull Task<DocumentReference> task) {
+                                            if(task.isSuccessful()){
+                                                snapshot.getReference().update(map).addOnSuccessListener(new OnSuccessListener<Void>() {
+                                                    @Override
+                                                    public void onSuccess(Void unused) {
+                                                        updateFollowerCount(map,snapshot);
+                                                    }
+                                                }).addOnFailureListener(new OnFailureListener() {
+                                                    @Override
+                                                    public void onFailure(@NonNull Exception e) {
+                                                        loadingDialog.cancel();
+                                                        Toast.makeText(SellerPublicProfileActivity.this,"Following Process Failed! Try again later.",Toast.LENGTH_LONG).show();
+                                                    }
+                                                });
+                                            }
                                         }
                                     });
                                 }
@@ -108,16 +152,93 @@ public class SellerPublicProfileActivity extends AppCompatActivity {
                     }).addOnFailureListener(new OnFailureListener() {
                         @Override
                         public void onFailure(@NonNull Exception e) {
-                            Toast.makeText(SellerPublicProfileActivity.this,"Following Failed! Try again Later.",Toast.LENGTH_LONG).show();
+                            loadingDialog.cancel();
+                            Toast.makeText(SellerPublicProfileActivity.this,"Following Process Failed! Try again later.",Toast.LENGTH_LONG).show();
                         }
                     });
         }
     }
 
+    private void updateFollowerCount(Map<String, Object> map,QueryDocumentSnapshot snapshot) {
+        snapshot.getReference().update(map).addOnSuccessListener(new OnSuccessListener<Void>() {
+            @Override
+            public void onSuccess(Void unused) {
+                customerFollowingProcess();
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                loadingDialog.cancel();
+                Toast.makeText(SellerPublicProfileActivity.this,"Following Process Failed! Try again later.",Toast.LENGTH_LONG).show();
+            }
+        });
+    }
+
+    private void customerFollowingProcess() {
+        firestore.collection("Customers").whereEqualTo("email",user.getEmail()).get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if (task.isSuccessful()){
+                            for (QueryDocumentSnapshot snapshot : task.getResult()){
+                                snapshot.getReference().collection("Following").add(seller).addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
+                                    @Override
+                                    public void onSuccess(DocumentReference documentReference) {
+                                        loadingDialog.cancel();
+                                        followButton.setText("following");
+                                    }
+                                }).addOnFailureListener(new OnFailureListener() {
+                                    @Override
+                                    public void onFailure(@NonNull Exception e) {
+                                        loadingDialog.cancel();
+                                        Toast.makeText(SellerPublicProfileActivity.this,"Following Process Failed! Try again later.",Toast.LENGTH_LONG).show();
+                                    }
+                                });
+                            }
+                        }
+                    }
+                }).addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        loadingDialog.cancel();
+                        Toast.makeText(SellerPublicProfileActivity.this,"Following Process Failed! Try again later.",Toast.LENGTH_LONG).show();
+                    }
+                });
+
+        firestore.collection("Sellers").whereEqualTo("email",user.getEmail()).get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if (task.isSuccessful()){
+                            for (QueryDocumentSnapshot snapshot : task.getResult()){
+                                snapshot.getReference().collection("Following").add(seller).addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
+                                    @Override
+                                    public void onSuccess(DocumentReference documentReference) {
+                                        loadingDialog.cancel();
+                                        followButton.setText("following");
+                                    }
+                                }).addOnFailureListener(new OnFailureListener() {
+                                    @Override
+                                    public void onFailure(@NonNull Exception e) {
+                                        loadingDialog.cancel();
+                                        Toast.makeText(SellerPublicProfileActivity.this,"Following Process Failed! Try again later.",Toast.LENGTH_LONG).show();
+                                    }
+                                });
+                            }
+                        }
+                    }
+                }).addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        loadingDialog.cancel();
+                        Toast.makeText(SellerPublicProfileActivity.this,"Following Process Failed! Try again later.",Toast.LENGTH_LONG).show();
+                    }
+                });
+    }
+
     private void loadStreamerDetails() {
         if(seller != null){
             sellerName.setText(seller.getSellerName() != null ? seller.getSellerName():"Seller Name");
-            followerCount.setText(seller.getFollowers()+" followers");
             String imageUrl = seller.getProfilePicUrl();
             if(imageUrl != null && !imageUrl.isEmpty()){
                 firebaseStorage.getReference("profile-images/"+imageUrl).getDownloadUrl()
@@ -135,6 +256,48 @@ public class SellerPublicProfileActivity extends AppCompatActivity {
                         .load(drawableResourceId)
                         .into(profileSellerImg);
             }
+            firestore.collection("Customers").whereEqualTo("email",user.getEmail()).get()
+                    .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                        @Override
+                        public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                            if(task.isSuccessful()){
+                                for (QueryDocumentSnapshot snapshot : task.getResult()){
+                                    snapshot.getReference().collection("Following").whereEqualTo("email",seller.getEmail()).get()
+                                            .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                                                @Override
+                                                public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                                                    if(task.isSuccessful()){
+                                                        if(task.getResult().size() != 0){
+                                                            followButton.setText("following");
+                                                        }
+                                                    }
+                                                }
+                                            });
+                                }
+                            }
+                        }
+                    });
+            firestore.collection("Sellers").whereEqualTo("email",user.getEmail()).get()
+                    .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                        @Override
+                        public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                            if(task.isSuccessful()){
+                                for (QueryDocumentSnapshot snapshot : task.getResult()){
+                                    snapshot.getReference().collection("Following").whereEqualTo("email",seller.getEmail()).get()
+                                            .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                                                @Override
+                                                public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                                                    if(task.isSuccessful()){
+                                                        if(task.getResult().size() != 0){
+                                                            followButton.setText("following");
+                                                        }
+                                                    }
+                                                }
+                                            });
+                                }
+                            }
+                        }
+                    });
         }
     }
 
@@ -143,6 +306,7 @@ public class SellerPublicProfileActivity extends AppCompatActivity {
                 .beginTransaction()
                 .add(R.id.fragmentContainerView5,SellerStoreFragment.class,null)
                 .commit();
+        loadingDialog.cancel();
     }
     public void loadAbout(){
         String sellerString = (new Gson()).toJson(seller);
@@ -157,6 +321,7 @@ public class SellerPublicProfileActivity extends AppCompatActivity {
                 .beginTransaction()
                 .add(R.id.fragmentContainerView5,sellerAboutFragment,null)
                 .commit();
+        loadingDialog.cancel();
     }
     private void initComponents() {
         store_text = findViewById(R.id.seller_public_profile_store_text);
@@ -169,5 +334,9 @@ public class SellerPublicProfileActivity extends AppCompatActivity {
         //firebaseStorage
         firebaseStorage = FirebaseStorage.getInstance();
         firestore = FirebaseFirestore.getInstance();
+        firebaseAuth = FirebaseAuth.getInstance();
+        user = firebaseAuth.getCurrentUser();
+
+        loadingDialog = new LoadingDialog(SellerPublicProfileActivity.this);
     }
 }
