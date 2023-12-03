@@ -67,7 +67,7 @@
                     android:layout_height="270dp"
                     android:layout_margin="16dp"
                     android:scaleType="fitCenter"
-                    android:src="@drawable/item_1"
+                    android:src="@drawable/product_default"
                     app:layout_constraintBottom_toBottomOf="@+id/single_product_image_view"
                     app:layout_constraintEnd_toEndOf="@+id/single_product_image_view"
                     app:layout_constraintStart_toStartOf="@+id/single_product_image_view"

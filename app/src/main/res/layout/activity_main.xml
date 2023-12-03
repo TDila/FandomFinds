@@ -109,7 +109,8 @@
                     android:ems="10"
                     android:hint="@string/home_searchbar_hint"
                     android:inputType="text"
-                    android:padding="8dp" />
+                    android:padding="8dp"
+                    android:imeOptions="actionSearch" />
 
             </LinearLayout>
 

@@ -15,7 +15,7 @@
         android:layout_marginTop="8dp"
         android:padding="5dp"
         android:background="@drawable/grey_background"
-        android:src="@drawable/item_1"
+        android:src="@drawable/product_default"
         android:layout_marginBottom="8dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"

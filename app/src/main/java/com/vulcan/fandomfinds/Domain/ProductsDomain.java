@@ -22,23 +22,10 @@ public class ProductsDomain implements Serializable {
     private ProductStatus status = ProductStatus.AVAILABLE;
     private String type;
     private String sellerId;
+    private String titleInsensitive;
 
     public ProductsDomain() {
     }
-
-    public ProductsDomain(String title, String description, String picUrl, int review, double score, double price, double discount, String sellerName, String[] sizes, String type) {
-        this.title = title;
-        this.description = description;
-        this.picUrl = picUrl;
-        this.review = review;
-        this.score = score;
-        this.price = price;
-        this.discount = discount;
-        this.sellerName = sellerName;
-        this.sizes = sizes;
-        this.type = type;
-    }
-
     public ProductsDomain(String id, String title, String description, String picUrl, int review, double score, double price, double discount, String sellerName, List<String> sizesList, ProductStatus status, String type, String sellerId) {
         this.id = id;
         this.title = title;
@@ -54,8 +41,7 @@ public class ProductsDomain implements Serializable {
         this.type = type;
         this.sellerId = sellerId;
     }
-
-    public ProductsDomain(String id, String title, String description, String picUrl, int review, double score, double price, double discount, String sellerName, String[] sizes, ProductStatus status, String type, String sellerId) {
+    public ProductsDomain(String id, String title, String description, String picUrl, int review, double score, double price, double discount, String sellerName, List<String> sizesList, ProductStatus status, String type, String sellerId,String titleInsensitive) {
         this.id = id;
         this.title = title;
         this.description = description;
@@ -65,10 +51,19 @@ public class ProductsDomain implements Serializable {
         this.price = price;
         this.discount = discount;
         this.sellerName = sellerName;
-        this.sizes = sizes;
+        this.sizesList = sizesList;
         this.status = status;
         this.type = type;
         this.sellerId = sellerId;
+        this.titleInsensitive = titleInsensitive;
+    }
+
+    public String getTitleInsensitive() {
+        return titleInsensitive;
+    }
+
+    public void setTitleInsensitive(String titleInsensitive) {
+        this.titleInsensitive = titleInsensitive;
     }
 
     public double getPrice() {

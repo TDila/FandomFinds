@@ -24,7 +24,7 @@
         android:id="@+id/cart_product_img"
         android:layout_width="64dp"
         android:layout_height="64dp"
-        android:src="@drawable/item_1"
+        android:src="@drawable/product_default"
         app:layout_constraintBottom_toBottomOf="@+id/view5"
         app:layout_constraintEnd_toEndOf="@+id/view5"
         app:layout_constraintStart_toStartOf="@+id/view5"

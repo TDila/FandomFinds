@@ -18,7 +18,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintEnd_toStartOf="@id/linearLayoutSellerDetails"
-        tools:srcCompat="@mipmap/maniya_streams_round" />
+        android:src="@drawable/account_default_profile_img" />
 
     <LinearLayout
         android:id="@+id/linearLayoutSellerDetails"

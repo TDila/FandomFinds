@@ -340,8 +340,9 @@ public class SellerStoreSaveUpdateActivity extends AppCompatActivity {
                             savingDataDialog.cancel();
                             Toast.makeText(SellerStoreSaveUpdateActivity.this,"Please select at least one product size!",Toast.LENGTH_LONG).show();
                         }else{
+                            String titleInsensitive = productTitle.toLowerCase();
                             ProductsDomain newProduct = new ProductsDomain(productId,productTitle,productDescription,imageId,0,0
-                                    ,productPrice,productDiscount,seller.getSellerName(),selectedSizes, ProductStatus.AVAILABLE,productType,seller.getId());
+                                    ,productPrice,productDiscount,seller.getSellerName(),selectedSizes, ProductStatus.AVAILABLE,productType,seller.getId(),titleInsensitive);
                             addNewProduct(newProduct,imageId);
                         }
                     }else{
@@ -365,12 +366,14 @@ public class SellerStoreSaveUpdateActivity extends AppCompatActivity {
                     }else{
                         ProductsDomain newProduct;
                         if(imagePath == null){
+                            String titleInsensitive = productTitle.toLowerCase();
                             newProduct = new ProductsDomain(product.getId(),productTitle,productDescription,product.getPicUrl(),product.getReview(),product.getScore()
-                                    ,productPrice,productDiscount,product.getSellerName(),selectedSizes, product.getStatus(),productType,product.getSellerId());
+                                    ,productPrice,productDiscount,product.getSellerName(),selectedSizes, product.getStatus(),productType,product.getSellerId(),titleInsensitive);
                         }else{
                             imageId = UUID.randomUUID().toString();
+                            String titleInsensitive = productTitle.toLowerCase();
                             newProduct = new ProductsDomain(product.getId(),productTitle,productDescription,imageId,product.getReview(),product.getScore()
-                                    ,productPrice,productDiscount,product.getSellerName(),selectedSizes, product.getStatus(),productType,product.getSellerId());
+                                    ,productPrice,productDiscount,product.getSellerName(),selectedSizes, product.getStatus(),productType,product.getSellerId(),titleInsensitive);
                         }
                         updateProduct(newProduct);
                     }
@@ -400,6 +403,8 @@ public class SellerStoreSaveUpdateActivity extends AppCompatActivity {
         map.put("discount",product.getDiscount());
         map.put("status",product.getStatus());
         map.put("type",product.getType());
+        String titleInsensitive = product.getTitle().toLowerCase();
+        map.put("titleInsensitive",titleInsensitive);
         if(product.getType().equals("Apparel")){
             map.put("sizesList",product.getSizesList());
         }else{

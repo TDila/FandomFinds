@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Paint;
+import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,6 +16,10 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.squareup.picasso.Picasso;
 import com.vulcan.fandomfinds.Activity.SingleProductViewActivity;
 import com.vulcan.fandomfinds.Domain.ProductsDomain;
 import com.vulcan.fandomfinds.R;
@@ -24,12 +29,14 @@ import org.w3c.dom.Text;
 import java.util.ArrayList;
 
 public class ExploreProductsAdapter extends RecyclerView.Adapter<ExploreProductsAdapter.ViewHolder> {
+    FirebaseStorage firebaseStorage;
     ArrayList<ProductsDomain> items;
     Context context;
 
     public ExploreProductsAdapter(ArrayList<ProductsDomain> items, Context context) {
         this.items = items;
         this.context = context;
+        this.firebaseStorage = FirebaseStorage.getInstance();
     }
 
     @NonNull
@@ -59,11 +66,33 @@ public class ExploreProductsAdapter extends RecyclerView.Adapter<ExploreProducts
         }
         holder.explore_product_seller_name.setText(items.get(position).getSellerName());
 
-        int drawableResourceId = holder.itemView.getResources().getIdentifier(items.get(position).getPicUrl(),
-                "drawable",holder.itemView.getContext().getPackageName());
-        Glide.with(holder.itemView.getContext())
-                .load(drawableResourceId)
-                .into(holder.explore_product_img);
+        if(items.get(position).getPicUrl() != null){
+            firebaseStorage.getReference("product-images/"+items.get(position).getPicUrl())
+                    .getDownloadUrl()
+                    .addOnSuccessListener(new OnSuccessListener<Uri>() {
+                        @Override
+                        public void onSuccess(Uri uri) {
+                            Picasso.get()
+                                    .load(uri)
+                                    .into(holder.explore_product_img);
+                        }
+                    }).addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            int drawableId = holder.itemView.getContext().getResources()
+                                    .getIdentifier("product_default","drawable",holder.itemView.getContext().getPackageName());
+                            Glide.with(holder.itemView.getContext())
+                                    .load(drawableId)
+                                    .into(holder.explore_product_img);
+                        }
+                    });
+        }else{
+            int drawableId = holder.itemView.getContext().getResources()
+                    .getIdentifier("product_default","drawable",holder.itemView.getContext().getPackageName());
+            Glide.with(holder.itemView.getContext())
+                    .load(drawableId)
+                    .into(holder.explore_product_img);
+        }
 
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override

@@ -12,7 +12,7 @@
         android:id="@+id/dealsPic"
         android:layout_width="175dp"
         android:layout_height="155dp"
-        android:src="@drawable/item_1"
+        android:src="@drawable/product_default"
         android:layout_margin="8dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

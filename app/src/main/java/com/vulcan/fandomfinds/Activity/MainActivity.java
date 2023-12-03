@@ -9,13 +9,17 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.KeyEvent;
 import android.view.View;
+import android.view.inputmethod.EditorInfo;
+import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.material.search.SearchBar;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentChange;
@@ -33,6 +37,8 @@ import com.vulcan.fandomfinds.Domain.SellerDomain;
 import com.vulcan.fandomfinds.Fragments.bottomNavigation;
 import com.vulcan.fandomfinds.R;
 
+import org.w3c.dom.Text;
+
 import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
@@ -46,6 +52,7 @@ public class MainActivity extends AppCompatActivity {
     private SellerDomain seller;
     private TextView username,signUpInButton;
     private LinearLayout signUpInLayout;
+    private EditText exploreSearchBar;
     LoadingDialog loadingDialog;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,12 +64,7 @@ public class MainActivity extends AppCompatActivity {
         user = firebaseAuth.getCurrentUser();
 
         initComponents();
-        signUpInButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                loadSignUpInActivity();
-            }
-        });
+        setListeners();
 
         if(user == null){
             signUpInLayout.setVisibility(View.VISIBLE);
@@ -76,6 +78,33 @@ public class MainActivity extends AppCompatActivity {
         initDealsRecyclerView();
         initSellerRecyclerView();
         loadBottomNavigationBar();
+    }
+
+    private void setListeners() {
+        signUpInButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                loadSignUpInActivity();
+            }
+        });
+        exploreSearchBar.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                if (actionId == EditorInfo.IME_ACTION_SEARCH) {
+                    search(v.getText().toString());
+                    return true;
+                }
+                return false;
+            }
+        });
+    }
+
+    private void search(String text) {
+        Intent intent = new Intent(MainActivity.this,ExploreActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+        intent.putExtra("text",text);
+        exploreSearchBar.setText("");
+        startActivity(intent);
     }
 
     private void searchUserProcess() {
@@ -128,6 +157,7 @@ public class MainActivity extends AppCompatActivity {
         signUpInButton = findViewById(R.id.signUpInButton);
         signUpInLayout = findViewById(R.id.signUpInLayout);
         loadingDialog = new LoadingDialog(MainActivity.this);
+        exploreSearchBar = findViewById(R.id.explore_search_bar);
     }
 
     private void loadSignUpInActivity() {

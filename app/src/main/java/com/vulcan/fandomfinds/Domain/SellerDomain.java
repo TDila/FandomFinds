@@ -6,6 +6,8 @@ public class SellerDomain extends BaseDomain{
     private int followers;
     private String sellerName;
     private String bio;
+    private String sellerNameInsensitive;
+
     public int getFollowers() {
         return followers;
     }
@@ -24,6 +26,14 @@ public class SellerDomain extends BaseDomain{
 
     public void setBio(String bio) {
         this.bio = bio;
+    }
+
+    public String getSellerNameInsensitive() {
+        return sellerNameInsensitive;
+    }
+
+    public void setSellerNameInsensitive(String sellerNameInsensitive) {
+        this.sellerNameInsensitive = sellerNameInsensitive;
     }
 
     public SellerDomain() {
@@ -49,11 +59,11 @@ public class SellerDomain extends BaseDomain{
         this.followers = followers;
     }
 
-    public SellerDomain(String id, String email, String fname, String lname, String profilePicUrl, int followers, String sellerName, String bio) {
+    public SellerDomain(String id, String email, String fname, String lname, String profilePicUrl, int followers, String sellerName, String bio, String sellerNameInsensitive) {
         super(id, email, fname, lname, profilePicUrl);
         this.followers = followers;
         this.sellerName = sellerName;
         this.bio = bio;
+        this.sellerNameInsensitive = sellerNameInsensitive;
     }
-
 }

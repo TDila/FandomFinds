@@ -35,24 +35,24 @@ public class PurchasedItemListFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        String[] sizes = {"XL","M"};
-        SellerDomain sellerDomain = new SellerDomain("ManiYa Streams","maniya_streams_round",444);
-        ProductsDomain productsDomain = new ProductsDomain("T-shirt black","","item_1",15,4,410,10,"Maniya Streams",sizes,"Apparel");
-        CustomerDomain customerDomain = new CustomerDomain("CUS_574865","customer@gmail.com");
-
-        ArrayList<OrderDomain> items = new ArrayList<>();
-
-        LocalDateTime localDateTime = null;
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
-            localDateTime = LocalDateTime.now();
-        }
-        items.add(new OrderDomain("OD_756485",productsDomain,sellerDomain,customerDomain, String.valueOf(localDateTime),"15000",1,"104/9,Nedurupitiya,Kandana",11320));
-        items.add(new OrderDomain("OD_756485",productsDomain,sellerDomain,customerDomain, String.valueOf(localDateTime),"15000",1,"104/9,Nedurupitiya,Kandana",11320));
-        items.add(new OrderDomain("OD_756485",productsDomain,sellerDomain,customerDomain, String.valueOf(localDateTime),"15000",1,"104/9,Nedurupitiya,Kandana",11320));
-
-        RecyclerView recyclerView = view.findViewById(R.id.purchasedHistoryList);
-        recyclerView.setLayoutManager(new LinearLayoutManager(view.getContext(),LinearLayoutManager.VERTICAL,false));
-        PurchasedHistoryListAdapter adapter = new PurchasedHistoryListAdapter(items,view.getContext());
-        recyclerView.setAdapter(adapter);
+//        String[] sizes = {"XL","M"};
+//        SellerDomain sellerDomain = new SellerDomain("ManiYa Streams","maniya_streams_round",444);
+//        ProductsDomain productsDomain = new ProductsDomain("T-shirt black","","item_1",15,4,410,10,"Maniya Streams",sizes,"Apparel");
+//        CustomerDomain customerDomain = new CustomerDomain("CUS_574865","customer@gmail.com");
+//
+//        ArrayList<OrderDomain> items = new ArrayList<>();
+//
+//        LocalDateTime localDateTime = null;
+//        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+//            localDateTime = LocalDateTime.now();
+//        }
+//        items.add(new OrderDomain("OD_756485",productsDomain,sellerDomain,customerDomain, String.valueOf(localDateTime),"15000",1,"104/9,Nedurupitiya,Kandana",11320));
+//        items.add(new OrderDomain("OD_756485",productsDomain,sellerDomain,customerDomain, String.valueOf(localDateTime),"15000",1,"104/9,Nedurupitiya,Kandana",11320));
+//        items.add(new OrderDomain("OD_756485",productsDomain,sellerDomain,customerDomain, String.valueOf(localDateTime),"15000",1,"104/9,Nedurupitiya,Kandana",11320));
+//
+//        RecyclerView recyclerView = view.findViewById(R.id.purchasedHistoryList);
+//        recyclerView.setLayoutManager(new LinearLayoutManager(view.getContext(),LinearLayoutManager.VERTICAL,false));
+//        PurchasedHistoryListAdapter adapter = new PurchasedHistoryListAdapter(items,view.getContext());
+//        recyclerView.setAdapter(adapter);
     }
 }

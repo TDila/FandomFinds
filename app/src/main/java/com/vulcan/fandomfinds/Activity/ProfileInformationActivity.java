@@ -194,6 +194,8 @@ public class ProfileInformationActivity extends AppCompatActivity {
         map.put("lname",seller.getLname());
         map.put("sellerName",seller.getSellerName());
         map.put("bio",seller.getBio());
+        String sellerNameInsensitive = seller.getSellerName().toLowerCase();
+        map.put("sellerNameInsensitive",sellerNameInsensitive);
 
         socialMedia.setYoutube(youtubeLink);
         socialMedia.setTwitter(twitterLink);
