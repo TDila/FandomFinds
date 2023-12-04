@@ -33,10 +33,12 @@
     <TextView
         android:id="@+id/cart_product_title"
         style="@style/textStyleBold"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
         android:text="@string/cart_product_title"
+        app:layout_constraintEnd_toStartOf="@+id/cart_total_product_price"
         app:layout_constraintStart_toEndOf="@+id/view5"
         app:layout_constraintTop_toTopOf="@+id/view5" />
 

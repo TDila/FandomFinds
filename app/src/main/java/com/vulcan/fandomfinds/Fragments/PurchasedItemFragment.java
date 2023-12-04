@@ -1,6 +1,7 @@
 package com.vulcan.fandomfinds.Fragments;
 
 import android.app.FragmentManager;
+import android.net.Uri;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -14,13 +15,30 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.gson.Gson;
+import com.squareup.picasso.Picasso;
+import com.vulcan.fandomfinds.Domain.BillingShippingDomain;
+import com.vulcan.fandomfinds.Domain.CustomerDomain;
 import com.vulcan.fandomfinds.Domain.OrderDomain;
+import com.vulcan.fandomfinds.Domain.ProductsDomain;
+import com.vulcan.fandomfinds.Domain.SellerDomain;
 import com.vulcan.fandomfinds.R;
 
 import java.util.ArrayList;
 
 public class PurchasedItemFragment extends Fragment {
     private ImageView phItemProductImg,phItemSellerImg;
+    private OrderDomain order;
+    FirebaseFirestore firestore;
+    FirebaseStorage firebaseStorage;
     TextView phItemProductTitle,phItemProductCount,phItemTotalPrice,phItemPurchasedDate,phItemOrderId
             ,phItemDeliveryAddress,phItemSellerName,phItemOrderStatus;
     @Nullable
@@ -33,8 +51,13 @@ public class PurchasedItemFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        Bundle args = getArguments();
-        ArrayList<OrderDomain> items = null;
+        firestore = FirebaseFirestore.getInstance();
+        firebaseStorage = FirebaseStorage.getInstance();
+
+//        Bundle args = getArguments();
+//        ArrayList<OrderDomain> items = null;
+        String orderString = getArguments().getString("order");
+        order = (new Gson()).fromJson(orderString, OrderDomain.class);
 
         view.findViewById(R.id.phItemBackButton).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -50,30 +73,109 @@ public class PurchasedItemFragment extends Fragment {
         });
 
         initComponents(view);
-        if(args != null){
-            items = args.<OrderDomain>getParcelableArrayList("items");
-            OrderDomain orderDomain = items.get(0);
+        if(order != null){
+            firestore.collection("Orders").whereEqualTo("id",order.getId()).get()
+                    .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                        @Override
+                        public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                            if(task.isSuccessful()){
+                                for (QueryDocumentSnapshot snapshot : task.getResult()){
+                                    OrderDomain order = snapshot.toObject(OrderDomain.class);
+                                    snapshot.getReference().collection("Product").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                                        @Override
+                                        public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                                            if (task.isSuccessful()){
+                                                for (QueryDocumentSnapshot snapshot1 : task.getResult()){
+                                                    ProductsDomain product = snapshot1.toObject(ProductsDomain.class);
+                                                    phItemProductTitle.setText(product.getTitle());
+                                                    firebaseStorage.getReference("product-images/"+product.getPicUrl())
+                                                            .getDownloadUrl()
+                                                            .addOnSuccessListener(new OnSuccessListener<Uri>() {
+                                                                @Override
+                                                                public void onSuccess(Uri uri) {
+                                                                    Picasso.get()
+                                                                            .load(uri)
+                                                                            .into(phItemProductImg);
+                                                                }
+                                                            }).addOnFailureListener(new OnFailureListener() {
+                                                                @Override
+                                                                public void onFailure(@NonNull Exception e) {
+                                                                    int drawableId = getResources()
+                                                                            .getIdentifier("product_default","drawable",getContext().getPackageName());
 
-            phItemProductTitle.setText(orderDomain.getProduct().getTitle());
-            phItemProductCount.setText("Item Count : "+orderDomain.getItemCount());
-            phItemTotalPrice.setText("$"+orderDomain.getTotalPrice());
-            phItemPurchasedDate.setText(orderDomain.getDateTime());
-            phItemOrderId.setText(orderDomain.getId());
-            phItemDeliveryAddress.setText(orderDomain.getAddress());
-            phItemSellerName.setText(orderDomain.getSeller().getSellerName());
-            phItemOrderStatus.setText(String.valueOf(orderDomain.getStatus()));
+                                                                    Glide.with(getContext())
+                                                                            .load(drawableId)
+                                                                            .into(phItemProductImg);
+                                                                }
+                                                            });
+                                                }
+                                            }
+                                        }
+                                    });
+                                    snapshot.getReference().collection("Customer").get()
+                                            .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                                                @Override
+                                                public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                                                    if(task.isSuccessful()){
+                                                        for (QueryDocumentSnapshot snapshot1 : task.getResult()){
+                                                            snapshot1.getReference().collection("Delivery-Payment").get()
+                                                                    .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                                                                        @Override
+                                                                        public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                                                                            if(task.isSuccessful()){
+                                                                                for (QueryDocumentSnapshot snapshot1 : task.getResult()){
+                                                                                    BillingShippingDomain billingShipping = snapshot1.toObject(BillingShippingDomain.class);
+                                                                                    phItemDeliveryAddress.setText(billingShipping.getShippingAddress());
+                                                                                }
+                                                                            }
+                                                                        }
+                                                                    });
+                                                        }
+                                                    }
+                                                }
+                                            });
+                                    snapshot.getReference().collection("Seller").get()
+                                            .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                                                @Override
+                                                public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                                                    if(task.isSuccessful()){
+                                                        for (QueryDocumentSnapshot snapshot1 : task.getResult()){
+                                                            SellerDomain seller = snapshot1.toObject(SellerDomain.class);
+                                                            phItemSellerName.setText(seller.getSellerName());
 
-            int productPicId = view.getContext().getResources()
-                    .getIdentifier(orderDomain.getProduct().getPicUrl(),"drawable",view.getContext().getPackageName());
-            Glide.with(view.getContext())
-                    .load(productPicId)
-                    .into(phItemProductImg);
+                                                            firebaseStorage.getReference("profile-images/"+seller.getProfilePicUrl())
+                                                                    .getDownloadUrl()
+                                                                    .addOnSuccessListener(new OnSuccessListener<Uri>() {
+                                                                        @Override
+                                                                        public void onSuccess(Uri uri) {
+                                                                            Picasso.get()
+                                                                                    .load(uri)
+                                                                                    .into(phItemSellerImg);
+                                                                        }
+                                                                    }).addOnFailureListener(new OnFailureListener() {
+                                                                        @Override
+                                                                        public void onFailure(@NonNull Exception e) {
+                                                                            int drawableId = getResources()
+                                                                                    .getIdentifier("account_default_profile_img","drawable",getContext().getPackageName());
 
-            int sellerPicId = view.getContext().getResources()
-                    .getIdentifier(orderDomain.getSeller().getProfilePicUrl(),"drawable",view.getContext().getPackageName());
-            Glide.with(view.getContext())
-                    .load("https://firebasestorage.googleapis.com/v0/b/fir-storage-13496.appspot.com/o/unnamed%20(13)-modified.png?alt=media&token=800e71d0-6738-4e42-b7ea-c9ebf8b25727")
-                    .into(phItemSellerImg);
+                                                                            Glide.with(getContext())
+                                                                                    .load(drawableId)
+                                                                                    .into(phItemSellerImg);
+                                                                        }
+                                                                    });
+                                                        }
+                                                    }
+                                                }
+                                            });
+                                }
+                            }
+                        }
+                    });
+            phItemProductCount.setText("Item Count : "+order.getItemCount());
+            phItemTotalPrice.setText("$"+order.getTotalPrice());
+            phItemPurchasedDate.setText(order.getDateTime());
+            phItemOrderId.setText(order.getId());
+            phItemOrderStatus.setText(String.valueOf(order.getStatus()));
         }
     }
 

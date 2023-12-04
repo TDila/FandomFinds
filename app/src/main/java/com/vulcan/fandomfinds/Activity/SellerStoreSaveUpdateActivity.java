@@ -166,8 +166,10 @@ public class SellerStoreSaveUpdateActivity extends AppCompatActivity {
         findViewById(R.id.sellerStoreSaveUpdateBackButton).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(SellerStoreSaveUpdateActivity.this,SellerStoreActivity.class);
-                startActivity(intent);
+//                Intent intent = new Intent(SellerStoreSaveUpdateActivity.this,SellerStoreActivity.class);
+//                String sellerString = (new Gson()).toJson(seller);
+//                intent.putExtra("user",sellerString);
+//                startActivity(intent);
                 finish();
             }
         });

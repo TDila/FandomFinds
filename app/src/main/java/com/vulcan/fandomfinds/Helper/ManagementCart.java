@@ -15,23 +15,23 @@ public class ManagementCart {
         this.context = context;
         this.tinyDB = new TinyDB(context);
     }
-    public void insertFood(ProductsDomain item){
-        ArrayList<ProductsDomain> listpop = getListCart();
+    public void insertProduct(ProductsDomain item){
+        ArrayList<ProductsDomain> productList = getListCart();
         boolean existAlready = false;
         int n = 0;
-        for (int i = 0; i < listpop.size();i++){
-            if(listpop.get(i).getTitle().equals(item.getTitle())){
+        for (int position = 0; position < productList.size();position++){
+            if(productList.get(position).getId().equals(item.getId())){
                 existAlready = true;
-                n = i;
+                n = position;
                 break;
             }
         }
         if(existAlready){
-            listpop.get(n).setNumberInCart(item.getNumberInCart());
+            productList.get(n).setNumberInCart(item.getNumberInCart());
         }else{
-            listpop.add(item);
+            productList.add(item);
         }
-        tinyDB.putListObject("CartList",listpop);
+        tinyDB.putListObject("CartList",productList);
         Toast.makeText(context,"Added to your Cart",Toast.LENGTH_LONG).show();
     }
     public ArrayList<ProductsDomain> getListCart(){

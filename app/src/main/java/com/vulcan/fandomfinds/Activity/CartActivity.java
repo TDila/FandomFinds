@@ -7,8 +7,11 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
@@ -17,22 +20,36 @@ import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.vulcan.fandomfinds.Adapter.CartAdapter;
 import com.vulcan.fandomfinds.Animations.LoadingDialog;
+import com.vulcan.fandomfinds.Domain.BaseDomain;
 import com.vulcan.fandomfinds.Domain.BillingShippingDomain;
 import com.vulcan.fandomfinds.Domain.CustomerDomain;
+import com.vulcan.fandomfinds.Domain.OrderDomain;
+import com.vulcan.fandomfinds.Domain.ProductsDomain;
 import com.vulcan.fandomfinds.Domain.SellerDomain;
 import com.vulcan.fandomfinds.Domain.SocialMedia;
+import com.vulcan.fandomfinds.Enum.OrderStatus;
 import com.vulcan.fandomfinds.Fragments.bottomNavigation;
 import com.vulcan.fandomfinds.Helper.ChangeNumberitemsListener;
 import com.vulcan.fandomfinds.Helper.ManagementCart;
+import com.vulcan.fandomfinds.Helper.TinyDB;
 import com.vulcan.fandomfinds.R;
+
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.Random;
+import java.util.UUID;
 
 public class CartActivity extends AppCompatActivity{
     private RecyclerView.Adapter adapter;
@@ -43,6 +60,7 @@ public class CartActivity extends AppCompatActivity{
     private ScrollView scrollView;
     private ImageView cart_back_btn,empty_cart_img,billingShipping_address,billingShipping_paymentMethod;
     private LinearLayout cartErrorMessageLayout;
+    private Button cartOrderNowButton;
     FirebaseFirestore firestore;
     CustomerDomain customer;
     FirebaseAuth firebaseAuth;
@@ -50,6 +68,8 @@ public class CartActivity extends AppCompatActivity{
     FirebaseUser user;
     BillingShippingDomain billingShipping;
     LoadingDialog loadingDialog;
+    TinyDB tinyDB;
+    double delivery = 10;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -61,13 +81,16 @@ public class CartActivity extends AppCompatActivity{
         managementCart = new ManagementCart(this);
 
         initView();
+        setListeners();
         loadingDialog.show();
         setVariable();
         calculateCart();
         initList();
         loadBottomNavigationBar();
         searchUserProcess();
+    }
 
+    private void setListeners() {
         billingShipping_address.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -81,6 +104,106 @@ public class CartActivity extends AppCompatActivity{
                 loadBillingShipping();
             }
         });
+        cartOrderNowButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                loadingDialog.show();
+                orderNow();
+            }
+        });
+    }
+
+    private void orderNow() {
+        String datetime = null;
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
+            datetime = formatter.format(LocalDateTime.now());
+        }
+
+        ArrayList<ProductsDomain> productList = tinyDB.getListObject("CartList");
+        for (int position = 0; position < productList.size();position++){
+            ProductsDomain product = productList.get(position);
+            double price  = product.getPrice();
+            int count = product.getNumberInCart();
+            double discount = product.getDiscount();
+            double total = (price - price*discount/100)*count + delivery;
+            String orderId = "OD_"+ String.format("%06d",new Random().nextInt(999999));
+            OrderDomain order = new OrderDomain(orderId,datetime,total,count,billingShipping.getPostalCode(),user.getEmail(),product.getSellerId());
+            firestore.collection("Orders").add(order).addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
+                @Override
+                public void onSuccess(DocumentReference documentReference1) {
+                    documentReference1.collection("Product").add(product).addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
+                        @Override
+                        public void onSuccess(DocumentReference documentReference) {
+                            if(customer != null){
+                                saveBuyer(documentReference1, customer,product.getSellerId());
+                            }else if (seller != null){
+                                saveBuyer(documentReference1,seller,product.getSellerId());
+                            }
+                        }
+                    });
+                }
+            }).addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception e) {
+                    Toast.makeText(CartActivity.this,"Order Process Failed! Try again later.",Toast.LENGTH_LONG).show();
+                }
+            });
+        }
+
+        String key = "CartList";
+        SharedPreferences.Editor editor = PreferenceManager.getDefaultSharedPreferences(CartActivity.this).edit();
+        editor.remove(key);
+        editor.apply();
+        loadingDialog.cancel();
+        Toast.makeText(CartActivity.this,"Successfully Made the Order!",Toast.LENGTH_LONG).show();
+        goToPurchaseHistory();
+    }
+
+    private void goToPurchaseHistory() {
+        Intent intent = new Intent(CartActivity.this,PurchaseHistoryActivity.class);
+        startActivity(intent);
+        finish();
+    }
+
+    private void saveBuyer(DocumentReference orderRef,BaseDomain user,String sellerId) {
+        orderRef.collection("Customer").add(user).addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
+            @Override
+            public void onSuccess(DocumentReference documentReference) {
+                documentReference.collection("Delivery-Payment").add(billingShipping)
+                        .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
+                            @Override
+                            public void onSuccess(DocumentReference documentReference) {
+                                saveSeller(orderRef,sellerId);
+                            }
+                        });
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Toast.makeText(CartActivity.this,"Order Process Failed! Try again later.",Toast.LENGTH_LONG).show();
+            }
+        });
+    }
+
+    private void saveSeller(DocumentReference orderRef,String sellerId) {
+        firestore.collection("Sellers").whereEqualTo("id",sellerId).get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if (task.isSuccessful()){
+                            for (QueryDocumentSnapshot snapshot : task.getResult()){
+                                SellerDomain seller = snapshot.toObject(SellerDomain.class);
+                                orderRef.collection("Seller").add(seller).addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
+                                    @Override
+                                    public void onSuccess(DocumentReference documentReference) {
+
+                                    }
+                                });
+                            }
+                        }
+                    }
+                });
     }
 
     private void loadBillingShipping(){
@@ -120,15 +243,20 @@ public class CartActivity extends AppCompatActivity{
 
     private void calculateCart() {
         double percentTax = 0.02;
-        double delivery = 10;
+        double deliveryTotal = 0;
         tax = Math.round(managementCart.getTotal()*percentTax*100.0)/100.0;
 
-        double total = Math.round((managementCart.getTotal()+tax+delivery)*100)/100;
+        ArrayList<ProductsDomain> productList = tinyDB.getListObject("CartList");
+        for (int position = 0; position < productList.size();position++){
+            deliveryTotal = deliveryTotal + delivery;
+        }
+
+        double total = Math.round((managementCart.getTotal()+tax+deliveryTotal)*100)/100;
         double itemTotal = Math.round(managementCart.getTotal()*100)/100;
 
         cart_subtotal.setText("$"+itemTotal);
         cart_total_tax.setText("$"+tax);
-        cart_delivery.setText("$"+delivery);
+        cart_delivery.setText("$"+deliveryTotal);
         cart_total.setText("$"+total);
     }
 
@@ -158,6 +286,8 @@ public class CartActivity extends AppCompatActivity{
         loadingDialog = new LoadingDialog(CartActivity.this);
         cart_delivery_address_value = findViewById(R.id.cart_delivery_address_value);
         cart_payment_method_value = findViewById(R.id.cart_payment_method_value);
+        cartOrderNowButton = findViewById(R.id.cart_order_now_btn);
+        tinyDB = new TinyDB(CartActivity.this);
     }
     private void loadBottomNavigationBar(){
         getSupportFragmentManager()

@@ -16,7 +16,6 @@ public class ProductsDomain implements Serializable {
     private double price;
     private double discount = 0;
     private String sellerName;
-    private String[] sizes;
     private List<String> sizesList;
     private String selectedSize = null;
     private ProductStatus status = ProductStatus.AVAILABLE;
@@ -136,14 +135,6 @@ public class ProductsDomain implements Serializable {
 
     public void setNumberInCart(int numberInCart) {
         this.numberInCart = numberInCart;
-    }
-
-    public String[] getSizes() {
-        return sizes;
-    }
-
-    public void setSizes(String[] sizes) {
-        this.sizes = sizes;
     }
 
     public List<String> getSizesList() {

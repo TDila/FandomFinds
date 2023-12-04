@@ -124,7 +124,6 @@ public class AccountActivity extends AppCompatActivity {
                 intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
                 if(seller != null){
                     String sellerString = (new Gson()).toJson(seller);
-                    String socialMediaString = (new Gson()).toJson(socialMedia);
                     intent.putExtra("user",sellerString);
                 }
                 startActivity(intent);

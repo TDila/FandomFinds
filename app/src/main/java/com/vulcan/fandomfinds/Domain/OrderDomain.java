@@ -12,35 +12,49 @@ import java.time.LocalDateTime;
 
 public class OrderDomain implements Serializable, Parcelable {
     private String id;
-    private ProductsDomain product;
-    private SellerDomain seller;
-    private CustomerDomain customer;
     private String dateTime;
-    private String totalPrice;
+    private double totalPrice;
     private int itemCount;
-    private String address;
     private int postalCode;
-    private OrderStatus status = OrderStatus.ONGOING;
+    private String status = String.valueOf(OrderStatus.ONGOING);
+    private String customerEmail;
+    private String sellerId;
 
-    public OrderDomain(String id, ProductsDomain product, SellerDomain seller, CustomerDomain customer, String dateTime, String totalPrice, int itemCount, String address, int postalCode) {
+    public OrderDomain() {
+    }
+
+    public OrderDomain(String id, String dateTime, double totalPrice, int itemCount, int postalCode, String customerEmail, String sellerId) {
         this.id = id;
-        this.product = product;
-        this.seller = seller;
-        this.customer = customer;
         this.dateTime = dateTime;
         this.totalPrice = totalPrice;
         this.itemCount = itemCount;
-        this.address = address;
         this.postalCode = postalCode;
+        this.customerEmail = customerEmail;
+        this.sellerId = sellerId;
     }
 
     protected OrderDomain(Parcel in) {
         id = in.readString();
         dateTime = in.readString();
-        totalPrice = in.readString();
+        totalPrice = in.readDouble();
         itemCount = in.readInt();
-        address = in.readString();
         postalCode = in.readInt();
+    }
+
+    public String getCustomerEmail() {
+        return customerEmail;
+    }
+
+    public void setCustomerEmail(String customerEmail) {
+        this.customerEmail = customerEmail;
+    }
+
+    public String getSellerId() {
+        return sellerId;
+    }
+
+    public void setSellerId(String sellerId) {
+        this.sellerId = sellerId;
     }
 
     public static final Creator<OrderDomain> CREATOR = new Creator<OrderDomain>() {
@@ -63,30 +77,6 @@ public class OrderDomain implements Serializable, Parcelable {
         this.id = id;
     }
 
-    public ProductsDomain getProduct() {
-        return product;
-    }
-
-    public void setProduct(ProductsDomain product) {
-        this.product = product;
-    }
-
-    public SellerDomain getSeller() {
-        return seller;
-    }
-
-    public void setSeller(SellerDomain seller) {
-        this.seller = seller;
-    }
-
-    public CustomerDomain getCustomer() {
-        return customer;
-    }
-
-    public void setCustomer(CustomerDomain customer) {
-        this.customer = customer;
-    }
-
     public String getDateTime() {
         return dateTime;
     }
@@ -95,11 +85,11 @@ public class OrderDomain implements Serializable, Parcelable {
         this.dateTime = dateTime;
     }
 
-    public String getTotalPrice() {
+    public double getTotalPrice() {
         return totalPrice;
     }
 
-    public void setTotalPrice(String totalPrice) {
+    public void setTotalPrice(double totalPrice) {
         this.totalPrice = totalPrice;
     }
 
@@ -111,14 +101,6 @@ public class OrderDomain implements Serializable, Parcelable {
         this.itemCount = itemCount;
     }
 
-    public String getAddress() {
-        return address;
-    }
-
-    public void setAddress(String address) {
-        this.address = address;
-    }
-
     public int getPostalCode() {
         return postalCode;
     }
@@ -127,11 +109,11 @@ public class OrderDomain implements Serializable, Parcelable {
         this.postalCode = postalCode;
     }
 
-    public OrderStatus getStatus() {
+    public String getStatus() {
         return status;
     }
 
-    public void setStatus(OrderStatus status) {
+    public void setStatus(String status) {
         this.status = status;
     }
 
@@ -144,9 +126,8 @@ public class OrderDomain implements Serializable, Parcelable {
     public void writeToParcel(@NonNull Parcel dest, int flags) {
         dest.writeString(id);
         dest.writeString(dateTime);
-        dest.writeString(totalPrice);
+        dest.writeDouble(totalPrice);
         dest.writeInt(itemCount);
-        dest.writeString(address);
         dest.writeInt(postalCode);
     }
 }

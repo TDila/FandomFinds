@@ -43,12 +43,12 @@ import java.util.Map;
 
 
 public class TinyDB {
-
     private SharedPreferences preferences;
     private String DEFAULT_APP_IMAGEDATA_DIRECTORY;
     private String lastImagePath = "";
 
     public TinyDB(Context appContext) {
+//        preferences = appContext.getSharedPreferences("Cart",Context.MODE_PRIVATE);
         preferences = PreferenceManager.getDefaultSharedPreferences(appContext);
     }
 
@@ -233,13 +233,13 @@ public class TinyDB {
         Gson gson = new Gson();
 
         ArrayList<String> objStrings = getListString(key);
-        ArrayList<ProductsDomain> playerList = new ArrayList<>();
+        ArrayList<ProductsDomain> productList = new ArrayList<>();
 
         for(String jObjString : objStrings){
             ProductsDomain player  = gson.fromJson(jObjString,  ProductsDomain.class);
-            playerList.add(player);
+            productList.add(player);
         }
-        return playerList;
+        return productList;
     }
 
 
@@ -299,7 +299,10 @@ public class TinyDB {
     public void putListString(String key, ArrayList<String> stringList) {
         checkForNullKey(key);
         String[] myStringList = stringList.toArray(new String[stringList.size()]);
-        preferences.edit().putString(key, TextUtils.join("‚‗‚", myStringList)).apply();
+        SharedPreferences.Editor editor = preferences.edit();
+        editor.putString(key, TextUtils.join("‚‗‚", myStringList));
+        editor.apply();
+//        preferences.edit().putString().apply();
     }
 
     public void putBoolean(String key, boolean value) {

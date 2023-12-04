@@ -129,7 +129,11 @@ public class SingleProductViewActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 newArrival.setNumberInCart(numberOrder);
-                managementCart.insertFood(newArrival);
+                if(newArrival.getType().equals("Apparel")){
+                    String selectedSize = spinner.getSelectedItem().toString();
+                    newArrival.setSelectedSize(selectedSize);
+                }
+                managementCart.insertProduct(newArrival);
             }
         });
         single_product_backArrow.setOnClickListener(new View.OnClickListener() {

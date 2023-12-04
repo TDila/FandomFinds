@@ -92,7 +92,7 @@ public class SellerStoreItemAdapter extends RecyclerView.Adapter<SellerStoreItem
                 intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
                 intent.putExtra("item",items.get(position));
                 holder.itemView.getContext().startActivity(intent);
-                ((Activity)context).finish();
+//                ((Activity)context).finish();
             }
         });
     }

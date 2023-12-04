@@ -155,7 +155,7 @@
                 android:id="@+id/phItemSellerImg"
                 android:layout_width="50dp"
                 android:layout_height="50dp"
-                android:src="@mipmap/maniya_streams_round" />
+                android:src="@drawable/account_default_profile_img" />
 
             <TextView
                 android:id="@+id/phItemSellerName"

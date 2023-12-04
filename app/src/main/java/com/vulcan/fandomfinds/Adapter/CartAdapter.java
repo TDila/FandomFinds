@@ -2,6 +2,7 @@ package com.vulcan.fandomfinds.Adapter;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,6 +14,9 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.bitmap.GranularRoundedCorners;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.squareup.picasso.Picasso;
 import com.vulcan.fandomfinds.Domain.ProductsDomain;
 import com.vulcan.fandomfinds.Helper.ChangeNumberitemsListener;
 import com.vulcan.fandomfinds.Helper.ManagementCart;
@@ -23,6 +27,7 @@ import java.util.ArrayList;
 public class CartAdapter extends RecyclerView.Adapter<CartAdapter.ViewHolder> {
     ArrayList<ProductsDomain> items;
     private ManagementCart managementCart;
+    FirebaseStorage firebaseStorage;
     ChangeNumberitemsListener changeNumberitemsListener;
     Context context;
 
@@ -31,6 +36,7 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.ViewHolder> {
         this.changeNumberitemsListener = changeNumberitemsListener;
         managementCart = new ManagementCart(context);
         this.context = context;
+        this.firebaseStorage = FirebaseStorage.getInstance();
     }
 
     @NonNull
@@ -61,12 +67,24 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.ViewHolder> {
         holder.cart_total_product_price.setText("$"+String.valueOf(total_value));
         holder.cart_product_count.setText(String.valueOf(items.get(position).getNumberInCart()));
 
-        int drawableResourceId = holder.itemView.getContext().getResources()
-                .getIdentifier(items.get(position).getPicUrl(),"drawable",holder.itemView.getContext().getPackageName());
-        Glide.with(holder.itemView.getContext())
-                .load(drawableResourceId)
-                .transform(new GranularRoundedCorners(30,30,30,30))
-                .into(holder.cart_product_img);
+        if(items.get(position).getPicUrl() != null){
+            firebaseStorage.getReference("product-images/"+items.get(position).getPicUrl())
+                    .getDownloadUrl()
+                    .addOnSuccessListener(new OnSuccessListener<Uri>() {
+                        @Override
+                        public void onSuccess(Uri uri) {
+                            Picasso.get()
+                                    .load(uri)
+                                    .into(holder.cart_product_img);
+                        }
+                    });
+        }else{
+            int drawableResourceId = holder.itemView.getResources().getIdentifier("product_default","drawable",holder.itemView.getContext().getPackageName());
+            Glide.with(holder.itemView.getContext())
+                    .load(drawableResourceId)
+                    .into(holder.cart_product_img);
+        }
+
 
         holder.cart_plus_button.setOnClickListener(new View.OnClickListener() {
             @Override
