@@ -19,8 +19,10 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.google.gson.Gson;
 import com.vulcan.fandomfinds.Adapter.SellerStoreItemAdapter;
 import com.vulcan.fandomfinds.Domain.ProductsDomain;
+import com.vulcan.fandomfinds.Domain.SellerDomain;
 import com.vulcan.fandomfinds.R;
 
 import java.util.ArrayList;
@@ -30,13 +32,19 @@ public class SellerStoreActivity extends AppCompatActivity {
     FirebaseAuth firebaseAuth;
     FirebaseFirestore firestore;
     FirebaseUser user;
+    SellerDomain seller;
+    private Button button;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_seller_store);
 
         initComponents();
+        setListeners();
+        loadStoreItems();
+    }
 
+    private void setListeners() {
         findViewById(R.id.sellerStoreBackButton).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -44,11 +52,9 @@ public class SellerStoreActivity extends AppCompatActivity {
             }
         });
 
-        loadStoreItems();
         Intent intent = getIntent();
         String userString = intent.getStringExtra("user");
-
-        Button button = findViewById(R.id.sellerStoreAddNewProductButton);
+        seller = (new Gson()).fromJson(userString, SellerDomain.class);
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -62,6 +68,8 @@ public class SellerStoreActivity extends AppCompatActivity {
     }
 
     public void initComponents(){
+        button = findViewById(R.id.sellerStoreAddNewProductButton);
+
         firestore = FirebaseFirestore.getInstance();
         firebaseAuth = FirebaseAuth.getInstance();
         user = firebaseAuth.getCurrentUser();
@@ -74,7 +82,7 @@ public class SellerStoreActivity extends AppCompatActivity {
         recyclerView.setLayoutManager(new LinearLayoutManager(SellerStoreActivity.this,LinearLayoutManager.VERTICAL,false));
         SellerStoreItemAdapter sellerStoreItemAdapter = new SellerStoreItemAdapter(items,SellerStoreActivity.this);
         recyclerView.setAdapter(sellerStoreItemAdapter);
-        firestore.collection("Products").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+        firestore.collection("Products").whereEqualTo("sellerId",seller.getId()).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
                 if(task.isSuccessful()){

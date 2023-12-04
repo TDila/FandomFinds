@@ -65,9 +65,7 @@ public class SellerAboutFragment extends Fragment {
             sellerAboutEmail.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Intent intent = new Intent(Intent.ACTION_SENDTO);
-                    intent.setData(Uri.parse("mailto:"));
-                    intent.putExtra(Intent.EXTRA_EMAIL, seller.getEmail());
+                    Intent intent = new Intent(Intent.ACTION_SENDTO,Uri.fromParts("mailto",seller.getEmail(), null));
                     if (intent.resolveActivity(requireActivity().getPackageManager()) != null) {
                         startActivity(Intent.createChooser(intent, "Choose an email app"));
                     }
@@ -125,10 +123,14 @@ public class SellerAboutFragment extends Fragment {
                                                 @Override
                                                 public void onComplete(@NonNull Task<QuerySnapshot> task) {
                                                     if(task.isSuccessful()){
-                                                        for (QueryDocumentSnapshot snapshot1 : task.getResult()){
-                                                            BillingShippingDomain billingShipping = snapshot1.toObject(BillingShippingDomain.class);
-                                                            String mobileNumber = billingShipping.getMobileNumber();
-                                                            sellerAboutPhone.setText(mobileNumber != null ? mobileNumber : "NONE");
+                                                        if(task.getResult().size() == 0){
+                                                            sellerAboutPhone.setText("NONE");
+                                                        }else{
+                                                            for (QueryDocumentSnapshot snapshot1 : task.getResult()){
+                                                                BillingShippingDomain billingShipping = snapshot1.toObject(BillingShippingDomain.class);
+                                                                String mobileNumber = billingShipping.getMobileNumber();
+                                                                sellerAboutPhone.setText(mobileNumber != null ? mobileNumber : "NONE");
+                                                            }
                                                         }
                                                     }
                                                 }

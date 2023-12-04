@@ -176,4 +176,6 @@
     <string name="sellerAboutEmailTitle">Email :</string>
     <string name="sellerAboutEmailValue">example@gmail.com</string>
     <string name="sellerAboutPhoneValue">+94 71 093 4205</string>
+    <string name="web_client_id">857812291987-vmkihafgvpiulip5cifcblqtpp9im1ot.apps.googleusercontent.com</string>
+    <string name="login_with_google_message">*New users will be signed up as customers when logging in. Sellers, please sign up separately.*</string>
 </resources>

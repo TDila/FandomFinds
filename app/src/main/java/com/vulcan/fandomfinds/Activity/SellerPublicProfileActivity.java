@@ -302,9 +302,17 @@ public class SellerPublicProfileActivity extends AppCompatActivity {
     }
 
     public void loadStore(){
+        String sellerString = (new Gson()).toJson(seller);
+
+        Bundle bundle = new Bundle();
+        bundle.putString("seller", sellerString);
+
+        SellerStoreFragment sellerStoreFragment = new SellerStoreFragment();
+        sellerStoreFragment.setArguments(bundle);
+
         getSupportFragmentManager()
                 .beginTransaction()
-                .add(R.id.fragmentContainerView5,SellerStoreFragment.class,null)
+                .add(R.id.fragmentContainerView5,sellerStoreFragment,null)
                 .commit();
         loadingDialog.cancel();
     }

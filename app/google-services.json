@@ -12,7 +12,20 @@
           "package_name": "com.vulcan.fandomfinds"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "857812291987-l6ucouno68uhq28c3hcrcgmlsfcb65kj.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.vulcan.fandomfinds",
+            "certificate_hash": "02c14db790c1caaa2780d95dd23fc3f42b07aaeb"
+          }
+        },
+        {
+          "client_id": "857812291987-vmkihafgvpiulip5cifcblqtpp9im1ot.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
           "current_key": "AIzaSyCrD4Zm7lyoilFXOM9K2esJfJq2dwWZRCU"
@@ -20,7 +33,12 @@
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "857812291987-vmkihafgvpiulip5cifcblqtpp9im1ot.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
         }
       }
     }

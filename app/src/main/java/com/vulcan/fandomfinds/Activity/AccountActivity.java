@@ -66,11 +66,6 @@ public class AccountActivity extends AppCompatActivity {
         }else{
             loadingDialog.show();
             searchUserProcess();
-            if(seller != null){
-                sellerStore.setVisibility(View.VISIBLE);
-            }else if(customer != null){
-                sellerStore.setVisibility(View.GONE);
-            }
         }
 
         loadBottomNavigationBar();
@@ -166,6 +161,7 @@ public class AccountActivity extends AppCompatActivity {
                             for (QueryDocumentSnapshot snapshot : task.getResult()){
                                 customer = snapshot.toObject(CustomerDomain.class);
                                 if(customer != null) {
+                                    sellerStore.setVisibility(View.GONE);
                                     String imgUrl = customer.getProfilePicUrl();
                                     setProfileImg(imgUrl);
                                     if(customer.getFname() != null && customer.getLname() != null){
@@ -190,6 +186,7 @@ public class AccountActivity extends AppCompatActivity {
                             for (QueryDocumentSnapshot snapshot : task.getResult()){
                                 seller = snapshot.toObject(SellerDomain.class);
                                 if(seller != null){
+                                    sellerStore.setVisibility(View.VISIBLE);
                                     String imgUrl = seller.getProfilePicUrl();
                                     setProfileImg(imgUrl);
                                     snapshot.getReference().collection("Social-Media").get()

@@ -243,11 +243,15 @@ public class BillingShippingActivity extends AppCompatActivity {
     }
     private void saveDetails() {
         String shippingAddress= shippingAddressField.getText().toString();
-        String postalCode = postalCodeField.getText().toString();
+        int postalCode = 0;
+        String postalCodeString = postalCodeField.getText().toString();
+        if(!postalCodeString.isEmpty()){
+            postalCode = Integer.parseInt(postalCodeString);
+        }
         String mobileNumber = ccp.getFullNumberWithPlus();
 
         billingShipping.setShippingAddress(shippingAddress);
-        billingShipping.setPostalCode(Integer.parseInt(postalCode));
+        billingShipping.setPostalCode(postalCode);
 
         Map<String,Object> map = new HashMap<>();
         map.put("shippingAddress",billingShipping.getShippingAddress());
@@ -277,8 +281,13 @@ public class BillingShippingActivity extends AppCompatActivity {
                                                                 @Override
                                                                 public void onSuccess(Void unused) {
                                                                     if(billingShipping.getMobileNumber() == null || !billingShipping.getMobileNumber().equals(mobileNumber)) {
-                                                                        billingShipping.setMobileNumber(mobileNumber);
-                                                                        verifyAndStoreMobile(snapshot1);
+                                                                        if(ccp.isValidFullNumber()){
+                                                                            billingShipping.setMobileNumber(mobileNumber);
+                                                                            verifyAndStoreMobile(snapshot1);
+                                                                        }else{
+                                                                            savingDataDialog.cancel();
+                                                                            Toast.makeText(BillingShippingActivity.this,"Saved Successfully!",Toast.LENGTH_LONG).show();
+                                                                        }
                                                                     }else{
                                                                         savingDataDialog.cancel();
                                                                         Toast.makeText(BillingShippingActivity.this,"Saved Successfully!",Toast.LENGTH_LONG).show();

@@ -18,8 +18,10 @@ import com.google.firebase.Firebase;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.google.gson.Gson;
 import com.vulcan.fandomfinds.Adapter.DealsAdapter;
 import com.vulcan.fandomfinds.Domain.ProductsDomain;
+import com.vulcan.fandomfinds.Domain.SellerDomain;
 import com.vulcan.fandomfinds.R;
 
 import java.util.ArrayList;
@@ -27,6 +29,7 @@ import java.util.List;
 
 public class SellerStoreFragment extends Fragment {
     FirebaseFirestore firestore;
+    SellerDomain seller;
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -37,6 +40,9 @@ public class SellerStoreFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+
+        String sellerString = getArguments().getString("seller");
+        seller = (new Gson()).fromJson(sellerString, SellerDomain.class);
 
         firestore = FirebaseFirestore.getInstance();
         loadDeals(view);
@@ -51,7 +57,7 @@ public class SellerStoreFragment extends Fragment {
         DealsAdapter adapter = new DealsAdapter(items);
         deals_list.setAdapter(adapter);
 
-        firestore.collection("Products").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+        firestore.collection("Products").whereEqualTo("sellerId",seller.getId()).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
                 if(task.isSuccessful()){
@@ -84,7 +90,7 @@ public class SellerStoreFragment extends Fragment {
         DealsAdapter adapter = new DealsAdapter(items);
         other_list.setAdapter(adapter);
 
-        firestore.collection("Products").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+        firestore.collection("Products").whereEqualTo("sellerId",seller.getId()).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
                 if(task.isSuccessful()){

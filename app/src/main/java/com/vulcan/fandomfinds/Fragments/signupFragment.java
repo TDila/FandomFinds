@@ -6,6 +6,11 @@ import android.content.res.ColorStateList;
 import android.net.Uri;
 import android.os.Bundle;
 
+import androidx.activity.result.ActivityResult;
+import androidx.activity.result.ActivityResultCallback;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.IntentSenderRequest;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.coordinatorlayout.widget.CoordinatorLayout;
@@ -18,9 +23,16 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.Toast;
 
+import com.google.android.gms.auth.api.identity.BeginSignInRequest;
+import com.google.android.gms.auth.api.identity.BeginSignInResult;
+import com.google.android.gms.auth.api.identity.Identity;
+import com.google.android.gms.auth.api.identity.SignInClient;
+import com.google.android.gms.auth.api.identity.SignInCredential;
+import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -29,12 +41,16 @@ import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.Firebase;
+import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthUserCollisionException;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.GoogleAuthProvider;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QuerySnapshot;
+import com.vulcan.fandomfinds.Activity.MainActivity;
 import com.vulcan.fandomfinds.Animations.LoadingDialog;
 import com.vulcan.fandomfinds.Domain.BillingShippingDomain;
 import com.vulcan.fandomfinds.Domain.CustomerDomain;
@@ -50,9 +66,13 @@ public class signupFragment extends Fragment {
     private Button sign_up_button;
     private RadioButton sign_up_as_customer,sign_up_as_seller;
     private LoadingDialog loadingDialog;
+    private LinearLayout signUpWithGoogle;
     CoordinatorLayout coordinatorLayout;
     FirebaseAuth firebaseAuth;
     FirebaseFirestore firestore;
+    SignInClient signInClient;
+    FirebaseUser user;
+    private boolean googleSignUp = false;
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -76,6 +96,8 @@ public class signupFragment extends Fragment {
         emailLayout = view.findViewById(R.id.emailLayout);
         passwordLayout = view.findViewById(R.id.passwordLayout);
         coordinatorLayout = view.findViewById(R.id.coordinatorSignUp);
+        signUpWithGoogle = view.findViewById(R.id.sign_up_with_google);
+        signInClient = Identity.getSignInClient(getContext());
 
 
         //password character length error listener
@@ -130,9 +152,9 @@ public class signupFragment extends Fragment {
                                         @Override
                                         public void onComplete(@NonNull Task<AuthResult> task) {
                                             if(task.isSuccessful()){
-                                                FirebaseUser user = firebaseAuth.getCurrentUser();
-                                                verfication(user);
-                                                saveUserData(user,email);
+                                                user = firebaseAuth.getCurrentUser();
+                                                verfication();
+                                                saveUserData();
                                             }
                                         }
                                     }).addOnFailureListener(new OnFailureListener() {
@@ -158,6 +180,99 @@ public class signupFragment extends Fragment {
                 }
             }
         });
+        signUpWithGoogle.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                BeginSignInRequest oneTapRequest = BeginSignInRequest.builder()
+                        .setGoogleIdTokenRequestOptions(
+                                BeginSignInRequest.GoogleIdTokenRequestOptions.builder()
+                                        .setSupported(true)
+                                        .setServerClientId(getString(R.string.web_client_id))
+                                        .setFilterByAuthorizedAccounts(false)
+                                        .build()
+                        ).build();
+
+                Task<BeginSignInResult> beginSignInResultTask = signInClient.beginSignIn(oneTapRequest);
+                beginSignInResultTask.addOnSuccessListener(new OnSuccessListener<BeginSignInResult>() {
+                    @Override
+                    public void onSuccess(BeginSignInResult beginSignInResult) {
+                        IntentSenderRequest intentSenderRequest = new IntentSenderRequest.Builder(beginSignInResult.getPendingIntent()).build();
+                        signInLauncher.launch(intentSenderRequest);
+                    }
+                }).addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Toast.makeText(getContext(),e.getMessage(),Toast.LENGTH_LONG).show();
+                    }
+                });
+            }
+        });
+    }
+
+    private final ActivityResultLauncher<IntentSenderRequest> signInLauncher
+            = registerForActivityResult(new ActivityResultContracts.StartIntentSenderForResult(),
+            new ActivityResultCallback<ActivityResult>() {
+                @Override
+                public void onActivityResult(ActivityResult o) {
+                    //o.getData() returns an Intent
+                    handleSignInResult(o.getData());
+                }
+            });
+
+    private void handleSignInResult(Intent intent){
+        try {
+            SignInCredential signInCredential = signInClient.getSignInCredentialFromIntent(intent);
+            String idToken = signInCredential.getGoogleIdToken();
+            firebaseAuthWithGoogle(idToken);
+        }catch (ApiException e){
+
+        }
+    }
+
+    private void firebaseAuthWithGoogle(String idToken){
+        AuthCredential authCredential = GoogleAuthProvider.getCredential(idToken,null);
+        Task<AuthResult> authResultTask = firebaseAuth.signInWithCredential(authCredential);
+        authResultTask.addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+            @Override
+            public void onComplete(@NonNull Task<AuthResult> task) {
+                if(task.isSuccessful()){
+                    googleSignUp = true;
+                    user = firebaseAuth.getCurrentUser();
+                    checkUserDocumentAlreadyExists();
+                }
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Toast.makeText(getContext(),"Failure3",Toast.LENGTH_LONG).show();
+            }
+        });
+    }
+
+    private void checkUserDocumentAlreadyExists() {
+        firestore.collection("Sellers").whereEqualTo("email",user.getEmail()).get()
+                        .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                            @Override
+                            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                                if(task.isSuccessful()){
+                                    if(task.getResult().size() == 0){
+                                        firestore.collection("Customers").whereEqualTo("email",user.getEmail()).get()
+                                                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                                                    @Override
+                                                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                                                        if(task.isSuccessful()){
+                                                            if(task.getResult().size() == 0){
+                                                                saveUserData();
+                                                            }else{
+                                                                loadHome();
+                                                            }
+                                                        }
+                                                    }
+                                                });
+                                    }
+                                }
+                            }
+                        });
     }
 
     private void loadLoginFragment() {
@@ -178,7 +293,7 @@ public class signupFragment extends Fragment {
         emailEditText.requestFocus();
     }
 
-    public void verfication(FirebaseUser user){
+    public void verfication(){
         if(user != null){
             user.sendEmailVerification();
             loadingDialog.cancel();
@@ -207,7 +322,7 @@ public class signupFragment extends Fragment {
         }
     }
 
-    public void saveUserData(FirebaseUser user,String email){
+    public void saveUserData(){
         boolean customer = sign_up_as_customer.isChecked();
         boolean seller = sign_up_as_seller.isChecked();
 
@@ -215,14 +330,18 @@ public class signupFragment extends Fragment {
         if(user != null){
             if(customer){
                 String userId = "CUS_"+ UUID.randomUUID();
-                CustomerDomain customerDetails = new CustomerDomain(userId,email);
+                CustomerDomain customerDetails = new CustomerDomain(userId,user.getEmail());
                 firestore.collection("Customers").add(customerDetails)
                         .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
                             @Override
                             public void onSuccess(DocumentReference documentReference) {
                                 loadingDialog.cancel();
-                                Toast.makeText(getContext(),"Signed Up Successfully!",Toast.LENGTH_LONG).show();
-                                loadLoginFragment();
+                                if(googleSignUp){
+                                    loadHome();
+                                }else{
+                                    Toast.makeText(getContext(),"Signed Up Successfully!",Toast.LENGTH_LONG).show();
+                                    loadLoginFragment();
+                                }
                             }
                         }).addOnFailureListener(new OnFailureListener() {
                             @Override
@@ -233,7 +352,7 @@ public class signupFragment extends Fragment {
                         });
             }else if(seller){
                 String userId = "SEL_"+UUID.randomUUID();
-                SellerDomain sellerDetails = new SellerDomain(userId,email);
+                SellerDomain sellerDetails = new SellerDomain(userId,user.getEmail());
                 SocialMedia socialMedia = new SocialMedia();
                 BillingShippingDomain billingShipping = new BillingShippingDomain();
                 firestore.collection("Sellers").add(sellerDetails)
@@ -245,8 +364,12 @@ public class signupFragment extends Fragment {
                                                     @Override
                                                     public void onSuccess(DocumentReference documentReference) {
                                                         loadingDialog.cancel();
-                                                        Toast.makeText(getContext(),"Signed Up Successfully!",Toast.LENGTH_LONG).show();
-                                                        loadLoginFragment();
+                                                        if(googleSignUp){
+                                                            loadHome();
+                                                        }else{
+                                                            Toast.makeText(getContext(),"Signed Up Successfully!",Toast.LENGTH_LONG).show();
+                                                            loadLoginFragment();
+                                                        }
                                                     }
                                                 }).addOnFailureListener(new OnFailureListener() {
                                             @Override
@@ -265,6 +388,13 @@ public class signupFragment extends Fragment {
                         });
             }
         }
+    }
+
+    private void loadHome(){
+        Intent intent = new Intent(getContext(), MainActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+        startActivity(intent);
+        getActivity().finish();
     }
 
 }
