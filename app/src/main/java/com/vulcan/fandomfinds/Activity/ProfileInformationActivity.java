@@ -94,6 +94,9 @@ public class ProfileInformationActivity extends AppCompatActivity {
     private SocialMedia socialMedia;
     FirebaseAuth firebaseAuth;
     FirebaseUser firebaseUser;
+    Uri croppedImgPath;
+    String userString;
+    String socialMediaString;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -135,16 +138,27 @@ public class ProfileInformationActivity extends AppCompatActivity {
     }
 
     private void loadProfileImg(String imgUrl) {
-        firebaseStorage.getReference("profile-images/"+imgUrl)
-                .getDownloadUrl()
-                .addOnSuccessListener(new OnSuccessListener<Uri>() {
-                    @Override
-                    public void onSuccess(Uri uri) {
-                        Picasso.get()
-                                .load(uri)
-                                .into(profileImage);
-                    }
-                });
+        Intent intent = getIntent();
+        String croppedImgPathString = intent.getStringExtra("croppedImgPath");
+        if(croppedImgPathString != null){
+            croppedImgPath = Uri.parse(croppedImgPathString);
+            Picasso.get()
+                    .load(croppedImgPath)
+                    .into(profileImage);
+            imagePath = croppedImgPath;
+        }else{
+            firebaseStorage.getReference("profile-images/"+imgUrl)
+                    .getDownloadUrl()
+                    .addOnSuccessListener(new OnSuccessListener<Uri>() {
+                        @Override
+                        public void onSuccess(Uri uri) {
+                            Picasso.get()
+                                    .load(uri)
+                                    .into(profileImage);
+                        }
+                    });
+        }
+
     }
 
     private void setListeners() {
@@ -388,7 +402,7 @@ public class ProfileInformationActivity extends AppCompatActivity {
     }
 
     private void getUserDetails() {
-        String userString = getIntent().getStringExtra("user");
+        userString = getIntent().getStringExtra("user");
         BaseDomain user = new Gson().fromJson(userString,BaseDomain.class);
         String userId = user.getId();
         String identifier = userId.substring(0,Math.min(userId.length(),3));
@@ -404,8 +418,7 @@ public class ProfileInformationActivity extends AppCompatActivity {
             publicNameLayout.setVisibility(View.VISIBLE);
             userBioLayout.setVisibility(View.VISIBLE);
 
-            String socialMediaString = getIntent().getStringExtra("socialMedia");
-            System.out.println(socialMediaString);
+            socialMediaString = getIntent().getStringExtra("socialMedia");
             socialMedia = new Gson().fromJson(socialMediaString,SocialMedia.class);
 
             loadSellerDetails();
@@ -520,9 +533,13 @@ public class ProfileInformationActivity extends AppCompatActivity {
                     if(result.getResultCode() == Activity.RESULT_OK){
                         imagePath = result.getData().getData();
 
-                        Picasso.get()
-                                .load(imagePath)
-                                .into(profileImage);
+                        Intent intent = new Intent(ProfileInformationActivity.this,ImageCropper.class);
+                        intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+                        intent.putExtra("user",userString);
+                        intent.putExtra("socialMedia",socialMediaString);
+                        intent.putExtra("imagePath",String.valueOf(imagePath));
+                        startActivity(intent);
+                        finish();
                     }
                 }
             });

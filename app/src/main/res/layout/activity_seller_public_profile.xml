@@ -7,7 +7,7 @@
     android:layout_height="match_parent"
     tools:context=".Activity.SellerPublicProfileActivity">
 
-    <ImageView
+    <de.hdodenhof.circleimageview.CircleImageView
         android:id="@+id/publicProfileSellerImg"
         android:layout_width="70dp"
         android:layout_height="70dp"

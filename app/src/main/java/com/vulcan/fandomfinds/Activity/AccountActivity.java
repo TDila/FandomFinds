@@ -38,6 +38,8 @@ import com.vulcan.fandomfinds.R;
 
 import org.w3c.dom.Text;
 
+import de.hdodenhof.circleimageview.CircleImageView;
+
 public class AccountActivity extends AppCompatActivity {
     FirebaseAuth firebaseAuth;
     FirebaseUser user;
