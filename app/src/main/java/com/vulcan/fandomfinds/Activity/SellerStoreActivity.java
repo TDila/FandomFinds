@@ -10,6 +10,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -37,14 +38,16 @@ public class SellerStoreActivity extends AppCompatActivity {
     FirebaseFirestore firestore;
     FirebaseUser user;
     SellerDomain seller;
+    String userString;
     private Button button;
+    private LinearLayout ordersLayout;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_seller_store);
 
         Intent intent = getIntent();
-        String userString = intent.getStringExtra("user");
+        userString = intent.getStringExtra("user");
         seller = (new Gson()).fromJson(userString, SellerDomain.class);
 
         initComponents();
@@ -71,10 +74,20 @@ public class SellerStoreActivity extends AppCompatActivity {
                 finish();
             }
         });
+        ordersLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(SellerStoreActivity.this,OrdersActivity.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+                intent.putExtra("user",userString);
+                startActivity(intent);
+            }
+        });
     }
 
     public void initComponents(){
         button = findViewById(R.id.sellerStoreAddNewProductButton);
+        ordersLayout = findViewById(R.id.ordersLayout);
 
         firestore = FirebaseFirestore.getInstance();
         firebaseAuth = FirebaseAuth.getInstance();

@@ -143,7 +143,7 @@
     <string name="seller_store_item_status">Product Status</string>
     <string name="seller_store_discount">Discount : None</string>
     <string name="seller_store_item_price">$ (Price)</string>
-    <string name="seller_store_add_product_button">Add New Product</string>
+    <string name="seller_store_add_product_button">Add New Merchandise</string>
     <string name="seller_store_save_update_title_text">Title :</string>
     <string name="seller_store_save_update_title_hint">Enter the item title</string>
     <string name="seller_store_save_update_item_description">Description</string>
@@ -181,4 +181,18 @@
     <string name="ph_item_order_size_text">Size :</string>
     <string name="ph_item_order_size_value">XS/S/M/L/XL/XXL</string>
     <string name="complete_your_profile">Complete your profile in order to to publish your seller account! (First name, Last name and Social Media links are optional.)</string>
+    <string name="seller_store_orders_title">ORDERS</string>
+    <string name="orders_title">ORDERS</string>
+    <string name="orders_new_orders_title">New Orders</string>
+    <string name="orders_noNewOrdersTitle">No New Orders</string>
+    <string name="orders_completed_orders_title">Completed Orders</string>
+    <string name="orders_noCompletedOrders">No Completed Orders</string>
+    <string name="order_view_customer_email_title">Customer Email :</string>
+    <string name="order_view_customer_email_value">example@gmail.com</string>
+    <string name="order_view_customer_mobile">Customer Mobile :</string>
+    <string name="order_view_customer_mobile_value">NONE</string>
+    <string name="order_view_postal_code">Postal Code :</string>
+    <string name="order_view_postal_code_value">(postal code)</string>
+    <string name="order_view_complete_order_button">COMPLETE ORDER</string>
+    <string name="seller_store_myProducts_title">My Merchandises</string>
 </resources>

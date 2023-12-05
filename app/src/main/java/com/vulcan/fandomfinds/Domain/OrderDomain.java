@@ -4,11 +4,13 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import com.vulcan.fandomfinds.Enum.OrderStatus;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.util.Objects;
 
 public class OrderDomain implements Serializable, Parcelable {
     private String id;
@@ -139,5 +141,22 @@ public class OrderDomain implements Serializable, Parcelable {
         dest.writeDouble(totalPrice);
         dest.writeInt(itemCount);
         dest.writeInt(postalCode);
+    }
+
+    @Override
+    public boolean equals(@Nullable Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null || getClass() != obj.getClass()) {
+            return false;
+        }
+        OrderDomain otherOrder = (OrderDomain) obj;
+        return Objects.equals(id, otherOrder.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
     }
 }

@@ -23,7 +23,7 @@
             android:layout_height="150dp"
             android:layout_gravity="center"
             android:scaleType="fitCenter"
-            android:src="@drawable/item_2" />
+            android:src="@drawable/product_default" />
 
         <TextView
             android:id="@+id/phItemProductTitle"

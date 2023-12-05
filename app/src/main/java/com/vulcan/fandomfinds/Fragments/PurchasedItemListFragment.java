@@ -55,11 +55,6 @@ public class PurchasedItemListFragment extends Fragment {
 
         ArrayList<OrderDomain> items = new ArrayList<>();
 
-        LocalDateTime localDateTime = null;
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
-            localDateTime = LocalDateTime.now();
-        }
-
         RecyclerView recyclerView = view.findViewById(R.id.purchasedHistoryList);
         recyclerView.setLayoutManager(new LinearLayoutManager(view.getContext(),LinearLayoutManager.VERTICAL,false));
         PurchasedHistoryListAdapter adapter = new PurchasedHistoryListAdapter(items,view.getContext());
