@@ -19,11 +19,12 @@ public class OrderDomain implements Serializable, Parcelable {
     private String status = String.valueOf(OrderStatus.ONGOING);
     private String customerEmail;
     private String sellerId;
+    private String selectedSize;
 
     public OrderDomain() {
     }
 
-    public OrderDomain(String id, String dateTime, double totalPrice, int itemCount, int postalCode, String customerEmail, String sellerId) {
+    public OrderDomain(String id, String dateTime, double totalPrice, int itemCount, int postalCode, String customerEmail, String sellerId, String selectedSize) {
         this.id = id;
         this.dateTime = dateTime;
         this.totalPrice = totalPrice;
@@ -31,6 +32,7 @@ public class OrderDomain implements Serializable, Parcelable {
         this.postalCode = postalCode;
         this.customerEmail = customerEmail;
         this.sellerId = sellerId;
+        this.selectedSize = selectedSize;
     }
 
     protected OrderDomain(Parcel in) {
@@ -115,6 +117,14 @@ public class OrderDomain implements Serializable, Parcelable {
 
     public void setStatus(String status) {
         this.status = status;
+    }
+
+    public String getSelectedSize() {
+        return selectedSize;
+    }
+
+    public void setSelectedSize(String selectedSize) {
+        this.selectedSize = selectedSize;
     }
 
     @Override

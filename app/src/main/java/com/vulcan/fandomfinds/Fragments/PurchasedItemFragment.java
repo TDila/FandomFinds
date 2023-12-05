@@ -12,6 +12,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
@@ -40,7 +41,8 @@ public class PurchasedItemFragment extends Fragment {
     FirebaseFirestore firestore;
     FirebaseStorage firebaseStorage;
     TextView phItemProductTitle,phItemProductCount,phItemTotalPrice,phItemPurchasedDate,phItemOrderId
-            ,phItemDeliveryAddress,phItemSellerName,phItemOrderStatus;
+            ,phItemDeliveryAddress,phItemSellerName,phItemOrderStatus,phItemOrderSizeValue;
+    LinearLayout phItemSizeLayout;
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -171,6 +173,12 @@ public class PurchasedItemFragment extends Fragment {
                             }
                         }
                     });
+            if(order.getSelectedSize() != null){
+                phItemSizeLayout.setVisibility(View.VISIBLE);
+                phItemOrderSizeValue.setText(order.getSelectedSize());
+            }else{
+                phItemSizeLayout.setVisibility(View.GONE);
+            }
             phItemProductCount.setText("Item Count : "+order.getItemCount());
             phItemTotalPrice.setText("$"+order.getTotalPrice());
             phItemPurchasedDate.setText(order.getDateTime());
@@ -190,5 +198,7 @@ public class PurchasedItemFragment extends Fragment {
         phItemSellerImg = view.findViewById(R.id.phItemSellerImg);
         phItemSellerName = view.findViewById(R.id.phItemSellerName);//
         phItemOrderStatus= view.findViewById(R.id.phItemOrderStatus);
+        phItemSizeLayout = view.findViewById(R.id.phItemSizeLayout);
+        phItemOrderSizeValue = view.findViewById(R.id.phItemOrderSizeValue);
     }
 }

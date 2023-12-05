@@ -129,7 +129,20 @@ public class SellerAboutFragment extends Fragment {
                                                             for (QueryDocumentSnapshot snapshot1 : task.getResult()){
                                                                 BillingShippingDomain billingShipping = snapshot1.toObject(BillingShippingDomain.class);
                                                                 String mobileNumber = billingShipping.getMobileNumber();
-                                                                sellerAboutPhone.setText(mobileNumber != null ? mobileNumber : "NONE");
+                                                                if(mobileNumber != null){
+                                                                    sellerAboutPhone.setText(mobileNumber);
+                                                                    sellerAboutPhone.setOnClickListener(new View.OnClickListener() {
+                                                                        @Override
+                                                                        public void onClick(View v) {
+                                                                            Intent dialIntent = new Intent(Intent.ACTION_DIAL);
+                                                                            dialIntent.setData(Uri.parse("tel:" + mobileNumber));
+                                                                            startActivity(dialIntent);
+
+                                                                        }
+                                                                    });
+                                                                }else{
+                                                                    sellerAboutPhone.setText("NONE");
+                                                                }
                                                             }
                                                         }
                                                     }

@@ -102,8 +102,9 @@ public class SingleProductViewActivity extends AppCompatActivity {
 
         if(newArrival.getSizesList() != null){
             String[] sizes = newArrival.getSizesList().toArray(new String[0]);
-            if(sizes.length != 0){
-//            spinner.setVisibility(View.VISIBLE);
+            if(sizes.length == 0){
+                sizeLayout.setVisibility(View.GONE);
+            }else{
                 sizeLayout.setVisibility(View.VISIBLE);
                 ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, sizes);
                 adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -119,10 +120,9 @@ public class SingleProductViewActivity extends AppCompatActivity {
                     public void onNothingSelected(AdapterView<?> parent) {
                     }
                 });
-            }else{
-//            spinner.setVisibility(View.GONE);
-                sizeLayout.setVisibility(View.GONE);
             }
+        }else{
+            sizeLayout.setVisibility(View.GONE);
         }
 
         single_product_buynow.setOnClickListener(new View.OnClickListener() {

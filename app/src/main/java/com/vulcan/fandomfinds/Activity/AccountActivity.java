@@ -1,9 +1,11 @@
 package com.vulcan.fandomfinds.Activity;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.ContentResolver;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -12,6 +14,7 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -44,7 +47,7 @@ public class AccountActivity extends AppCompatActivity {
     private CustomerDomain customer = null;
     private SellerDomain seller = null;
     private TextView account_username;
-    private LinearLayout accountProfileInfo,accountBillingShipping,purchaseHistory,sellerStore;
+    private LinearLayout accountProfileInfo,accountBillingShipping,purchaseHistory,sellerStore,accountLogout;
     private SocialMedia socialMedia;
     LoadingDialog loadingDialog;
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,13 +66,17 @@ public class AccountActivity extends AppCompatActivity {
             Intent intent = new Intent(AccountActivity.this,SignUpInActivity.class);
             intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
             startActivity(intent);
+            finish();
         }else{
             loadingDialog.show();
             searchUserProcess();
         }
 
         loadBottomNavigationBar();
+        setListeners();
+    }
 
+    private void setListeners() {
         accountBackButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -129,6 +136,32 @@ public class AccountActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+        accountLogout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                AlertDialog.Builder builder = new AlertDialog.Builder(AccountActivity.this);
+                builder.setMessage("Are you sure you want to Log Out?")
+                                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        loadingDialog.show();
+                                        firebaseAuth.signOut();
+                                        Toast.makeText(AccountActivity.this,"Logged Out Successfully!",Toast.LENGTH_LONG).show();
+                                        Intent intent = new Intent(AccountActivity.this,SignUpInActivity.class);
+                                        loadingDialog.cancel();
+                                        startActivity(intent);
+                                        finish();
+                                    }
+                                }).setNegativeButton("No", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.dismiss();
+                            }
+                        });
+                AlertDialog dialog = builder.create();
+                dialog.show();
+            }
+        });
     }
 
     private void initComponents() {
@@ -141,6 +174,7 @@ public class AccountActivity extends AppCompatActivity {
         purchaseHistory = findViewById(R.id.account_purchase_history);
         sellerStore = findViewById(R.id.account_seller_store);
         accountProfileImg = findViewById(R.id.account_profile_img);
+        accountLogout = findViewById(R.id.account_logout);
     }
 
     private void loadBottomNavigationBar() {

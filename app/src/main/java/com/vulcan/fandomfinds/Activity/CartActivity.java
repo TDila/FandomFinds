@@ -128,7 +128,11 @@ public class CartActivity extends AppCompatActivity{
             double discount = product.getDiscount();
             double total = (price - price*discount/100)*count + delivery;
             String orderId = "OD_"+ String.format("%06d",new Random().nextInt(999999));
-            OrderDomain order = new OrderDomain(orderId,datetime,total,count,billingShipping.getPostalCode(),user.getEmail(),product.getSellerId());
+            String selectedSize = null;
+            if(product.getSelectedSize() != null){
+                selectedSize = product.getSelectedSize();
+            }
+            OrderDomain order = new OrderDomain(orderId,datetime,total,count,billingShipping.getPostalCode(),user.getEmail(),product.getSellerId(),selectedSize);
             firestore.collection("Orders").add(order).addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
                 @Override
                 public void onSuccess(DocumentReference documentReference1) {

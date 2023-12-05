@@ -35,6 +35,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:gravity="center"
+            android:autoLink="web"
             android:text="@string/social_media_link" />
     </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

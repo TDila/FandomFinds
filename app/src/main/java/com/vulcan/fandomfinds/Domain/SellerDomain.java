@@ -1,12 +1,21 @@
 package com.vulcan.fandomfinds.Domain;
 
-import java.io.Serializable;
+import com.vulcan.fandomfinds.Enum.SellerProfileStatus;
 
 public class SellerDomain extends BaseDomain{
     private int followers;
     private String sellerName;
     private String bio;
     private String sellerNameInsensitive;
+    private SellerProfileStatus profileStatus = SellerProfileStatus.INCOMPLETE;
+
+    public SellerProfileStatus getProfileStatus() {
+        return profileStatus;
+    }
+
+    public void setProfileStatus(SellerProfileStatus profileStatus) {
+        this.profileStatus = profileStatus;
+    }
 
     public int getFollowers() {
         return followers;

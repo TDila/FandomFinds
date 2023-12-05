@@ -76,12 +76,12 @@ public class SignUpInActivity extends AppCompatActivity {
     private void checkLoggedIn() {
         firebaseAuth = FirebaseAuth.getInstance();
         FirebaseUser user = firebaseAuth.getCurrentUser();
-//        if(user != null){
-//            Intent intent = new Intent(SignUpInActivity.this,MainActivity.class);
-//            intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
-//            startActivity(intent);
-//            finish();
-//        }
+        if(user != null){
+            Intent intent = new Intent(SignUpInActivity.this,MainActivity.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+            startActivity(intent);
+            finish();
+        }
     }
 
     private void initComponents() {

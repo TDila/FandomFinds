@@ -53,16 +53,39 @@
                 android:src="@drawable/account_default_profile_img" />
 
             <LinearLayout
+                android:id="@+id/profileInCompleteErrorLayout"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginTop="4dp"
+                android:padding="10dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginEnd="16dp"
+                android:background="@drawable/main_signup_msg_layout"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/textView46"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:drawableStart="@drawable/password_error"
+                    android:text="@string/complete_your_profile"
+                    android:drawablePadding="4dp"
+                    android:drawableTint="@color/red"
+                    android:textColor="@color/red" />
+            </LinearLayout>
+
+            <LinearLayout
                 android:id="@+id/publicNameLayout"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                android:layout_marginStart="16dp"
+                android:layout_marginEnd="16dp"
                 android:orientation="vertical">
 
                 <TextView
                     android:id="@+id/textView25"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="16dp"
                     android:layout_marginTop="8dp"
                     android:layout_weight="1"
                     android:text="@string/profile_info_public_name_seller"
@@ -72,8 +95,6 @@
                     android:id="@+id/profileInfoSellerPublicName"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="16dp"
-                    android:layout_marginEnd="16dp"
                     android:ems="10"
                     android:hint="@string/profile_info_seller_public_profile"
                     android:inputType="text" />

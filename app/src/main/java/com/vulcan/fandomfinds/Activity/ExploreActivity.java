@@ -33,6 +33,7 @@ import com.vulcan.fandomfinds.Adapter.ExploreProductsAdapter;
 import com.vulcan.fandomfinds.Adapter.ExploreSellerAdapter;
 import com.vulcan.fandomfinds.Domain.ProductsDomain;
 import com.vulcan.fandomfinds.Domain.SellerDomain;
+import com.vulcan.fandomfinds.Enum.SellerProfileStatus;
 import com.vulcan.fandomfinds.R;
 
 import java.util.ArrayList;
@@ -124,7 +125,7 @@ public class ExploreActivity extends AppCompatActivity {
         ExploreSellerAdapter sellerAdapter = new ExploreSellerAdapter(items,ExploreActivity.this);
         recyclerView.setAdapter(sellerAdapter);
 
-        firestore.collection("Sellers").limit(3).where(Filter.or(Filter.equalTo("sellerName",text),Filter.equalTo("sellerNameInsensitive",text))).get()
+        firestore.collection("Sellers").limit(3).where(Filter.or(Filter.equalTo("sellerName",text),Filter.equalTo("sellerNameInsensitive",text))).whereEqualTo("profileStatus", SellerProfileStatus.COMPLETE).get()
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                     @Override
                     public void onComplete(@NonNull Task<QuerySnapshot> task) {
@@ -181,7 +182,7 @@ public class ExploreActivity extends AppCompatActivity {
         ExploreSellerAdapter sellerAdapter = new ExploreSellerAdapter(items,ExploreActivity.this);
         recyclerView.setAdapter(sellerAdapter);
 
-        firestore.collection("Sellers").addSnapshotListener(new EventListener<QuerySnapshot>() {
+        firestore.collection("Sellers").whereEqualTo("profileStatus", SellerProfileStatus.COMPLETE).addSnapshotListener(new EventListener<QuerySnapshot>() {
             @Override
             public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException error) {
                 for (DocumentChange change : value.getDocumentChanges()){

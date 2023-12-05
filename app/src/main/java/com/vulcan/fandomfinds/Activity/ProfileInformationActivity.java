@@ -30,8 +30,13 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.textfield.TextInputEditText;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.DocumentChange;
 import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.storage.FirebaseStorage;
@@ -50,8 +55,10 @@ import com.vulcan.fandomfinds.Animations.LoadingDialog;
 import com.vulcan.fandomfinds.Animations.SavingDataDialog;
 import com.vulcan.fandomfinds.Domain.BaseDomain;
 import com.vulcan.fandomfinds.Domain.CustomerDomain;
+import com.vulcan.fandomfinds.Domain.ProductsDomain;
 import com.vulcan.fandomfinds.Domain.SellerDomain;
 import com.vulcan.fandomfinds.Domain.SocialMedia;
+import com.vulcan.fandomfinds.Enum.SellerProfileStatus;
 import com.vulcan.fandomfinds.R;
 
 import org.checkerframework.checker.units.qual.C;
@@ -73,7 +80,7 @@ public class ProfileInformationActivity extends AppCompatActivity {
     private ImageView profileInfoBackButton;
     LoadingDialog loadingDialog;
     private ImageButton profileImage;
-    private LinearLayout publicNameLayout,userBioLayout,socialMediaLayout;
+    private LinearLayout publicNameLayout,userBioLayout,socialMediaLayout,profileInCompleteErrorLayout;
     private EditText sellerPublicName,profileInfoFirstname,profileInfoLastname,profileInfoUserEmail,youTube,twitter,facebook,instagram,twitch
             ,newPassword;
     private TextInputEditText profileInfoSellerBio;
@@ -85,6 +92,8 @@ public class ProfileInformationActivity extends AppCompatActivity {
     SavingDataDialog savingDataDialog;
     boolean isTextModified = false;
     private SocialMedia socialMedia;
+    FirebaseAuth firebaseAuth;
+    FirebaseUser firebaseUser;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -95,6 +104,7 @@ public class ProfileInformationActivity extends AppCompatActivity {
         setListeners();
 
         getUserDetails();
+        checkSellerCompleteness();
     }
 
     private void loadCustomerDetails() {
@@ -203,12 +213,14 @@ public class ProfileInformationActivity extends AppCompatActivity {
         socialMedia.setInstagram(instagramLink);
         socialMedia.setTwitch(twitchLink);
 
-        String imageId = UUID.randomUUID().toString();;
+        String imageId = null;
         if(imagePath != null){
+            imageId = UUID.randomUUID().toString();
             seller.setProfilePicUrl(imageId);
             map.put("profilePicUrl",seller.getProfilePicUrl());
         }
 
+        String finalImageId = imageId;
         firestore.collection("Sellers").whereEqualTo("id",user_id).get()
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                     @Override
@@ -219,7 +231,7 @@ public class ProfileInformationActivity extends AppCompatActivity {
                                         .addOnSuccessListener(new OnSuccessListener<Void>() {
                                             @Override
                                             public void onSuccess(Void unused) {
-                                                saveSocialMediaLinks(snapshot,imageId);
+                                                saveSocialMediaLinks(snapshot, finalImageId);
                                             }
                                         }).addOnFailureListener(new OnFailureListener() {
                                             @Override
@@ -258,7 +270,12 @@ public class ProfileInformationActivity extends AppCompatActivity {
                                 snapshot1.getReference().update(map).addOnSuccessListener(new OnSuccessListener<Void>() {
                                     @Override
                                     public void onSuccess(Void unused) {
-                                        uploadImage(imageId);
+                                        if(imageId != null){
+                                            uploadImage(imageId);
+                                        }else{
+                                            savingDataDialog.cancel();
+                                            Toast.makeText(ProfileInformationActivity.this,"Profile Successfully Updated!",Toast.LENGTH_LONG).show();
+                                        }
                                     }
                                 }).addOnFailureListener(new OnFailureListener() {
                                     @Override
@@ -283,12 +300,14 @@ public class ProfileInformationActivity extends AppCompatActivity {
         map.put("fname",customer.getFname());
         map.put("lname",customer.getLname());
 
-        String imageId = UUID.randomUUID().toString();;
+        String imageId = null;
         if(imagePath != null){
+            imageId = UUID.randomUUID().toString();
             customer.setProfilePicUrl(imageId);
             map.put("profilePicUrl",customer.getProfilePicUrl());
         }
 
+        String finalImageId = imageId;
         firestore.collection("Customers").whereEqualTo("id",user_id).get()
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                     @Override
@@ -300,7 +319,12 @@ public class ProfileInformationActivity extends AppCompatActivity {
                                         .addOnSuccessListener(new OnSuccessListener<Void>() {
                                             @Override
                                             public void onSuccess(Void unused) {
-                                                uploadImage(imageId);
+                                                if(finalImageId != null){
+                                                    uploadImage(finalImageId);
+                                                }else{
+                                                    savingDataDialog.cancel();
+                                                    Toast.makeText(ProfileInformationActivity.this,"Profile Successfully Updated!",Toast.LENGTH_LONG).show();
+                                                }
                                             }
                                         }).addOnFailureListener(new OnFailureListener() {
                                             @Override
@@ -339,6 +363,7 @@ public class ProfileInformationActivity extends AppCompatActivity {
         socialMediaLayout = findViewById(R.id.socialMediaLayout);
         publicNameLayout = findViewById(R.id.publicNameLayout);
         userBioLayout = findViewById(R.id.userBioLayout);
+        profileInCompleteErrorLayout = findViewById(R.id.profileInCompleteErrorLayout);
 
         //social media
         youTube = findViewById(R.id.profileInfoSellerYouTube);
@@ -357,6 +382,9 @@ public class ProfileInformationActivity extends AppCompatActivity {
 
         //saving data
         savingDataDialog = new SavingDataDialog(ProfileInformationActivity.this);
+
+        firebaseAuth = FirebaseAuth.getInstance();
+        firebaseUser = firebaseAuth.getCurrentUser();
     }
 
     private void getUserDetails() {
@@ -399,6 +427,12 @@ public class ProfileInformationActivity extends AppCompatActivity {
         profileInfoLastname.setText(isNotEmpty(lname) ? lname : "");
         sellerPublicName.setText(isNotEmpty(sellerName) ? sellerName : "");
         profileInfoSellerBio.setText(isNotEmpty(bio) ? bio : "");
+
+        if (isNotEmpty(seller.getSellerName()) && isNotEmpty(seller.getBio()) && isNotEmpty(seller.getProfilePicUrl())) {
+            profileInCompleteErrorLayout.setVisibility(View.GONE);
+        } else {
+            profileInCompleteErrorLayout.setVisibility(View.VISIBLE);
+        }
 
         if(socialMedia != null){
             String youtubeLink = socialMedia.getYoutube();
@@ -492,4 +526,37 @@ public class ProfileInformationActivity extends AppCompatActivity {
                     }
                 }
             });
+
+    private void checkSellerCompleteness(){
+        if(seller != null) {
+            firestore.collection("Sellers").whereEqualTo("email", firebaseUser.getEmail()).addSnapshotListener(new EventListener<QuerySnapshot>() {
+                @Override
+                public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException error) {
+                    for (DocumentChange change : value.getDocumentChanges()) {
+                        SellerDomain seller = change.getDocument().toObject(SellerDomain.class);
+                        if (change.getType() == DocumentChange.Type.MODIFIED) {
+                            Map<String, Object> map = new HashMap<>();
+                            if (isNotEmpty(seller.getSellerName()) && isNotEmpty(seller.getBio()) && isNotEmpty(seller.getProfilePicUrl())) {
+                                map.put("profileStatus", SellerProfileStatus.COMPLETE);
+                                profileInCompleteErrorLayout.setVisibility(View.GONE);
+                            } else {
+                                map.put("profileStatus", SellerProfileStatus.INCOMPLETE);
+                                profileInCompleteErrorLayout.setVisibility(View.VISIBLE);
+                            }
+                            firestore.collection("Sellers").whereEqualTo("id", seller.getId()).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                                @Override
+                                public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                                    if (task.isSuccessful()) {
+                                        for (QueryDocumentSnapshot snapshot : task.getResult()) {
+                                            snapshot.getReference().update(map);
+                                        }
+                                    }
+                                }
+                            });
+                        }
+                    }
+                }
+            });
+        }
+    }
 }

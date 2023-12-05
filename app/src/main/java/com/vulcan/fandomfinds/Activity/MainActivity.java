@@ -34,6 +34,8 @@ import com.vulcan.fandomfinds.Animations.LoadingDialog;
 import com.vulcan.fandomfinds.Domain.CustomerDomain;
 import com.vulcan.fandomfinds.Domain.ProductsDomain;
 import com.vulcan.fandomfinds.Domain.SellerDomain;
+import com.vulcan.fandomfinds.Enum.ProductStatus;
+import com.vulcan.fandomfinds.Enum.SellerProfileStatus;
 import com.vulcan.fandomfinds.Fragments.bottomNavigation;
 import com.vulcan.fandomfinds.R;
 
@@ -183,7 +185,7 @@ public class MainActivity extends AppCompatActivity {
         SellerAdapter adapterSeller = new SellerAdapter(items);
         recyclerViewSeller.setAdapter(adapterSeller);
 
-        firestore.collection("Sellers").addSnapshotListener(new EventListener<QuerySnapshot>() {
+        firestore.collection("Sellers").whereEqualTo("profileStatus", SellerProfileStatus.COMPLETE).addSnapshotListener(new EventListener<QuerySnapshot>() {
             @Override
             public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException error) {
                 for (DocumentChange change : value.getDocumentChanges()){
@@ -199,6 +201,7 @@ public class MainActivity extends AppCompatActivity {
                                 old.setLname(item.getLname());
                                 old.setBio(item.getBio());
                                 old.setFollowers(item.getFollowers());
+                                old.setProfileStatus(item.getProfileStatus());
                                 old.setProfilePicUrl(item.getProfilePicUrl());
                             }
                             break;
@@ -220,25 +223,35 @@ public class MainActivity extends AppCompatActivity {
         DealsAdapter dealsAdapter = new DealsAdapter(items);
         recyclerViewNewArrival.setAdapter(dealsAdapter);
 
-        firestore.collection("Products").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+        firestore.collection("Products").addSnapshotListener(new EventListener<QuerySnapshot>() {
             @Override
-            public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                if(task.isSuccessful()){
-                    for(QueryDocumentSnapshot snapshot : task.getResult()){
-                        ProductsDomain product = snapshot.toObject(ProductsDomain.class);
-                        if(product != null){
-                            if(product.getType().equals("Apparel")){
-                                List<String> sizes = product.getSizesList();
-                                items.add(new ProductsDomain(product.getId(),product.getTitle(),product.getDescription(),product.getPicUrl(),product.getReview()
-                                        ,product.getScore(),product.getPrice(),product.getDiscount(),product.getSellerName(),sizes,product.getStatus(),product.getType(),product.getSellerId()));
-                            }else{
-                                items.add(new ProductsDomain(product.getId(),product.getTitle(),product.getDescription(),product.getPicUrl(),product.getReview()
-                                        ,product.getScore(),product.getPrice(),product.getDiscount(),product.getSellerName(),product.getSizesList(),product.getStatus(),product.getType(),product.getSellerId()));
+            public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException error) {
+                for (DocumentChange change : value.getDocumentChanges()){
+                    ProductsDomain product = change.getDocument().toObject(ProductsDomain.class);
+                    switch (change.getType()){
+                        case ADDED:
+                            items.add(product);
+                        case MODIFIED:
+                            ProductsDomain old = items.stream().filter(i -> i.getId().equals(product.getId())).findFirst().orElse(null);
+                            if(old != null){
+                                old.setTitle(product.getTitle());
+                                old.setDescription(product.getDescription());
+                                old.setPicUrl(product.getPicUrl());
+                                old.setReview(product.getReview());
+                                old.setPrice(product.getPrice());
+                                old.setDiscount(product.getDiscount());
+                                old.setSellerName(product.getSellerName());
+                                old.setSizesList(product.getSizesList());
+                                old .setStatus(product.getStatus());
+                                old.setType(product.getType());
+                                old.setTitleInsensitive(product.getTitleInsensitive());
                             }
-                        }
+                            break;
+                        case REMOVED:
+                            items.remove(product);
                     }
-                    dealsAdapter.notifyDataSetChanged();
                 }
+                dealsAdapter.notifyDataSetChanged();
             }
         });
     }
