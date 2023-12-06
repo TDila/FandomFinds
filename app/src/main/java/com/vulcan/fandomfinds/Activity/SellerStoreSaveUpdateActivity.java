@@ -5,11 +5,13 @@ import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -34,6 +36,7 @@ import com.google.android.gms.tasks.Task;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.DocumentChange;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
@@ -43,13 +46,20 @@ import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.google.gson.Gson;
 import com.squareup.picasso.Picasso;
+import com.vulcan.fandomfinds.Animations.LoadingDialog;
 import com.vulcan.fandomfinds.Animations.SavingDataDialog;
+import com.vulcan.fandomfinds.Domain.Follower;
+import com.vulcan.fandomfinds.Domain.NotificationDomain;
 import com.vulcan.fandomfinds.Domain.ProductsDomain;
 import com.vulcan.fandomfinds.Domain.SellerDomain;
+import com.vulcan.fandomfinds.Enum.NotifyType;
 import com.vulcan.fandomfinds.Enum.ProductStatus;
 import com.vulcan.fandomfinds.R;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -74,6 +84,7 @@ public class SellerStoreSaveUpdateActivity extends AppCompatActivity {
     FirebaseFirestore firestore;
     FirebaseStorage firebaseStorage;
     SavingDataDialog savingDataDialog;
+    LoadingDialog loadingDialog;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -272,6 +283,7 @@ public class SellerStoreSaveUpdateActivity extends AppCompatActivity {
         firebaseStorage = FirebaseStorage.getInstance();
 
         savingDataDialog = new SavingDataDialog(SellerStoreSaveUpdateActivity.this);
+        loadingDialog = new LoadingDialog(SellerStoreSaveUpdateActivity.this);
     }
 
     public void calculateNewPrice(){
@@ -459,6 +471,7 @@ public class SellerStoreSaveUpdateActivity extends AppCompatActivity {
             public void onSuccess(DocumentReference documentReference) {
                 if(imagePath != null){
                     uploadImage(imageId);
+                    notifyFollowers(newProduct);
                     clearFields();
                 }
             }
@@ -521,5 +534,70 @@ public class SellerStoreSaveUpdateActivity extends AppCompatActivity {
                 .load(drawableResourceid)
                 .into(sellerStoreSaveUpdateItemImg);
         imagePath = null;
+    }
+
+    private void notifyFollowers(ProductsDomain newProduct){
+        loadingDialog.show();
+        firestore.collection("Sellers").whereEqualTo("id",seller.getId()).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                if(task.isSuccessful()){
+                    for (QueryDocumentSnapshot snapshot : task.getResult()){
+                        snapshot.getReference().collection("Followers").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                            @Override
+                            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                                if (task.isSuccessful()){
+                                    for (QueryDocumentSnapshot snapshot1 : task.getResult()){
+                                        Follower follower = snapshot1.toObject(Follower.class);
+                                        findFollower(follower.getEmail(),newProduct);
+                                    }
+                                }
+                            }
+                        });
+                    }
+                    loadingDialog.cancel();
+                    Toast.makeText(SellerStoreSaveUpdateActivity.this,"Followers Notified!",Toast.LENGTH_LONG).show();
+                }
+            }
+        });
+    }
+
+    private void findFollower(String email,ProductsDomain product) {
+        firestore.collection("Customers").whereEqualTo("email",email).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                if(task.isSuccessful()){
+                    for (QueryDocumentSnapshot snapshot : task.getResult()){
+                        saveNotification(email,product,snapshot);
+                    }
+                }
+            }
+        });
+        firestore.collection("Sellers").whereEqualTo("email",email).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                if(task.isSuccessful()){
+                    for (QueryDocumentSnapshot snapshot : task.getResult()){
+                        saveNotification(email,product,snapshot);
+                    }
+                }
+            }
+        });
+    }
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    private void saveNotification(String email, ProductsDomain product, QueryDocumentSnapshot snapshot){
+        String notifyId = "NOTI_"+String.format("%06d",new Random().nextInt(999999));
+        String sellerName = null;
+        if(seller.getSellerName() != null){
+            sellerName = seller.getSellerName();
+        }else{
+            sellerName = seller.getEmail();
+        }
+        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
+        String datetime = dtf.format(LocalDateTime.now());
+        String title = "Hey! "+sellerName+" has release a new Merchandise!";
+        String message = "Exciting News! Your favorite seller "+sellerName+" just dropped new merchandise: "+product.getTitle()+" !Explore the latest arrivals and grab exclusive items before they're gone! ";
+        NotificationDomain notification = new NotificationDomain(notifyId,NotifyType.PRODUCT_RELEASE,title,message,product.getPicUrl(),datetime);
+        snapshot.getReference().collection("Notifications").add(notification);
     }
 }

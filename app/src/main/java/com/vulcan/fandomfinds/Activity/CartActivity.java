@@ -1,13 +1,22 @@
 package com.vulcan.fandomfinds.Activity;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.NotificationCompat;
 import androidx.fragment.app.FragmentContainerView;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.app.Notification;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Color;
+import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.view.View;
@@ -28,15 +37,18 @@ import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.google.gson.Gson;
 import com.vulcan.fandomfinds.Adapter.CartAdapter;
 import com.vulcan.fandomfinds.Animations.LoadingDialog;
 import com.vulcan.fandomfinds.Domain.BaseDomain;
 import com.vulcan.fandomfinds.Domain.BillingShippingDomain;
 import com.vulcan.fandomfinds.Domain.CustomerDomain;
+import com.vulcan.fandomfinds.Domain.NotificationDomain;
 import com.vulcan.fandomfinds.Domain.OrderDomain;
 import com.vulcan.fandomfinds.Domain.ProductsDomain;
 import com.vulcan.fandomfinds.Domain.SellerDomain;
 import com.vulcan.fandomfinds.Domain.SocialMedia;
+import com.vulcan.fandomfinds.Enum.NotifyType;
 import com.vulcan.fandomfinds.Enum.OrderStatus;
 import com.vulcan.fandomfinds.Fragments.bottomNavigation;
 import com.vulcan.fandomfinds.Helper.ChangeNumberitemsListener;
@@ -70,6 +82,8 @@ public class CartActivity extends AppCompatActivity{
     LoadingDialog loadingDialog;
     TinyDB tinyDB;
     double delivery = 10;
+    private String channelId = "Order Notifications";
+    NotificationManager notificationManager;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -88,6 +102,7 @@ public class CartActivity extends AppCompatActivity{
         initList();
         loadBottomNavigationBar();
         searchUserProcess();
+        registerNotificationChannel();
     }
 
     private void setListeners() {
@@ -144,6 +159,7 @@ public class CartActivity extends AppCompatActivity{
                             }else if (seller != null){
                                 saveBuyer(documentReference1,seller,product.getSellerId());
                             }
+                            findBuyer(product);
                         }
                     });
                 }
@@ -161,7 +177,69 @@ public class CartActivity extends AppCompatActivity{
         editor.apply();
         loadingDialog.cancel();
         Toast.makeText(CartActivity.this,"Successfully Made the Order!",Toast.LENGTH_LONG).show();
-        goToPurchaseHistory();
+    }
+
+    private void findBuyer(ProductsDomain product) {
+        firestore.collection("Customers").whereEqualTo("email",user.getEmail()).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                if(task.isSuccessful()){
+                    for (QueryDocumentSnapshot snapshot : task.getResult()){
+                        saveNotification(product,snapshot);
+                    }
+                }
+            }
+        });
+        firestore.collection("Sellers").whereEqualTo("email",user.getEmail()).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                if(task.isSuccessful()){
+                    for (QueryDocumentSnapshot snapshot : task.getResult()){
+                        saveNotification(product,snapshot);
+                    }
+                }
+            }
+        });
+    }
+
+    private void saveNotification(ProductsDomain product, QueryDocumentSnapshot snapshot){
+        String datetime = null;
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+            DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
+            datetime = dtf.format(LocalDateTime.now());
+        }
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+        }
+        String notifyId = "NOTI_"+String.format("%06d",new Random().nextInt(999999));
+        String title = "Your order has been placed!";
+        String message = "\uD83C\uDF89 Your order is confirmed. \uD83D\uDECD️ Get ready for the arrival of "+product.getTitle()+". \uD83D\uDE9A Thank you for choosing FandomFinds! \uD83C\uDF1F";
+        NotificationDomain notification = new NotificationDomain(notifyId,NotifyType.PRODUCT_RELEASE,title,message,product.getPicUrl(),datetime);
+        snapshot.getReference().collection("Notifications").add(notification);
+        sendOrderNotification(notification);
+    }
+
+    private void sendOrderNotification(NotificationDomain notify){
+        Intent intent = new Intent(CartActivity.this,NotificationsActivity.class);
+        if(seller != null){
+            String sellerString = (new Gson()).toJson(seller);
+            intent.putExtra("seller",sellerString);
+        }
+        if(customer != null){
+            String customerString = (new Gson()).toJson(customer);
+            intent.putExtra("customer",customerString);
+        }
+
+        PendingIntent pendingIntent = PendingIntent.getActivity(CartActivity.this,0,intent,PendingIntent.FLAG_ONE_SHOT|PendingIntent.FLAG_IMMUTABLE);
+
+        Notification notification = new NotificationCompat.Builder(CartActivity.this,channelId)
+                .setSmallIcon(R.drawable.fandom_finds_main_logo_new)
+                .setContentTitle(notify.getTitle())
+                .setContentText(notify.getMessage())
+                .setContentIntent(pendingIntent)
+                .build();
+
+        String id = String.format("%06d",new Random().nextInt(999999));
+        notificationManager.notify(Integer.parseInt(id),notification);
     }
 
     private void goToPurchaseHistory() {
@@ -201,7 +279,6 @@ public class CartActivity extends AppCompatActivity{
                                 orderRef.collection("Seller").add(seller).addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
                                     @Override
                                     public void onSuccess(DocumentReference documentReference) {
-
                                     }
                                 });
                             }
@@ -372,4 +449,17 @@ public class CartActivity extends AppCompatActivity{
         loadingDialog.cancel();
     }
 
+    private void registerNotificationChannel(){
+        notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+            NotificationChannel channel = new NotificationChannel(channelId,"Promotional",NotificationManager.IMPORTANCE_DEFAULT);
+            channel.setShowBadge(true);
+            channel.setDescription("Promotional channel ");
+            channel.enableLights(true);
+            channel.setLightColor(Color.GREEN);
+            channel.setVibrationPattern(new long[]{0,1000});
+            channel.enableVibration(true);
+            notificationManager.createNotificationChannel(channel);
+        }
+    }
 }

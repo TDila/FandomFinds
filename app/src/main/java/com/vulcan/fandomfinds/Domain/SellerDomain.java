@@ -1,6 +1,10 @@
 package com.vulcan.fandomfinds.Domain;
 
+import androidx.annotation.Nullable;
+
 import com.vulcan.fandomfinds.Enum.SellerProfileStatus;
+
+import java.util.Objects;
 
 public class SellerDomain extends BaseDomain{
     private int followers;

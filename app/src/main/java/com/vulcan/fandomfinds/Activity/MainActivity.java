@@ -4,15 +4,23 @@ import androidx.annotation.ArrayRes;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.NotificationCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.app.Notification;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
+import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -28,10 +36,12 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.google.gson.Gson;
 import com.vulcan.fandomfinds.Adapter.DealsAdapter;
 import com.vulcan.fandomfinds.Adapter.SellerAdapter;
 import com.vulcan.fandomfinds.Animations.LoadingDialog;
 import com.vulcan.fandomfinds.Domain.CustomerDomain;
+import com.vulcan.fandomfinds.Domain.NotificationDomain;
 import com.vulcan.fandomfinds.Domain.ProductsDomain;
 import com.vulcan.fandomfinds.Domain.SellerDomain;
 import com.vulcan.fandomfinds.Enum.ProductStatus;
@@ -55,7 +65,10 @@ public class MainActivity extends AppCompatActivity {
     private TextView username,signUpInButton;
     private LinearLayout signUpInLayout;
     private EditText exploreSearchBar;
+    private ImageView notification;
     LoadingDialog loadingDialog;
+    private NotificationManager notificationManager;
+    private String channelId = "promotional";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -99,6 +112,22 @@ public class MainActivity extends AppCompatActivity {
                 return false;
             }
         });
+        notification.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(MainActivity.this,NotificationsActivity.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+                if(seller != null){
+                    String sellerString = (new Gson()).toJson(seller);
+                    intent.putExtra("seller",sellerString);
+                }
+                if(customer != null){
+                    String customerString = (new Gson()).toJson(customer);
+                    intent.putExtra("customer",customerString);
+                }
+                startActivity(intent);
+            }
+        });
     }
 
     private void search(String text) {
@@ -121,13 +150,12 @@ public class MainActivity extends AppCompatActivity {
                                     if(customer.getFname() != null && customer.getLname() != null){
                                         username.setText(customer.getFname()+" "+customer.getLname());
                                         loadingDialog.cancel();
-                                        return;
                                     }else{
                                         username.setText(customer.getEmail());
                                         loadingDialog.cancel();
-                                        return;
                                     }
                                 }
+//                                loadNotificationListener(snapshot);
                             }
                         }
                     }
@@ -142,12 +170,11 @@ public class MainActivity extends AppCompatActivity {
                                 if(seller.getSellerName() != null){
                                     username.setText(seller.getSellerName());
                                     loadingDialog.cancel();
-                                    return;
                                 }else{
                                     username.setText(seller.getEmail());
                                     loadingDialog.cancel();
-                                    return;
                                 }
+//                                loadNotificationListener(snapshot);
                             }
                         }
                     }
@@ -160,6 +187,7 @@ public class MainActivity extends AppCompatActivity {
         signUpInLayout = findViewById(R.id.signUpInLayout);
         loadingDialog = new LoadingDialog(MainActivity.this);
         exploreSearchBar = findViewById(R.id.explore_search_bar);
+        notification = findViewById(R.id.notification);
     }
 
     private void loadSignUpInActivity() {
@@ -289,4 +317,56 @@ public class MainActivity extends AppCompatActivity {
             }
         });
     }
+
+    private void registerNotificationChannel(){
+        notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+            NotificationChannel channel = new NotificationChannel(channelId,"Promotional",NotificationManager.IMPORTANCE_DEFAULT);
+            channel.setShowBadge(true);
+            channel.setDescription("Promotional channel ");
+            channel.enableLights(true);
+            channel.setLightColor(Color.GREEN);
+            channel.setVibrationPattern(new long[]{0,1000});
+            channel.enableVibration(true);
+            notificationManager.createNotificationChannel(channel);
+        }
+    }
+
+//    private void loadNotificationListener(QueryDocumentSnapshot snapshot){
+//        registerNotificationChannel();
+//        snapshot.getReference().collection("Notifications").addSnapshotListener(new EventListener<QuerySnapshot>() {
+//            @Override
+//            public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException error) {
+//                for (DocumentChange change : value.getDocumentChanges()){
+//                    NotificationDomain notification = change.getDocument().toObject(NotificationDomain.class);
+//                    switch (change.getType()){
+//                        case ADDED:
+////                            sendPromotionalNotification(notification);
+//                            break;
+//                        case MODIFIED:
+//                            sendPromotionalNotification(notification);
+//                            break;
+//                        case REMOVED:
+//                            break;
+//                    }
+//                }
+//            }
+//        });
+//    }
+
+//    private void sendPromotionalNotification(NotificationDomain notify){
+//
+//        Intent intent = new Intent(MainActivity.this,NotificationsActivity.class);
+//
+//        PendingIntent pendingIntent = PendingIntent.getActivity(MainActivity.this,0,intent,PendingIntent.FLAG_IMMUTABLE);
+//
+//        Notification notification = new NotificationCompat.Builder(MainActivity.this,channelId)
+//                .setSmallIcon(R.drawable.fandom_finds_main_logo_new)
+//                .setContentTitle(notify.getTitle())
+//                .setContentText(notify.getMessage())
+//                .setContentIntent(pendingIntent)
+//                .build();
+//
+//        notificationManager.notify(1,notification);
+//    }
 }

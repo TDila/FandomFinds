@@ -52,6 +52,17 @@ public class ImageCropper extends AppCompatActivity {
         cropImageView.setImageUriAsync(uri);
     }
     private void setListeners() {
+        imageCropBackButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent1 = new Intent(ImageCropper.this,ProfileInformationActivity.class);
+                intent1.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+                intent1.putExtra("user",userString);
+                intent1.putExtra("socialMedia",socialMediaString);
+                startActivity(intent1);
+                finish();
+            }
+        });
         cropButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

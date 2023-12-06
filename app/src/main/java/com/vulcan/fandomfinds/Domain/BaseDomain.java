@@ -1,6 +1,9 @@
 package com.vulcan.fandomfinds.Domain;
 
+import androidx.annotation.Nullable;
+
 import java.io.Serializable;
+import java.util.Objects;
 
 public class BaseDomain implements Serializable {
     private String id;
@@ -67,5 +70,22 @@ public class BaseDomain implements Serializable {
 
     public void setProfilePicUrl(String profilePicUrl) {
         this.profilePicUrl = profilePicUrl;
+    }
+
+    @Override
+    public boolean equals(@Nullable Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null || getClass() != obj.getClass()) {
+            return false;
+        }
+        BaseDomain otherUser = (BaseDomain) obj;
+        return Objects.equals(id, otherUser.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
     }
 }

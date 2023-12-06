@@ -196,4 +196,8 @@
     <string name="order_view_complete_order_button">COMPLETE ORDER</string>
     <string name="seller_store_myProducts_title">My Merchandises</string>
     <string name="crop_button_text">CROP</string>
+    <string name="notification_title">Title</string>
+    <string name="notification_message">Message</string>
+    <string name="notification_activity_title">NOTIFICATIONS</string>
+    <string name="notification_datetime">Date and Time</string>
 </resources>

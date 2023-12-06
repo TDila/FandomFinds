@@ -1,9 +1,12 @@
 package com.vulcan.fandomfinds.Domain;
 
+import androidx.annotation.Nullable;
+
 import com.vulcan.fandomfinds.Enum.ProductStatus;
 
 import java.io.Serializable;
 import java.util.List;
+import java.util.Objects;
 
 public class ProductsDomain implements Serializable {
     private String id;
@@ -183,5 +186,22 @@ public class ProductsDomain implements Serializable {
 
     public void setId(String id) {
         this.id = id;
+    }
+
+    @Override
+    public boolean equals(@Nullable Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null || getClass() != obj.getClass()) {
+            return false;
+        }
+        ProductsDomain otherProduct = (ProductsDomain) obj;
+        return Objects.equals(id, otherProduct.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
     }
 }
