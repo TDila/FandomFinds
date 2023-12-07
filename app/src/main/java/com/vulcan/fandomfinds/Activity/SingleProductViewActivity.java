@@ -4,6 +4,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.coordinatorlayout.widget.CoordinatorLayout;
 
+import android.content.Intent;
 import android.graphics.Paint;
 import android.net.Uri;
 import android.os.Bundle;
@@ -21,6 +22,9 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.bitmap.GranularRoundedCorners;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.material.snackbar.Snackbar;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.storage.FirebaseStorage;
 import com.squareup.picasso.Picasso;
 import com.vulcan.fandomfinds.Domain.ProductsDomain;
@@ -43,6 +47,8 @@ public class SingleProductViewActivity extends AppCompatActivity {
     private ManagementCart managementCart;
     FirebaseStorage firebaseStorage;
     CoordinatorLayout singleProductCoordinator;
+    FirebaseAuth firebaseAuth;
+    FirebaseUser firebaseUser;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -51,6 +57,8 @@ public class SingleProductViewActivity extends AppCompatActivity {
         managementCart = new ManagementCart(SingleProductViewActivity.this,singleProductCoordinator);
 
         firebaseStorage = FirebaseStorage.getInstance();
+        firebaseAuth = FirebaseAuth.getInstance();
+        firebaseUser = firebaseAuth.getCurrentUser();
 
         initView();
         getBundle();
@@ -131,12 +139,27 @@ public class SingleProductViewActivity extends AppCompatActivity {
         single_product_buynow.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                newArrival.setNumberInCart(numberOrder);
-                if(newArrival.getType().equals("Apparel")){
-                    String selectedSize = spinner.getSelectedItem().toString();
-                    newArrival.setSelectedSize(selectedSize);
+                if(firebaseUser == null){
+                    Snackbar snackbar = Snackbar.make(single_product_buynow,"Sign In to Buy",Snackbar.LENGTH_LONG);
+                    snackbar.setAction("Sign In", new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            Intent intent = new Intent(SingleProductViewActivity.this,SignUpInActivity.class);
+                            intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+                            startActivity(intent);
+                            finish();
+                        }
+                    });
+                    snackbar.show();
+                }else{
+                    newArrival.setNumberInCart(numberOrder);
+                    if(newArrival.getType().equals("Apparel")){
+                        String selectedSize = spinner.getSelectedItem().toString();
+                        newArrival.setSelectedSize(selectedSize);
+                    }
+                    managementCart.insertProduct(newArrival);
                 }
-                managementCart.insertProduct(newArrival);
+
             }
         });
         single_product_backArrow.setOnClickListener(new View.OnClickListener() {

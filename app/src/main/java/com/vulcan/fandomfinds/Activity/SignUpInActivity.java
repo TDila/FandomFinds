@@ -25,7 +25,7 @@ public class SignUpInActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sign_up_in);
 
-        checkLoggedIn();
+        firebaseAuth = FirebaseAuth.getInstance();
 
         initComponents();
 
@@ -72,18 +72,6 @@ public class SignUpInActivity extends AppCompatActivity {
             }
         });
     }
-
-    private void checkLoggedIn() {
-        firebaseAuth = FirebaseAuth.getInstance();
-        FirebaseUser user = firebaseAuth.getCurrentUser();
-        if(user != null){
-            Intent intent = new Intent(SignUpInActivity.this,MainActivity.class);
-            intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
-            startActivity(intent);
-            finish();
-        }
-    }
-
     private void initComponents() {
         login = findViewById(R.id.sign_up_in_login_txt);
         signUp = findViewById(R.id.sign_up_in_signup_txt);

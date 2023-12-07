@@ -47,12 +47,25 @@ public class NotificationsActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_notifications);
-        
+
         initComponents();
-        setListeners();
-        loadingDialog.show();
-        loadUser();
-        identifyUser();
+
+        checkLoggedIn();
+
+    }
+
+    private void checkLoggedIn() {
+        if(user == null){
+            Intent intent = new Intent(NotificationsActivity.this,SignUpInActivity.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+            startActivity(intent);
+            finish();
+        }else{
+            setListeners();
+            loadingDialog.show();
+            loadUser();
+            identifyUser();
+        }
     }
 
     private void initComponents() {

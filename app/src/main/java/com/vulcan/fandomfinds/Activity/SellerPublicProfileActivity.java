@@ -35,6 +35,7 @@ import com.vulcan.fandomfinds.Domain.Follower;
 import com.vulcan.fandomfinds.Domain.SellerDomain;
 import com.vulcan.fandomfinds.Fragments.SellerAboutFragment;
 import com.vulcan.fandomfinds.Fragments.SellerStoreFragment;
+import com.vulcan.fandomfinds.Helper.ManagementCart;
 import com.vulcan.fandomfinds.R;
 
 import java.util.HashMap;
@@ -57,27 +58,40 @@ public class SellerPublicProfileActivity extends AppCompatActivity {
 
         initComponents();
 
-        Intent intent = getIntent();
-        String sellerDetails = intent.getStringExtra("seller");
-        seller = (new Gson()).fromJson(sellerDetails, SellerDomain.class);
+        checkLoggedIn();
 
-        setListeners();
+    }
 
-        loadingDialog.show();
-        loadStreamerDetails();
-        loadStore();
+    private void checkLoggedIn() {
+        if(user == null){
+            Toast.makeText(SellerPublicProfileActivity.this,"Log in to check seller store.",Toast.LENGTH_LONG).show();
+            Intent intent = new Intent(SellerPublicProfileActivity.this,SignUpInActivity.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+            startActivity(intent);
+            finish();
+        }else{
+            Intent intent = getIntent();
+            String sellerDetails = intent.getStringExtra("seller");
+            seller = (new Gson()).fromJson(sellerDetails, SellerDomain.class);
+
+            setListeners();
+
+            loadingDialog.show();
+            loadStreamerDetails();
+            loadStore();
 
 
-        firestore.collection("Sellers").whereEqualTo("id",seller.getId()).addSnapshotListener(new EventListener<QuerySnapshot>() {
-            @Override
-            public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException error) {
-                for(DocumentChange change : value.getDocumentChanges()){
-                    SellerDomain sellerChange = change.getDocument().toObject(SellerDomain.class);
-                    followerCount.setText(sellerChange.getFollowers()+" followers");
-                    currentFollowerCount = sellerChange.getFollowers();
+            firestore.collection("Sellers").whereEqualTo("id",seller.getId()).addSnapshotListener(new EventListener<QuerySnapshot>() {
+                @Override
+                public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException error) {
+                    for(DocumentChange change : value.getDocumentChanges()){
+                        SellerDomain sellerChange = change.getDocument().toObject(SellerDomain.class);
+                        followerCount.setText(sellerChange.getFollowers()+" followers");
+                        currentFollowerCount = sellerChange.getFollowers();
+                    }
                 }
-            }
-        });
+            });
+        }
     }
 
     private void setListeners() {

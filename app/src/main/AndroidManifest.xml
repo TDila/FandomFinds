@@ -18,6 +18,19 @@
         android:theme="@style/Theme.FandomFinds"
         tools:targetApi="31">
         <activity
+            android:name=".Animations.SplashLoading"
+            android:exported="false" />
+        <activity
+            android:name=".Activity.SplashActivity"
+            android:exported="true"
+            android:theme="@android:style/Theme.NoTitleBar.Fullscreen">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity
             android:name=".Activity.ImageCropper"
             android:exported="false" />
         <activity
@@ -55,13 +68,7 @@
             android:exported="false" />
         <activity
             android:name=".Activity.SignUpInActivity"
-            android:exported="true">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
+            android:exported="false"/>
         <activity
             android:name=".Activity.CartActivity"
             android:exported="false" />
@@ -70,7 +77,7 @@
             android:exported="false" />
         <activity
             android:name=".Activity.MainActivity"
-            android:exported="true" />
+            android:exported="false" />
     </application>
 
 </manifest>

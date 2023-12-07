@@ -89,20 +89,34 @@ public class CartActivity extends AppCompatActivity{
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_cart);
 
+
         firestore = FirebaseFirestore.getInstance();
         firebaseAuth = FirebaseAuth.getInstance();
         user = firebaseAuth.getCurrentUser();
-        managementCart = new ManagementCart(this);
 
-        initView();
-        setListeners();
-        loadingDialog.show();
-        setVariable();
-        calculateCart();
-        initList();
-        loadBottomNavigationBar();
-        searchUserProcess();
-        registerNotificationChannel();
+        checkLoggedIn();
+
+    }
+
+    private void checkLoggedIn() {
+        if(user == null){
+            Intent intent = new Intent(CartActivity.this,SignUpInActivity.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+            startActivity(intent);
+            finish();
+        }else{
+            managementCart = new ManagementCart(this);
+
+            initView();
+            setListeners();
+            loadingDialog.show();
+            setVariable();
+            calculateCart();
+            initList();
+            loadBottomNavigationBar();
+            searchUserProcess();
+            registerNotificationChannel();
+        }
     }
 
     private void setListeners() {

@@ -205,4 +205,5 @@
     <string name="verify_code_button_text">VERIFY</string>
     <string name="seller_store_update_delete_delete_button_text">DELETE</string>
     <string name="no_merchandise_text">No Merchandise Currently</string>
+    <string name="splash_version">V 1.0.0</string>
 </resources>

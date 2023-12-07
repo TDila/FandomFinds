@@ -16,4 +16,9 @@
         <item name="android:color">@color/black</item>
         <item name="android:textStyle">bold</item>
     </style>
+    <style name="Theme.FandomFinds.FullScreen" parent="Theme.FandomFinds">
+        <item name="backgroundColor">@color/purple</item>
+        <item name="android:windowTranslucentNavigation">true</item>
+        <item name="android:windowFullscreen">true</item>
+    </style>
 </resources>

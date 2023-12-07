@@ -22,6 +22,7 @@
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="0.25"
+                android:background="?android:attr/selectableItemBackground"
                 android:orientation="vertical">
 
                 <ImageView
@@ -35,7 +36,7 @@
                     android:src="@drawable/bottom_bar_home" />
 
                 <TextView
-                    android:id="@+id/bottom_navbar_text_explore"
+                    android:id="@+id/bottom_navbar_text_home"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="@string/bottom_menu_home"
@@ -61,7 +62,7 @@
                     android:src="@drawable/bottom_bar_explore" />
 
                 <TextView
-                    android:id="@+id/bottom_navbar_text_wishlist"
+                    android:id="@+id/bottom_navbar_text_explore"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="@string/bottom_menu_explore"
