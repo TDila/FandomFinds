@@ -292,38 +292,52 @@
                     android:inputType="text" />
             </LinearLayout>
 
-            <TextView
-                android:id="@+id/textView28"
+            <LinearLayout
+                android:id="@+id/changePasswordLayout"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:layout_marginStart="16dp"
+                android:layout_marginEnd="16dp"
                 android:layout_marginTop="10dp"
-                android:layout_marginEnd="16dp"
-                android:text="@string/profile_info_change_password_title"
-                android:textSize="20dp"
-                android:textStyle="bold|italic" />
-
-            <EditText
-                android:id="@+id/profileInfoNewPassword"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
-                android:layout_marginEnd="16dp"
-                android:ems="10"
-                android:hint="@string/profile_info_change_password_hint"
-                android:inputType="textPassword" />
-
-            <Button
-                android:id="@+id/profileInfoPasswordChangeButton"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="24dp"
-                android:layout_marginEnd="24dp"
                 android:layout_marginBottom="60dp"
-                android:backgroundTint="@color/yellow"
-                android:text="@string/profile_info_password_change_button"
-                android:textColor="@color/black"
-                android:textSize="18dp" />
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/textView28"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/profile_info_change_password_title"
+                    android:textSize="20dp"
+                    android:textStyle="bold|italic" />
+
+                <EditText
+                    android:id="@+id/profileInfoOldPassword"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:ems="10"
+                    android:layout_marginTop="4dp"
+                    android:hint="@string/profile_info_change_password_hint_old"
+                    android:inputType="textPassword" />
+
+                <EditText
+                    android:id="@+id/profileInfoNewPassword"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    android:ems="10"
+                    android:hint="@string/profile_info_change_password_hint"
+                    android:inputType="textPassword" />
+
+                <Button
+                    android:id="@+id/profileInfoPasswordChangeButton"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:backgroundTint="@color/yellow"
+                    android:layout_marginTop="4dp"
+                    android:text="@string/profile_info_password_change_button"
+                    android:textColor="@color/black"
+                    android:textSize="18dp" />
+            </LinearLayout>
 
         </LinearLayout>
     </ScrollView>

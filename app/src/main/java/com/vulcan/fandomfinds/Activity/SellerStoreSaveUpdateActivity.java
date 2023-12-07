@@ -500,10 +500,6 @@ public class SellerStoreSaveUpdateActivity extends AppCompatActivity {
                     }
                 });
     }
-    private void updateProduct(ProductsDomain product,String imageId){
-        updateProduct(product);
-        uploadImage(imageId);
-    }
 
     private void addNewProduct(ProductsDomain newProduct,String imageId) {
         firestore.collection("Products").add(newProduct).addOnSuccessListener(new OnSuccessListener<DocumentReference>() {

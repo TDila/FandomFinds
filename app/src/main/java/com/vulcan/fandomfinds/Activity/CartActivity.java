@@ -429,11 +429,14 @@ public class CartActivity extends AppCompatActivity{
         if(billingShipping != null){
             if(billingShipping.getShippingAddress() == null || billingShipping.getPostalCode() == 0 || billingShipping.getPaymentMethod() == null){
                 cartErrorMessageLayout.setVisibility(View.VISIBLE);
+                cartOrderNowButton.setEnabled(false);
             }else{
                 cartErrorMessageLayout.setVisibility(View.GONE);
+                cartOrderNowButton.setEnabled(true);
             }
         }else{
             cartErrorMessageLayout.setVisibility(View.VISIBLE);
+            cartOrderNowButton.setEnabled(false);
         }
     }
 

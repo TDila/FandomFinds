@@ -6,242 +6,250 @@
     android:layout_height="match_parent"
     tools:context=".Activity.SingleProductViewActivity">
 
-    <ScrollView
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
+        android:id="@+id/singleProductCoordinator"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:orientation="vertical">
 
-        <LinearLayout
+        <ScrollView
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:layout_height="match_parent">
 
-            <androidx.constraintlayout.widget.ConstraintLayout
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent">
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
 
-                <ImageView
-                    android:id="@+id/single_product_backArrow"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="16dp"
-                    android:layout_marginTop="24dp"
-                    android:padding="8dp"
-                    android:src="@drawable/arrow"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
 
-                <ImageView
-                    android:id="@+id/single_product_bookmark"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginEnd="16dp"
-                    android:src="@drawable/bookmark"
-                    app:layout_constraintBottom_toBottomOf="@+id/single_product_backArrow"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toTopOf="@+id/single_product_backArrow" />
+                    <ImageView
+                        android:id="@+id/single_product_backArrow"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="16dp"
+                        android:layout_marginTop="24dp"
+                        android:padding="8dp"
+                        android:src="@drawable/arrow"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
 
-                <ImageView
-                    android:id="@+id/single_product_share"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginEnd="8dp"
-                    android:src="@drawable/share"
-                    app:layout_constraintBottom_toBottomOf="@+id/single_product_bookmark"
-                    app:layout_constraintEnd_toStartOf="@+id/single_product_bookmark"
-                    app:layout_constraintTop_toTopOf="@+id/single_product_bookmark" />
+                    <ImageView
+                        android:id="@+id/single_product_bookmark"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginEnd="16dp"
+                        android:src="@drawable/bookmark"
+                        app:layout_constraintBottom_toBottomOf="@+id/single_product_backArrow"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toTopOf="@+id/single_product_backArrow" />
 
-                <View
-                    android:id="@+id/single_product_image_view"
-                    android:layout_width="0dp"
-                    android:layout_height="290dp"
-                    android:layout_margin="16dp"
-                    android:layout_marginStart="16dp"
-                    android:background="@drawable/grey_background"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/single_product_backArrow" />
+                    <ImageView
+                        android:id="@+id/single_product_share"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginEnd="8dp"
+                        android:src="@drawable/share"
+                        app:layout_constraintBottom_toBottomOf="@+id/single_product_bookmark"
+                        app:layout_constraintEnd_toStartOf="@+id/single_product_bookmark"
+                        app:layout_constraintTop_toTopOf="@+id/single_product_bookmark" />
 
-                <ImageView
-                    android:id="@+id/single_product_img"
-                    android:layout_width="0dp"
-                    android:layout_height="270dp"
-                    android:layout_margin="16dp"
-                    android:scaleType="fitCenter"
-                    android:src="@drawable/product_default"
-                    app:layout_constraintBottom_toBottomOf="@+id/single_product_image_view"
-                    app:layout_constraintEnd_toEndOf="@+id/single_product_image_view"
-                    app:layout_constraintStart_toStartOf="@+id/single_product_image_view"
-                    app:layout_constraintTop_toTopOf="@+id/single_product_image_view" />
+                    <View
+                        android:id="@+id/single_product_image_view"
+                        android:layout_width="0dp"
+                        android:layout_height="290dp"
+                        android:layout_margin="16dp"
+                        android:layout_marginStart="16dp"
+                        android:background="@drawable/grey_background"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/single_product_backArrow" />
 
-                <TextView
-                    android:id="@+id/single_product_discount"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:padding="3dp"
-                    android:background="@drawable/discount_yellow_background"
-                    android:text="@string/home_deals_discount_percentage_text"
-                    android:textColor="@color/white"
-                    android:textSize="20dp"
-                    app:layout_constraintBottom_toBottomOf="@+id/single_product_img"
-                    app:layout_constraintEnd_toEndOf="@+id/single_product_img" />
+                    <ImageView
+                        android:id="@+id/single_product_img"
+                        android:layout_width="0dp"
+                        android:layout_height="270dp"
+                        android:layout_margin="16dp"
+                        android:scaleType="fitCenter"
+                        android:src="@drawable/product_default"
+                        app:layout_constraintBottom_toBottomOf="@+id/single_product_image_view"
+                        app:layout_constraintEnd_toEndOf="@+id/single_product_image_view"
+                        app:layout_constraintStart_toStartOf="@+id/single_product_image_view"
+                        app:layout_constraintTop_toTopOf="@+id/single_product_image_view" />
+
+                    <TextView
+                        android:id="@+id/single_product_discount"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/discount_yellow_background"
+                        android:padding="3dp"
+                        android:text="@string/home_deals_discount_percentage_text"
+                        android:textColor="@color/white"
+                        android:textSize="20dp"
+                        app:layout_constraintBottom_toBottomOf="@+id/single_product_img"
+                        app:layout_constraintEnd_toEndOf="@+id/single_product_img" />
+
+                    <LinearLayout
+                        android:id="@+id/linearLayout"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="16dp"
+                        android:layout_marginTop="16dp"
+                        android:layout_marginEnd="16dp"
+                        android:orientation="horizontal"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/single_product_img">
+
+                        <TextView
+                            android:id="@+id/single_product_title"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="@string/single_product_title"
+                            android:textColor="@color/black"
+                            android:textSize="23dp"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:id="@+id/single_product_new_price"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginRight="3dp"
+                            android:background="@drawable/discount_purple_background"
+                            android:padding="3dp"
+                            android:text="@string/single_product_price"
+                            android:textColor="@color/white"
+                            android:textSize="22sp" />
+
+                        <TextView
+                            android:id="@+id/single_product_price"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/single_product_price"
+                            android:textColor="@color/black"
+                            android:textSize="22sp" />
+
+                    </LinearLayout>
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
 
                 <LinearLayout
-                    android:id="@+id/linearLayout"
+                    android:id="@+id/single_product_sizeLayout"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginEnd="16dp"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:id="@+id/single_product_size_text"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/single_product_size_text"
+                        android:textColor="@color/black"
+                        android:textSize="16dp" />
+
+                    <Spinner
+                        android:id="@+id/single_product_sizes"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="4dp" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
                     android:layout_marginStart="16dp"
                     android:layout_marginTop="16dp"
                     android:layout_marginEnd="16dp"
+                    android:layout_marginBottom="16dp"
                     android:orientation="horizontal"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/single_product_img">
+                    app:layout_constraintTop_toBottomOf="@+id/linearLayout">
 
-                    <TextView
-                        android:id="@+id/single_product_title"
+                    <ImageView
+                        android:id="@+id/single_product_rating_img"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:text="@string/single_product_title"
+                        android:src="@drawable/star" />
+
+                    <TextView
+                        android:id="@+id/single_product_star_num"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="8dp"
+                        android:text="@string/single_product_rating"
                         android:textColor="@color/black"
-                        android:textSize="23dp"
                         android:textStyle="bold" />
 
                     <TextView
-                        android:id="@+id/single_product_new_price"
+                        android:id="@+id/single_product_rating_txt"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="@string/single_product_price"
-                        android:padding="3dp"
-                        android:textColor="@color/white"
-                        android:background="@drawable/discount_purple_background"
-                        android:textSize="22sp"
-                        android:layout_marginRight="3dp" />
+                        android:layout_marginStart="8dp"
+                        android:text="@string/single_product_rating_txt"
+                        android:textColor="@color/black" />
+
+                    <ImageView
+                        android:id="@+id/single_product_feedback_img"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="16dp"
+                        android:src="@drawable/review" />
 
                     <TextView
-                        android:id="@+id/single_product_price"
+                        android:id="@+id/single_product_feedback_count"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="@string/single_product_price"
+                        android:layout_marginStart="8dp"
+                        android:text="@string/single_product_feedback_count"
                         android:textColor="@color/black"
-                        android:textSize="22sp" />
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/single_product_feedback_txt"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="8dp"
+                        android:text="@string/single_product_feedback_txt"
+                        android:textColor="@color/black" />
 
                 </LinearLayout>
 
-            </androidx.constraintlayout.widget.ConstraintLayout>
-
-            <LinearLayout
-                android:id="@+id/single_product_sizeLayout"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_marginTop="8dp"
-                android:layout_marginStart="16dp"
-                android:layout_marginEnd="16dp"
-                android:orientation="horizontal">
+                <View
+                    android:id="@+id/view2"
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="@drawable/grey_background" />
 
                 <TextView
-                    android:id="@+id/single_product_size_text"
-                    android:layout_width="wrap_content"
+                    android:id="@+id/single_product_description"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="@string/single_product_size_text"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginEnd="16dp"
+                    android:text="@string/single_product_description"
                     android:textColor="@color/black"
                     android:textSize="16dp" />
 
-                <Spinner
-                    android:id="@+id/single_product_sizes"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="4dp" />
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_marginStart="16dp"
-                android:layout_marginEnd="16dp"
-                android:orientation="horizontal"
-                android:layout_marginTop="16dp"
-                android:layout_marginBottom="16dp"
-                app:layout_constraintTop_toBottomOf="@+id/linearLayout">
-
-                <ImageView
-                    android:id="@+id/single_product_rating_img"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:src="@drawable/star" />
-
-                <TextView
-                    android:id="@+id/single_product_star_num"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="8dp"
-                    android:text="@string/single_product_rating"
-                    android:textStyle="bold"
-                    android:textColor="@color/black"/>
-
-                <TextView
-                    android:id="@+id/single_product_rating_txt"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/single_product_rating_txt"
-                    android:textColor="@color/black"
-                    android:layout_marginStart="8dp"/>
-
-                <ImageView
-                    android:id="@+id/single_product_feedback_img"
-                    android:layout_width="wrap_content"
+                <androidx.appcompat.widget.AppCompatButton
+                    android:id="@+id/single_product_buynow"
+                    style="@style/Widget.AppCompat.Button"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="16dp"
-                    android:src="@drawable/review" />
-
-                <TextView
-                    android:id="@+id/single_product_feedback_count"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/single_product_feedback_count"
-                    android:textColor="@color/black"
-                    android:layout_marginStart="8dp"
-                    android:textStyle="bold"/>
-
-                <TextView
-                    android:id="@+id/single_product_feedback_txt"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/single_product_feedback_txt"
-                    android:textColor="@color/black"
-                    android:layout_marginStart="8dp"/>
+                    android:layout_marginTop="8dp"
+                    android:layout_marginEnd="16dp"
+                    android:background="@drawable/btn_purple_background"
+                    android:text="@string/single_product_btn_buy_now"
+                    android:textColor="@color/white"
+                    android:textSize="18sp" />
 
             </LinearLayout>
+        </ScrollView>
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
-            <View
-                android:id="@+id/view2"
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:background="@drawable/grey_background"/>
-
-            <TextView
-                android:id="@+id/single_product_description"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
-                android:layout_marginEnd="16dp"
-                android:textColor="@color/black"
-                android:textSize="16dp"
-                android:text="@string/single_product_description" />
-
-            <androidx.appcompat.widget.AppCompatButton
-                android:id="@+id/single_product_buynow"
-                style="@style/Widget.AppCompat.Button"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:layout_marginStart="16dp"
-                android:layout_marginEnd="16dp"
-                android:background="@drawable/btn_purple_background"
-                android:text="@string/single_product_btn_buy_now"
-                android:textColor="@color/white"
-                android:textSize="18sp"/>
-
-        </LinearLayout>
-    </ScrollView>
 </androidx.constraintlayout.widget.ConstraintLayout>

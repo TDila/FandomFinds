@@ -2,6 +2,7 @@ package com.vulcan.fandomfinds.Activity;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.coordinatorlayout.widget.CoordinatorLayout;
 
 import android.graphics.Paint;
 import android.net.Uri;
@@ -41,11 +42,13 @@ public class SingleProductViewActivity extends AppCompatActivity {
     private int numberOrder = 1;
     private ManagementCart managementCart;
     FirebaseStorage firebaseStorage;
+    CoordinatorLayout singleProductCoordinator;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_single_product_view);
-        managementCart = new ManagementCart(this);
+        singleProductCoordinator = findViewById(R.id.singleProductCoordinator);
+        managementCart = new ManagementCart(SingleProductViewActivity.this,singleProductCoordinator);
 
         firebaseStorage = FirebaseStorage.getInstance();
 

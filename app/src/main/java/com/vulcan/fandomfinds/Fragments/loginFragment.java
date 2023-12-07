@@ -1,6 +1,9 @@
 package com.vulcan.fandomfinds.Fragments;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 
 import androidx.activity.result.ActivityResult;
@@ -10,6 +13,7 @@ import androidx.activity.result.IntentSenderRequest;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Lifecycle;
 
@@ -23,6 +27,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.auth.api.identity.BeginSignInRequest;
@@ -35,6 +40,7 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.Firebase;
@@ -52,17 +58,21 @@ import com.vulcan.fandomfinds.Animations.LoadingDialog;
 import com.vulcan.fandomfinds.Domain.CustomerDomain;
 import com.vulcan.fandomfinds.R;
 
+import org.checkerframework.checker.units.qual.A;
+
 import java.util.UUID;
 
 public class loginFragment extends Fragment {
     private TextInputLayout loginEmailLayout,loginPasswordLayout;
     private TextInputEditText loginEmailText,loginPasswordText;
+    private TextView forgotPassword;
     private Button login_button;
     private LinearLayout loginWithGoogle;
     private LoadingDialog loadingDialog;
     FirebaseFirestore firestore;
     FirebaseAuth firebaseAuth;
     SignInClient signInClient;
+    CoordinatorLayout loginCoordinator;
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -80,13 +90,18 @@ public class loginFragment extends Fragment {
         loginPasswordText = view.findViewById(R.id.loginPasswordText);
         login_button = view.findViewById(R.id.login_button);
         loginWithGoogle = view.findViewById(R.id.loginWithGoogle);
+        forgotPassword = view.findViewById(R.id.forgotPassword);
+        loginCoordinator = view.findViewById(R.id.loginCoordinator);
 
         firestore = FirebaseFirestore.getInstance();
         firebaseAuth = FirebaseAuth.getInstance();
         signInClient = Identity.getSignInClient(getContext());
         loadingDialog = new LoadingDialog(getContext());
 
+        setListeners();
+    }
 
+    private void setListeners() {
         loginEmailText.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
@@ -187,6 +202,57 @@ public class loginFragment extends Fragment {
                         Toast.makeText(getContext(),e.getMessage(),Toast.LENGTH_LONG).show();
                     }
                 });
+            }
+        });
+
+        forgotPassword.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String email = loginEmailText.getText().toString();
+                if(!email.isEmpty()){
+                    AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+                    builder.setMessage("This will send a password reset email to your email. Do you want to continue?")
+                            .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    sendPasswordResetEmail(email);
+                                }
+                            }).setNegativeButton("No", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    dialog.dismiss();
+                                }
+                            });
+                    AlertDialog alertDialog = builder.create();
+                    alertDialog.show();
+                }else{
+                    loginEmailLayout.setError("Please enter your email");
+                    Toast.makeText(getContext(),"Please enter your email!",Toast.LENGTH_LONG).show();
+                }
+            }
+        });
+    }
+
+    private void sendPasswordResetEmail(String email){
+        firebaseAuth.sendPasswordResetEmail(email).addOnCompleteListener(new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
+                Toast.makeText(getContext(),"Please enter your email!",Toast.LENGTH_LONG).show();
+                Snackbar snackbar = Snackbar.make(loginCoordinator,"Email Sent Successfully!",Snackbar.LENGTH_LONG);
+                snackbar.setAction("Open Email", new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Intent intent = new Intent(Intent.ACTION_SENDTO);
+                        intent.setData(Uri.parse("mailto:"));
+                        startActivity(Intent.createChooser(intent,"Choose an app"));
+                    }
+                });
+                snackbar.show();
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Toast.makeText(getContext(),"Please enter your email!",Toast.LENGTH_LONG).show();
             }
         });
     }

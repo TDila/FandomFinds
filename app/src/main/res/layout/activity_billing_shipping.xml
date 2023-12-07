@@ -126,102 +126,118 @@
                 </LinearLayout>
 
                 <LinearLayout
-                    android:id="@+id/verificationCodeFieldLayout"
+                    android:id="@+id/verificationLayout"
                     android:layout_width="match_parent"
-                    android:layout_gravity="center"
-                    android:gravity="center"
                     android:layout_height="match_parent"
-                    android:orientation="horizontal">
+                    android:orientation="vertical">
 
-                    <com.google.android.material.textfield.TextInputLayout
-                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                        android:padding="1dp"
-                        android:layout_width="50dp"
-                        android:layout_height="match_parent">
+                    <LinearLayout
+                        android:id="@+id/verificationCodeFieldLayout"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_gravity="center"
+                        android:gravity="center"
+                        android:orientation="horizontal">
 
-                        <com.google.android.material.textfield.TextInputEditText
-                            android:id="@+id/verificationCodeField1"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:maxLength="1"
-                            android:gravity="center"
-                            android:inputType="number"/>
-                    </com.google.android.material.textfield.TextInputLayout>
+                        <com.google.android.material.textfield.TextInputLayout
+                            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                            android:layout_width="50dp"
+                            android:layout_height="match_parent"
+                            android:padding="1dp">
 
-                    <com.google.android.material.textfield.TextInputLayout
-                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                        android:padding="1dp"
-                        android:layout_width="50dp"
-                        android:layout_height="match_parent">
+                            <com.google.android.material.textfield.TextInputEditText
+                                android:id="@+id/verificationCodeField1"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:gravity="center"
+                                android:inputType="number"
+                                android:maxLength="1" />
+                        </com.google.android.material.textfield.TextInputLayout>
 
-                        <com.google.android.material.textfield.TextInputEditText
-                            android:id="@+id/verificationCodeField2"
-                            android:layout_width="match_parent"
-                            android:gravity="center"
-                            android:maxLength="1"
-                            android:inputType="number"
-                            android:layout_height="wrap_content" />
-                    </com.google.android.material.textfield.TextInputLayout>
+                        <com.google.android.material.textfield.TextInputLayout
+                            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                            android:layout_width="50dp"
+                            android:layout_height="match_parent"
+                            android:padding="1dp">
 
-                    <com.google.android.material.textfield.TextInputLayout
-                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                        android:padding="1dp"
-                        android:layout_width="50dp"
-                        android:layout_height="match_parent">
+                            <com.google.android.material.textfield.TextInputEditText
+                                android:id="@+id/verificationCodeField2"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:gravity="center"
+                                android:inputType="number"
+                                android:maxLength="1" />
+                        </com.google.android.material.textfield.TextInputLayout>
 
-                        <com.google.android.material.textfield.TextInputEditText
-                            android:id="@+id/verificationCodeField3"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:gravity="center"
-                            android:maxLength="1"
-                            android:inputType="number"/>
-                    </com.google.android.material.textfield.TextInputLayout>
+                        <com.google.android.material.textfield.TextInputLayout
+                            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                            android:layout_width="50dp"
+                            android:layout_height="match_parent"
+                            android:padding="1dp">
 
-                    <com.google.android.material.textfield.TextInputLayout
-                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                        android:padding="1dp"
-                        android:layout_width="50dp"
-                        android:layout_height="match_parent">
+                            <com.google.android.material.textfield.TextInputEditText
+                                android:id="@+id/verificationCodeField3"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:gravity="center"
+                                android:inputType="number"
+                                android:maxLength="1" />
+                        </com.google.android.material.textfield.TextInputLayout>
 
-                        <com.google.android.material.textfield.TextInputEditText
-                            android:id="@+id/verificationCodeField4"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:gravity="center"
-                            android:maxLength="1"
-                            android:inputType="number"/>
-                    </com.google.android.material.textfield.TextInputLayout>
+                        <com.google.android.material.textfield.TextInputLayout
+                            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                            android:layout_width="50dp"
+                            android:layout_height="match_parent"
+                            android:padding="1dp">
 
-                    <com.google.android.material.textfield.TextInputLayout
-                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                        android:padding="1dp"
-                        android:layout_width="50dp"
-                        android:layout_height="match_parent">
+                            <com.google.android.material.textfield.TextInputEditText
+                                android:id="@+id/verificationCodeField4"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:gravity="center"
+                                android:inputType="number"
+                                android:maxLength="1" />
+                        </com.google.android.material.textfield.TextInputLayout>
 
-                        <com.google.android.material.textfield.TextInputEditText
-                            android:id="@+id/verificationCodeField5"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:gravity="center"
-                            android:maxLength="1"
-                            android:inputType="number"/>
-                    </com.google.android.material.textfield.TextInputLayout>
+                        <com.google.android.material.textfield.TextInputLayout
+                            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                            android:layout_width="50dp"
+                            android:layout_height="match_parent"
+                            android:padding="1dp">
 
-                    <com.google.android.material.textfield.TextInputLayout
-                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                        android:padding="1dp"
-                        android:layout_width="50dp"
-                        android:layout_height="match_parent">
+                            <com.google.android.material.textfield.TextInputEditText
+                                android:id="@+id/verificationCodeField5"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:gravity="center"
+                                android:inputType="number"
+                                android:maxLength="1" />
+                        </com.google.android.material.textfield.TextInputLayout>
 
-                        <com.google.android.material.textfield.TextInputEditText
-                            android:id="@+id/verificationCodeField6"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:gravity="center"
-                            android:maxLength="1"
-                            android:inputType="number"/>
-                    </com.google.android.material.textfield.TextInputLayout>
+                        <com.google.android.material.textfield.TextInputLayout
+                            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                            android:layout_width="50dp"
+                            android:layout_height="match_parent"
+                            android:padding="1dp">
+
+                            <com.google.android.material.textfield.TextInputEditText
+                                android:id="@+id/verificationCodeField6"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:gravity="center"
+                                android:inputType="number"
+                                android:maxLength="1" />
+                        </com.google.android.material.textfield.TextInputLayout>
+
+                    </LinearLayout>
+
+                    <Button
+                        android:id="@+id/verifyButton"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:layout_weight="1"
+                        android:text="@string/verify_code_button_text" />
                 </LinearLayout>
 
                 <Button

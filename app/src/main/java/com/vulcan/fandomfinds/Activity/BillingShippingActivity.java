@@ -9,6 +9,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -44,6 +45,7 @@ public class BillingShippingActivity extends AppCompatActivity {
     private Button saveDetailsButton,savePaymentMethodButton;
     private PhoneAuthProvider.OnVerificationStateChangedCallbacks callbacks;
     private PhoneAuthProvider.ForceResendingToken resendingToken;
+    private LinearLayout verificationLayout;
     String userId;
     String userType;
     BillingShippingDomain billingShipping;
@@ -109,6 +111,9 @@ public class BillingShippingActivity extends AppCompatActivity {
         editTextCarrierNumber = findViewById(R.id.editText_carrierNumber);
         ccp.registerCarrierNumberEditText(editTextCarrierNumber);
         phoneNumberLayout= findViewById(R.id.phoneNumberLayout);
+
+        verificationLayout = findViewById(R.id.verificationLayout);
+        verificationLayout.setVisibility(View.GONE);
     }
     private void setListeners() {
         backButton.setOnClickListener(new View.OnClickListener() {

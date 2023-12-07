@@ -101,49 +101,9 @@ public class SellerStoreActivity extends AppCompatActivity {
         recyclerView.setLayoutManager(new LinearLayoutManager(SellerStoreActivity.this,LinearLayoutManager.VERTICAL,false));
         SellerStoreItemAdapter sellerStoreItemAdapter = new SellerStoreItemAdapter(items,SellerStoreActivity.this);
         recyclerView.setAdapter(sellerStoreItemAdapter);
-//        firestore.collection("Products").whereEqualTo("sellerId",seller.getId()).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-//            @Override
-//            public void onComplete(@NonNull Task<QuerySnapshot> task) {
-//                if(task.isSuccessful()){
-//                    for(QueryDocumentSnapshot snapshot : task.getResult()){
-//                        ProductsDomain product = snapshot.toObject(ProductsDomain.class);
-//                        if(product != null){
-//                            if(product.getType().equals("Apparel")){
-//                                List<String> sizes = product.getSizesList();
-//                                items.add(new ProductsDomain(product.getId(),product.getTitle(),product.getDescription(),product.getPicUrl(),product.getReview()
-//                                        ,product.getScore(),product.getPrice(),product.getDiscount(),product.getSellerName(),sizes,product.getStatus(),product.getType(),product.getSellerId()));
-//                            }else{
-//                                items.add(new ProductsDomain(product.getId(),product.getTitle(),product.getDescription(),product.getPicUrl(),product.getReview()
-//                                        ,product.getScore(),product.getPrice(),product.getDiscount(),product.getSellerName(),product.getSizesList(),product.getStatus(),product.getType(),product.getSellerId()));
-//                            }
-//                        }
-//                    }
-//                    sellerStoreItemAdapter.notifyDataSetChanged();
-//                }
-//            }
-//        }).addOnFailureListener(new OnFailureListener() {
-//            @Override
-//            public void onFailure(@NonNull Exception e) {
-//                Toast.makeText(SellerStoreActivity.this,"Product Loading Failure!",Toast.LENGTH_LONG).show();
-//            }
-//        });
         firestore.collection("Products").whereEqualTo("sellerId",seller.getId()).addSnapshotListener(new EventListener<QuerySnapshot>() {
             @Override
             public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException error) {
-//                items.clear();
-//                for(DocumentChange change : value.getDocumentChanges()){
-//                    ProductsDomain product = change.getDocument().toObject(ProductsDomain.class);
-//                    if(product != null){
-//                        if(product.getType().equals("Apparel")){
-//                            List<String> sizes = product.getSizesList();
-//                            items.add(new ProductsDomain(product.getId(),product.getTitle(),product.getDescription(),product.getPicUrl(),product.getReview()
-//                                    ,product.getScore(),product.getPrice(),product.getDiscount(),product.getSellerName(),sizes,product.getStatus(),product.getType(),product.getSellerId()));
-//                        }else{
-//                            items.add(new ProductsDomain(product.getId(),product.getTitle(),product.getDescription(),product.getPicUrl(),product.getReview()
-//                                    ,product.getScore(),product.getPrice(),product.getDiscount(),product.getSellerName(),product.getSizesList(),product.getStatus(),product.getType(),product.getSellerId()));
-//                        }
-//                    }
-//                }
                 if(value.size() != 0){
                     for (DocumentChange change : value.getDocumentChanges()){
                         ProductsDomain item = change.getDocument().toObject(ProductsDomain.class);

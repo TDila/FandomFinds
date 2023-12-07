@@ -1,8 +1,15 @@
 package com.vulcan.fandomfinds.Helper;
 
+import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
+import android.view.View;
 import android.widget.Toast;
 
+import androidx.coordinatorlayout.widget.CoordinatorLayout;
+
+import com.google.android.material.snackbar.Snackbar;
+import com.vulcan.fandomfinds.Activity.CartActivity;
 import com.vulcan.fandomfinds.Domain.ProductsDomain;
 
 import java.util.ArrayList;
@@ -10,10 +17,17 @@ import java.util.ArrayList;
 public class ManagementCart {
     private Context context;
     private TinyDB tinyDB;
+    CoordinatorLayout coordinatorLayout;
 
     public ManagementCart(Context context) {
         this.context = context;
         this.tinyDB = new TinyDB(context);
+    }
+
+    public ManagementCart(Context context, CoordinatorLayout singleProductCoordinator) {
+        this.context = context;
+        this.tinyDB = new TinyDB(context);
+        this.coordinatorLayout = singleProductCoordinator;
     }
     public void insertProduct(ProductsDomain item){
         ArrayList<ProductsDomain> productList = getListCart();
@@ -32,7 +46,19 @@ public class ManagementCart {
             productList.add(item);
         }
         tinyDB.putListObject("CartList",productList);
-        Toast.makeText(context,"Added to your Cart",Toast.LENGTH_LONG).show();
+        if(coordinatorLayout != null){
+            Snackbar snackbar = Snackbar.make(context,coordinatorLayout,"Added to the Cart",Snackbar.LENGTH_LONG);
+            snackbar.setAction("Check Cart", new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(context, CartActivity.class);
+                    intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+                    context.startActivity(intent);
+                    ((Activity)context).finish();
+                }
+            });
+            snackbar.show();
+        }
     }
     public ArrayList<ProductsDomain> getListCart(){
         return tinyDB.getListObject("CartList");

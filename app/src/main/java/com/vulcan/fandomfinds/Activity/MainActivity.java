@@ -296,27 +296,35 @@ public class MainActivity extends AppCompatActivity {
         DealsAdapter dealsAdapter = new DealsAdapter(items);
         recyclerViewDeals.setAdapter(dealsAdapter);
 
-        firestore.collection("Products").limit(10).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+        firestore.collection("Products").limit(10).whereGreaterThan("discount",0).addSnapshotListener(new EventListener<QuerySnapshot>() {
             @Override
-            public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                if(task.isSuccessful()){
-                    for(QueryDocumentSnapshot snapshot : task.getResult()){
-                        ProductsDomain product = snapshot.toObject(ProductsDomain.class);
-                        if(product != null){
-                            if(product.getDiscount() != 0){
-                                if(product.getType().equals("Apparel")){
-                                    List<String> sizes = product.getSizesList();
-                                    items.add(new ProductsDomain(product.getId(),product.getTitle(),product.getDescription(),product.getPicUrl(),product.getReview()
-                                            ,product.getScore(),product.getPrice(),product.getDiscount(),product.getSellerName(),sizes,product.getStatus(),product.getType(),product.getSellerId()));
-                                }else{
-                                    items.add(new ProductsDomain(product.getId(),product.getTitle(),product.getDescription(),product.getPicUrl(),product.getReview()
-                                            ,product.getScore(),product.getPrice(),product.getDiscount(),product.getSellerName(),product.getSizesList(),product.getStatus(),product.getType(),product.getSellerId()));
-                                }
+            public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException error) {
+                for (DocumentChange change : value.getDocumentChanges()){
+                    ProductsDomain product = change.getDocument().toObject(ProductsDomain.class);
+                    switch (change.getType()){
+                        case ADDED:
+                            items.add(product);
+                        case MODIFIED:
+                            ProductsDomain old = items.stream().filter(i -> i.getId().equals(product.getId())).findFirst().orElse(null);
+                            if(old != null){
+                                old.setTitle(product.getTitle());
+                                old.setDescription(product.getDescription());
+                                old.setPicUrl(product.getPicUrl());
+                                old.setReview(product.getReview());
+                                old.setPrice(product.getPrice());
+                                old.setDiscount(product.getDiscount());
+                                old.setSellerName(product.getSellerName());
+                                old.setSizesList(product.getSizesList());
+                                old .setStatus(product.getStatus());
+                                old.setType(product.getType());
+                                old.setTitleInsensitive(product.getTitleInsensitive());
                             }
-                        }
+                            break;
+                        case REMOVED:
+                            items.remove(product);
                     }
-                    dealsAdapter.notifyDataSetChanged();
                 }
+                dealsAdapter.notifyDataSetChanged();
             }
         });
     }

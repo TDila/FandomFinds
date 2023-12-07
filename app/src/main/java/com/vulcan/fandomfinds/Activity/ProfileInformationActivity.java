@@ -25,13 +25,17 @@ import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.textfield.TextInputEditText;
+import com.google.firebase.auth.AuthCredential;
+import com.google.firebase.auth.EmailAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.UserInfo;
 import com.google.firebase.firestore.DocumentChange;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.EventListener;
@@ -82,9 +86,9 @@ public class ProfileInformationActivity extends AppCompatActivity {
     private ImageView profileInfoBackButton;
     LoadingDialog loadingDialog;
     private ImageButton profileImage;
-    private LinearLayout publicNameLayout,userBioLayout,socialMediaLayout,profileInCompleteErrorLayout;
+    private LinearLayout publicNameLayout,userBioLayout,socialMediaLayout,profileInCompleteErrorLayout,changePasswordLayout;
     private EditText sellerPublicName,profileInfoFirstname,profileInfoLastname,profileInfoUserEmail,youTube,twitter,facebook,instagram,twitch
-            ,newPassword;
+            ,newPassword,oldPassword;
     private TextInputEditText profileInfoSellerBio;
     private Button passwordChangeButton,saveChangesButton;
     private final int PICK_IMAGE_CODE = 12;
@@ -110,6 +114,15 @@ public class ProfileInformationActivity extends AppCompatActivity {
 
         getUserDetails();
         checkSellerCompleteness();
+
+        for (UserInfo userInfo : firebaseUser.getProviderData()) {
+            String providerId = userInfo.getProviderId();
+            if(providerId.equals("password")){
+                changePasswordLayout.setVisibility(View.VISIBLE);
+            }else if (providerId.equals("google.com")){
+                changePasswordLayout.setVisibility(View.GONE);
+            }
+        }
     }
 
     private void loadCustomerDetails() {
@@ -190,6 +203,13 @@ public class ProfileInformationActivity extends AppCompatActivity {
                 saveChanges();
             }
         });
+        passwordChangeButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                loadingDialog.show();
+                changePassword();
+            }
+        });
     }
 
     private void saveChanges() {
@@ -235,11 +255,7 @@ public class ProfileInformationActivity extends AppCompatActivity {
         }
         //seller name process for the searching process
 
-
         map.put("sellerNameInsensitive",sellerNameInsensitiveList);
-
-
-
 
         socialMedia.setYoutube(youtubeLink);
         socialMedia.setTwitter(twitterLink);
@@ -399,6 +415,7 @@ public class ProfileInformationActivity extends AppCompatActivity {
         userBioLayout = findViewById(R.id.userBioLayout);
         profileInCompleteErrorLayout = findViewById(R.id.profileInCompleteErrorLayout);
         profileInCompleteErrorLayout.setVisibility(View.GONE);
+        changePasswordLayout = findViewById(R.id.changePasswordLayout);
 
         //social media
         youTube = findViewById(R.id.profileInfoSellerYouTube);
@@ -408,6 +425,7 @@ public class ProfileInformationActivity extends AppCompatActivity {
         twitch = findViewById(R.id.profileInfoSellerTwitch);
 
         newPassword = findViewById(R.id.profileInfoNewPassword);
+        oldPassword = findViewById(R.id.profileInfoOldPassword);
         passwordChangeButton = findViewById(R.id.profileInfoPasswordChangeButton);
         saveChangesButton = findViewById(R.id.profileInfoSaveChanges);
 //        saveChangesButton.setEnabled(false);
@@ -597,4 +615,55 @@ public class ProfileInformationActivity extends AppCompatActivity {
             });
         }
     }
+
+    private void changePassword() {
+        String oldPasswordString = oldPassword.getText().toString();
+        String newPasswordString = newPassword.getText().toString();
+        if(newPasswordString != null && !newPasswordString.isEmpty() && oldPasswordString != null && !oldPasswordString.isEmpty()){
+            if(newPasswordString.length() >= 8){
+                AuthCredential credential = EmailAuthProvider.getCredential(firebaseUser.getEmail(),oldPasswordString);
+
+                firebaseUser.reauthenticate(credential).addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void unused) {
+                        firebaseUser.updatePassword(newPasswordString).addOnSuccessListener(new OnSuccessListener<Void>() {
+                            @Override
+                            public void onSuccess(Void unused) {
+                                loadingDialog.cancel();
+                                Toast.makeText(ProfileInformationActivity.this,"Password successfully changed!",Toast.LENGTH_LONG).show();
+                            }
+                        }).addOnFailureListener(new OnFailureListener() {
+                            @Override
+                            public void onFailure(@NonNull Exception e) {
+                                loadingDialog.cancel();
+                                Toast.makeText(ProfileInformationActivity.this,"Something went wrong! Try again Later.",Toast.LENGTH_LONG).show();
+                            }
+                        });
+                    }
+                }).addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        loadingDialog.cancel();
+                        Toast.makeText(ProfileInformationActivity.this,"Authentication Failed!",Toast.LENGTH_LONG).show();
+                    }
+                });
+            }else{
+                loadingDialog.cancel();
+                Toast.makeText(ProfileInformationActivity.this,"New password must be at least 8 characters!",Toast.LENGTH_LONG).show();
+            }
+        }else{
+            loadingDialog.cancel();
+            Toast.makeText(ProfileInformationActivity.this,"Please fill the password fields!",Toast.LENGTH_LONG).show();
+        }
+//        firebaseAuth.sendPasswordResetEmail(firebaseUser.getEmail())
+//                .addOnCompleteListener(new OnCompleteListener<Void>() {
+//                    @Override
+//                    public void onComplete(@NonNull Task<Void> task) {
+//                        if (task.isSuccessful()) {
+//                            Toast.makeText(ProfileInformationActivity.this,"Email sent",Toast.LENGTH_LONG).show();
+//                        }
+//                    }
+//                });
+    }
+
 }

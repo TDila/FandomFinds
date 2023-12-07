@@ -200,4 +200,7 @@
     <string name="notification_message">Message</string>
     <string name="notification_activity_title">NOTIFICATIONS</string>
     <string name="notification_datetime">Date and Time</string>
+    <string name="profile_info_change_password_hint_old">Old Password</string>
+    <string name="forgotPasswordText"><u>Forgot Password</u></string>
+    <string name="verify_code_button_text">VERIFY</string>
 </resources>
