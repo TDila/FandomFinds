@@ -108,9 +108,168 @@ public class SellerPublicProfileActivity extends AppCompatActivity {
                 if(followButton.getText().equals("follow")){
                     loadingDialog.show();
                     followProcess();
+                }else if(followButton.getText().equals("following")){
+                    loadingDialog.show();
+                    unfollowProcess();
                 }
             }
         });
+    }
+
+    private void unfollowProcess() {
+        if(seller != null){
+            int newFollowerCount = currentFollowerCount - 1;
+            seller.setFollowers(newFollowerCount);
+            Map<String,Object> map = new HashMap<>();
+            map.put("followers",seller.getFollowers());
+
+            firestore.collection("Sellers").whereEqualTo("id",seller.getId()).get()
+                    .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                        @Override
+                        public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                            if(task.isSuccessful()){
+                                for (QueryDocumentSnapshot snapshot : task.getResult()){
+                                    snapshot.getReference().collection("Followers").whereEqualTo("email",user.getEmail()).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                                        @Override
+                                        public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                                            if(task.isSuccessful()){
+                                                for (QueryDocumentSnapshot snapshot1 : task.getResult()){
+                                                    snapshot.getReference().update(map).addOnSuccessListener(new OnSuccessListener<Void>() {
+                                                        @Override
+                                                        public void onSuccess(Void unused) {
+                                                            snapshot1.getReference().delete().addOnSuccessListener(new OnSuccessListener<Void>() {
+                                                                @Override
+                                                                public void onSuccess(Void unused) {
+                                                                    customerUnfollowingProcess();
+                                                                }
+                                                            }).addOnFailureListener(new OnFailureListener() {
+                                                                @Override
+                                                                public void onFailure(@NonNull Exception e) {
+                                                                    loadingDialog.cancel();
+                                                                    Toast.makeText(SellerPublicProfileActivity.this,"Unfollowing Process Failed! Try again later.",Toast.LENGTH_LONG).show();
+                                                                }
+                                                            });
+                                                        }
+                                                    }).addOnFailureListener(new OnFailureListener() {
+                                                        @Override
+                                                        public void onFailure(@NonNull Exception e) {
+                                                            loadingDialog.cancel();
+                                                            Toast.makeText(SellerPublicProfileActivity.this,"Unfollowing Process Failed! Try again later.",Toast.LENGTH_LONG).show();
+                                                        }
+                                                    });
+                                                }
+                                            }
+                                        }
+                                    }).addOnFailureListener(new OnFailureListener() {
+                                        @Override
+                                        public void onFailure(@NonNull Exception e) {
+                                            loadingDialog.cancel();
+                                            Toast.makeText(SellerPublicProfileActivity.this,"Unfollowing Process Failed! Try again later.",Toast.LENGTH_LONG).show();
+                                        }
+                                    });
+                                }
+                            }
+                        }
+                    }).addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            loadingDialog.cancel();
+                            Toast.makeText(SellerPublicProfileActivity.this,"Unfollowing Process Failed! Try again later.",Toast.LENGTH_LONG).show();
+                        }
+                    });
+        }
+    }
+
+    private void customerUnfollowingProcess() {
+        firestore.collection("Customers").whereEqualTo("email",user.getEmail()).get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if (task.isSuccessful()){
+                            for (QueryDocumentSnapshot snapshot : task.getResult()){
+                                snapshot.getReference().collection("Following").whereEqualTo("id",seller.getId()).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                                    @Override
+                                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                                        if (task.isSuccessful()){
+                                            for (QueryDocumentSnapshot snapshot1 : task.getResult()){
+                                                snapshot1.getReference().delete().addOnSuccessListener(new OnSuccessListener<Void>() {
+                                                    @Override
+                                                    public void onSuccess(Void unused) {
+                                                        loadingDialog.cancel();
+                                                        followButton.setText("follow");
+                                                    }
+                                                }).addOnFailureListener(new OnFailureListener() {
+                                                    @Override
+                                                    public void onFailure(@NonNull Exception e) {
+                                                        loadingDialog.cancel();
+                                                        Toast.makeText(SellerPublicProfileActivity.this,"Unfollowing Process Failed! Try again later.",Toast.LENGTH_LONG).show();
+                                                    }
+                                                });
+                                            }
+                                        }
+                                    }
+                                }).addOnFailureListener(new OnFailureListener() {
+                                    @Override
+                                    public void onFailure(@NonNull Exception e) {
+                                        loadingDialog.cancel();
+                                        Toast.makeText(SellerPublicProfileActivity.this,"Unfollowing Process Failed! Try again later.",Toast.LENGTH_LONG).show();
+                                    }
+                                });
+                            }
+                        }
+                    }
+                }).addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        loadingDialog.cancel();
+                        Toast.makeText(SellerPublicProfileActivity.this,"Unfollowing Process Failed! Try again later.",Toast.LENGTH_LONG).show();
+                    }
+                });
+
+        firestore.collection("Sellers").whereEqualTo("email",user.getEmail()).get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if (task.isSuccessful()){
+                            for (QueryDocumentSnapshot snapshot : task.getResult()){
+                                snapshot.getReference().collection("Following").whereEqualTo("id",seller.getId()).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                                    @Override
+                                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                                        if (task.isSuccessful()){
+                                            for (QueryDocumentSnapshot snapshot1 : task.getResult()){
+                                                snapshot1.getReference().delete().addOnSuccessListener(new OnSuccessListener<Void>() {
+                                                    @Override
+                                                    public void onSuccess(Void unused) {
+                                                        loadingDialog.cancel();
+                                                        followButton.setText("follow");
+                                                    }
+                                                }).addOnFailureListener(new OnFailureListener() {
+                                                    @Override
+                                                    public void onFailure(@NonNull Exception e) {
+                                                        loadingDialog.cancel();
+                                                        Toast.makeText(SellerPublicProfileActivity.this,"Unfollowing Process Failed! Try again later.",Toast.LENGTH_LONG).show();
+                                                    }
+                                                });
+                                            }
+                                        }
+                                    }
+                                }).addOnFailureListener(new OnFailureListener() {
+                                    @Override
+                                    public void onFailure(@NonNull Exception e) {
+                                        loadingDialog.cancel();
+                                        Toast.makeText(SellerPublicProfileActivity.this,"Unfollowing Process Failed! Try again later.",Toast.LENGTH_LONG).show();
+                                    }
+                                });
+                            }
+                        }
+                    }
+                }).addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        loadingDialog.cancel();
+                        Toast.makeText(SellerPublicProfileActivity.this,"Unfollowing Process Failed! Try again later.",Toast.LENGTH_LONG).show();
+                    }
+                });
     }
 
     private void followProcess() {
@@ -134,7 +293,8 @@ public class SellerPublicProfileActivity extends AppCompatActivity {
                                                 snapshot.getReference().update(map).addOnSuccessListener(new OnSuccessListener<Void>() {
                                                     @Override
                                                     public void onSuccess(Void unused) {
-                                                        updateFollowerCount(map,snapshot);
+//                                                        updateFollowerCount(map,snapshot);
+                                                        customerFollowingProcess();
                                                     }
                                                 }).addOnFailureListener(new OnFailureListener() {
                                                     @Override
@@ -159,20 +319,20 @@ public class SellerPublicProfileActivity extends AppCompatActivity {
         }
     }
 
-    private void updateFollowerCount(Map<String, Object> map,QueryDocumentSnapshot snapshot) {
-        snapshot.getReference().update(map).addOnSuccessListener(new OnSuccessListener<Void>() {
-            @Override
-            public void onSuccess(Void unused) {
-                customerFollowingProcess();
-            }
-        }).addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception e) {
-                loadingDialog.cancel();
-                Toast.makeText(SellerPublicProfileActivity.this,"Following Process Failed! Try again later.",Toast.LENGTH_LONG).show();
-            }
-        });
-    }
+//    private void updateFollowerCount(Map<String, Object> map,QueryDocumentSnapshot snapshot) {
+//        snapshot.getReference().update(map).addOnSuccessListener(new OnSuccessListener<Void>() {
+//            @Override
+//            public void onSuccess(Void unused) {
+//                customerFollowingProcess();
+//            }
+//        }).addOnFailureListener(new OnFailureListener() {
+//            @Override
+//            public void onFailure(@NonNull Exception e) {
+//                loadingDialog.cancel();
+//                Toast.makeText(SellerPublicProfileActivity.this,"Following Process Failed! Try again later.",Toast.LENGTH_LONG).show();
+//            }
+//        });
+//    }
 
     private void customerFollowingProcess() {
         firestore.collection("Customers").whereEqualTo("email",user.getEmail()).get()

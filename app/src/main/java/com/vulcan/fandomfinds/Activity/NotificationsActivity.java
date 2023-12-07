@@ -25,6 +25,7 @@ import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.gson.Gson;
 import com.vulcan.fandomfinds.Adapter.NotificationAdapter;
+import com.vulcan.fandomfinds.Animations.LoadingDialog;
 import com.vulcan.fandomfinds.Domain.CustomerDomain;
 import com.vulcan.fandomfinds.Domain.NotificationDomain;
 import com.vulcan.fandomfinds.Domain.SellerDomain;
@@ -40,6 +41,7 @@ public class NotificationsActivity extends AppCompatActivity {
     FirebaseStorage firebaseStorage;
     SellerDomain seller;
     CustomerDomain customer;
+    LoadingDialog loadingDialog;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -47,6 +49,7 @@ public class NotificationsActivity extends AppCompatActivity {
         
         initComponents();
         setListeners();
+        loadingDialog.show();
         loadUser();
         identifyUser();
     }
@@ -58,6 +61,8 @@ public class NotificationsActivity extends AppCompatActivity {
         user = auth.getCurrentUser();
         firestore = FirebaseFirestore.getInstance();
         firebaseStorage = FirebaseStorage.getInstance();
+
+        loadingDialog = new LoadingDialog(NotificationsActivity.this);
     }
     private void setListeners() {
         backButton.setOnClickListener(new View.OnClickListener() {
@@ -118,6 +123,7 @@ public class NotificationsActivity extends AppCompatActivity {
                             }
                         });
                     }
+                    loadingDialog.cancel();
                 }
             }
         });

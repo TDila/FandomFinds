@@ -1,6 +1,7 @@
 package com.vulcan.fandomfinds.Fragments;
 
 import android.app.FragmentManager;
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 
@@ -26,6 +27,7 @@ import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.gson.Gson;
 import com.squareup.picasso.Picasso;
+import com.vulcan.fandomfinds.Activity.SellerPublicProfileActivity;
 import com.vulcan.fandomfinds.Domain.BillingShippingDomain;
 import com.vulcan.fandomfinds.Domain.CustomerDomain;
 import com.vulcan.fandomfinds.Domain.OrderDomain;
@@ -38,6 +40,7 @@ import java.util.ArrayList;
 public class PurchasedItemFragment extends Fragment {
     private ImageView phItemProductImg,phItemSellerImg;
     private OrderDomain order;
+    private LinearLayout sellerLayout;
     FirebaseFirestore firestore;
     FirebaseStorage firebaseStorage;
     TextView phItemProductTitle,phItemProductCount,phItemTotalPrice,phItemPurchasedDate,phItemOrderId
@@ -56,11 +59,31 @@ public class PurchasedItemFragment extends Fragment {
         firestore = FirebaseFirestore.getInstance();
         firebaseStorage = FirebaseStorage.getInstance();
 
-//        Bundle args = getArguments();
-//        ArrayList<OrderDomain> items = null;
         String orderString = getArguments().getString("order");
         order = (new Gson()).fromJson(orderString, OrderDomain.class);
 
+        initComponents(view);
+        setListeners(view);
+        loadOrder();
+    }
+
+    private void initComponents(View view) {
+        phItemProductImg = view.findViewById(R.id.phItemProductImg);//
+        phItemProductTitle = view.findViewById(R.id.phItemProductTitle);//
+        phItemProductCount = view.findViewById(R.id.phItemProductCount);//
+        phItemTotalPrice = view.findViewById(R.id.phItemTotalPrice);//
+        phItemPurchasedDate = view.findViewById(R.id.phItemPurchasedDate);//
+        phItemOrderId = view.findViewById(R.id.phItemOrderId);//
+        phItemDeliveryAddress = view.findViewById(R.id.phItemDeliveryAddress);//
+        phItemSellerImg = view.findViewById(R.id.phItemSellerImg);
+        phItemSellerName = view.findViewById(R.id.phItemSellerName);//
+        phItemOrderStatus= view.findViewById(R.id.phItemOrderStatus);
+        phItemSizeLayout = view.findViewById(R.id.phItemSizeLayout);
+        phItemOrderSizeValue = view.findViewById(R.id.phItemOrderSizeValue);
+        sellerLayout = view.findViewById(R.id.sellerLayout);
+    }
+
+    private void setListeners(View view){
         view.findViewById(R.id.phItemBackButton).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -73,8 +96,9 @@ public class PurchasedItemFragment extends Fragment {
                         .commit();
             }
         });
+    }
 
-        initComponents(view);
+    private void loadOrder(){
         if(order != null){
             firestore.collection("Orders").whereEqualTo("id",order.getId()).get()
                     .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
@@ -185,20 +209,5 @@ public class PurchasedItemFragment extends Fragment {
             phItemOrderId.setText(order.getId());
             phItemOrderStatus.setText(String.valueOf(order.getStatus()));
         }
-    }
-
-    private void initComponents(View view) {
-        phItemProductImg = view.findViewById(R.id.phItemProductImg);//
-        phItemProductTitle = view.findViewById(R.id.phItemProductTitle);//
-        phItemProductCount = view.findViewById(R.id.phItemProductCount);//
-        phItemTotalPrice = view.findViewById(R.id.phItemTotalPrice);//
-        phItemPurchasedDate = view.findViewById(R.id.phItemPurchasedDate);//
-        phItemOrderId = view.findViewById(R.id.phItemOrderId);//
-        phItemDeliveryAddress = view.findViewById(R.id.phItemDeliveryAddress);//
-        phItemSellerImg = view.findViewById(R.id.phItemSellerImg);
-        phItemSellerName = view.findViewById(R.id.phItemSellerName);//
-        phItemOrderStatus= view.findViewById(R.id.phItemOrderStatus);
-        phItemSizeLayout = view.findViewById(R.id.phItemSizeLayout);
-        phItemOrderSizeValue = view.findViewById(R.id.phItemOrderSizeValue);
     }
 }

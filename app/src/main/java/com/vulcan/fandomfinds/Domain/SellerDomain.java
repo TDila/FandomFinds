@@ -4,13 +4,14 @@ import androidx.annotation.Nullable;
 
 import com.vulcan.fandomfinds.Enum.SellerProfileStatus;
 
+import java.util.List;
 import java.util.Objects;
 
 public class SellerDomain extends BaseDomain{
     private int followers;
     private String sellerName;
     private String bio;
-    private String sellerNameInsensitive;
+    private List<String> sellerNameInsensitive;
     private SellerProfileStatus profileStatus = SellerProfileStatus.INCOMPLETE;
 
     public SellerProfileStatus getProfileStatus() {
@@ -41,11 +42,11 @@ public class SellerDomain extends BaseDomain{
         this.bio = bio;
     }
 
-    public String getSellerNameInsensitive() {
+    public List<String> getSellerNameInsensitive() {
         return sellerNameInsensitive;
     }
 
-    public void setSellerNameInsensitive(String sellerNameInsensitive) {
+    public void setSellerNameInsensitive(List<String> sellerNameInsensitive) {
         this.sellerNameInsensitive = sellerNameInsensitive;
     }
 
@@ -72,7 +73,7 @@ public class SellerDomain extends BaseDomain{
         this.followers = followers;
     }
 
-    public SellerDomain(String id, String email, String fname, String lname, String profilePicUrl, int followers, String sellerName, String bio, String sellerNameInsensitive) {
+    public SellerDomain(String id, String email, String fname, String lname, String profilePicUrl, int followers, String sellerName, String bio, List<String> sellerNameInsensitive) {
         super(id, email, fname, lname, profilePicUrl);
         this.followers = followers;
         this.sellerName = sellerName;

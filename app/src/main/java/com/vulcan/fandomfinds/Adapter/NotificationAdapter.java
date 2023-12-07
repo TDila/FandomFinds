@@ -2,6 +2,7 @@ package com.vulcan.fandomfinds.Adapter;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.Intent;
 import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -29,8 +30,10 @@ import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.storage.FirebaseStorage;
 import com.squareup.picasso.Picasso;
+import com.vulcan.fandomfinds.Activity.PurchaseHistoryActivity;
 import com.vulcan.fandomfinds.Domain.NotificationDomain;
 import com.vulcan.fandomfinds.Enum.NotifyType;
+import com.vulcan.fandomfinds.Fragments.PurchasedItemListFragment;
 import com.vulcan.fandomfinds.R;
 
 import java.util.ArrayList;
@@ -116,7 +119,9 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
             @Override
             public void onClick(View v) {
                 if(items.get(position).getType().equals(NotifyType.NEW_ORDER)){
-                    Toast.makeText(holder.itemView.getContext(),"NEW ORDER",Toast.LENGTH_SHORT).show();
+                    Intent intent = new Intent(holder.itemView.getContext(), PurchaseHistoryActivity.class);
+                    intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+                    holder.itemView.getContext().startActivity(intent);
                 }else if(items.get(position).getType().equals(NotifyType.PRODUCT_RELEASE)){
                     Toast.makeText(holder.itemView.getContext(),"PRODUCT RELEASE",Toast.LENGTH_SHORT).show();
                 }

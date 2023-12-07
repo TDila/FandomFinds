@@ -65,7 +65,9 @@ import org.checkerframework.checker.units.qual.C;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Random;
 import java.util.UUID;
@@ -218,8 +220,26 @@ public class ProfileInformationActivity extends AppCompatActivity {
         map.put("lname",seller.getLname());
         map.put("sellerName",seller.getSellerName());
         map.put("bio",seller.getBio());
+
+        //seller name process for the searching process
         String sellerNameInsensitive = seller.getSellerName().toLowerCase();
-        map.put("sellerNameInsensitive",sellerNameInsensitive);
+        List<String> sellerNameInsensitiveList = new ArrayList<>();
+        sellerNameInsensitiveList.add(sellerNameInsensitive);
+
+        String sellerNameInsensitiveWithoutSpaces = sellerNameInsensitive.replaceAll("\\s","");
+        sellerNameInsensitiveList.add(sellerNameInsensitiveWithoutSpaces);
+
+        for(int i = 1; i < sellerNameInsensitiveWithoutSpaces.length(); i++){
+            String firstNLetters = sellerNameInsensitiveWithoutSpaces.substring(0,i);
+            sellerNameInsensitiveList.add(firstNLetters);
+        }
+        //seller name process for the searching process
+
+
+        map.put("sellerNameInsensitive",sellerNameInsensitiveList);
+
+
+
 
         socialMedia.setYoutube(youtubeLink);
         socialMedia.setTwitter(twitterLink);
@@ -378,6 +398,7 @@ public class ProfileInformationActivity extends AppCompatActivity {
         publicNameLayout = findViewById(R.id.publicNameLayout);
         userBioLayout = findViewById(R.id.userBioLayout);
         profileInCompleteErrorLayout = findViewById(R.id.profileInCompleteErrorLayout);
+        profileInCompleteErrorLayout.setVisibility(View.GONE);
 
         //social media
         youTube = findViewById(R.id.profileInfoSellerYouTube);

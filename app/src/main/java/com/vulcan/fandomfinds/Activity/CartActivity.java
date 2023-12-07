@@ -213,7 +213,7 @@ public class CartActivity extends AppCompatActivity{
         String notifyId = "NOTI_"+String.format("%06d",new Random().nextInt(999999));
         String title = "Your order has been placed!";
         String message = "\uD83C\uDF89 Your order is confirmed. \uD83D\uDECD️ Get ready for the arrival of "+product.getTitle()+". \uD83D\uDE9A Thank you for choosing FandomFinds! \uD83C\uDF1F";
-        NotificationDomain notification = new NotificationDomain(notifyId,NotifyType.PRODUCT_RELEASE,title,message,product.getPicUrl(),datetime);
+        NotificationDomain notification = new NotificationDomain(notifyId,NotifyType.NEW_ORDER,title,message,product.getPicUrl(),datetime);
         snapshot.getReference().collection("Notifications").add(notification);
         sendOrderNotification(notification);
     }

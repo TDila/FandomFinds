@@ -354,9 +354,22 @@ public class SellerStoreSaveUpdateActivity extends AppCompatActivity {
                             savingDataDialog.cancel();
                             Toast.makeText(SellerStoreSaveUpdateActivity.this,"Please select at least one product size!",Toast.LENGTH_LONG).show();
                         }else{
+                            //product title process for searching process
+                            List<String> titleInsensitiveList = new ArrayList<>();
                             String titleInsensitive = productTitle.toLowerCase();
+                            titleInsensitiveList.add(titleInsensitive);
+
+                            String titleInsensitiveWithoutSpace = titleInsensitive.replaceAll("\\s","");
+                            titleInsensitiveList.add(titleInsensitiveWithoutSpace);
+
+                            for (int i = 1; i < titleInsensitiveWithoutSpace.length();i++){
+                                String firstNLetters = titleInsensitiveWithoutSpace.substring(0,i);
+                                titleInsensitiveList.add(firstNLetters);
+                            }
+                            //product title process for searching process
+
                             ProductsDomain newProduct = new ProductsDomain(productId,productTitle,productDescription,imageId,0,0
-                                    ,productPrice,productDiscount,seller.getSellerName(),selectedSizes, ProductStatus.AVAILABLE,productType,seller.getId(),titleInsensitive);
+                                    ,productPrice,productDiscount,seller.getSellerName(),selectedSizes, ProductStatus.AVAILABLE,productType,seller.getId(),titleInsensitiveList);
                             addNewProduct(newProduct,imageId);
                         }
                     }else{
@@ -379,15 +392,28 @@ public class SellerStoreSaveUpdateActivity extends AppCompatActivity {
                         Toast.makeText(SellerStoreSaveUpdateActivity.this,"Please select at least one product size!",Toast.LENGTH_LONG).show();
                     }else{
                         ProductsDomain newProduct;
+
+                        //product title process for searching process
+                        List<String> titleInsensitiveList = new ArrayList<>();
+                        String titleInsensitive = productTitle.toLowerCase();
+                        titleInsensitiveList.add(titleInsensitive);
+
+                        String titleInsensitiveWithoutSpace = titleInsensitive.replaceAll("\\s","");
+                        titleInsensitiveList.add(titleInsensitiveWithoutSpace);
+
+                        for (int i = 1; i < titleInsensitiveWithoutSpace.length();i++){
+                            String firstNLetters = titleInsensitiveWithoutSpace.substring(0,i);
+                            titleInsensitiveList.add(firstNLetters);
+                        }
+                        //product title process for searching process
+
                         if(imagePath == null){
-                            String titleInsensitive = productTitle.toLowerCase();
                             newProduct = new ProductsDomain(product.getId(),productTitle,productDescription,product.getPicUrl(),product.getReview(),product.getScore()
-                                    ,productPrice,productDiscount,product.getSellerName(),selectedSizes, product.getStatus(),productType,product.getSellerId(),titleInsensitive);
+                                    ,productPrice,productDiscount,product.getSellerName(),selectedSizes, product.getStatus(),productType,product.getSellerId(),titleInsensitiveList);
                         }else{
                             imageId = UUID.randomUUID().toString();
-                            String titleInsensitive = productTitle.toLowerCase();
                             newProduct = new ProductsDomain(product.getId(),productTitle,productDescription,imageId,product.getReview(),product.getScore()
-                                    ,productPrice,productDiscount,product.getSellerName(),selectedSizes, product.getStatus(),productType,product.getSellerId(),titleInsensitive);
+                                    ,productPrice,productDiscount,product.getSellerName(),selectedSizes, product.getStatus(),productType,product.getSellerId(),titleInsensitiveList);
                         }
                         updateProduct(newProduct);
                     }
@@ -418,7 +444,21 @@ public class SellerStoreSaveUpdateActivity extends AppCompatActivity {
         map.put("status",product.getStatus());
         map.put("type",product.getType());
         String titleInsensitive = product.getTitle().toLowerCase();
-        map.put("titleInsensitive",titleInsensitive);
+
+        //product title process for searching process
+        List<String> titleInsensitiveList = new ArrayList<>();
+        titleInsensitiveList.add(titleInsensitive);
+
+        String titleInsensitiveWithoutSpace = titleInsensitive.replaceAll("\\s","");
+        titleInsensitiveList.add(titleInsensitiveWithoutSpace);
+
+        for (int i = 1; i < titleInsensitiveWithoutSpace.length();i++){
+            String firstNLetters = titleInsensitiveWithoutSpace.substring(0,i);
+            titleInsensitiveList.add(firstNLetters);
+        }
+        //product title process for searching process
+
+        map.put("titleInsensitive",titleInsensitiveList);
         if(product.getType().equals("Apparel")){
             map.put("sizesList",product.getSizesList());
         }else{
@@ -584,7 +624,7 @@ public class SellerStoreSaveUpdateActivity extends AppCompatActivity {
             }
         });
     }
-    @RequiresApi(api = Build.VERSION_CODES.O)
+
     private void saveNotification(String email, ProductsDomain product, QueryDocumentSnapshot snapshot){
         String notifyId = "NOTI_"+String.format("%06d",new Random().nextInt(999999));
         String sellerName = null;
@@ -593,8 +633,12 @@ public class SellerStoreSaveUpdateActivity extends AppCompatActivity {
         }else{
             sellerName = seller.getEmail();
         }
-        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
-        String datetime = dtf.format(LocalDateTime.now());
+
+        String datetime = null;
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+            DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
+            datetime = dtf.format(LocalDateTime.now());
+        }
         String title = "Hey! "+sellerName+" has release a new Merchandise!";
         String message = "Exciting News! Your favorite seller "+sellerName+" just dropped new merchandise: "+product.getTitle()+" !Explore the latest arrivals and grab exclusive items before they're gone! ";
         NotificationDomain notification = new NotificationDomain(notifyId,NotifyType.PRODUCT_RELEASE,title,message,product.getPicUrl(),datetime);

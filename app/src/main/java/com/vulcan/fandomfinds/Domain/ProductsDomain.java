@@ -24,7 +24,7 @@ public class ProductsDomain implements Serializable {
     private ProductStatus status = ProductStatus.AVAILABLE;
     private String type;
     private String sellerId;
-    private String titleInsensitive;
+    private List<String> titleInsensitive;
 
     public ProductsDomain() {
     }
@@ -43,7 +43,7 @@ public class ProductsDomain implements Serializable {
         this.type = type;
         this.sellerId = sellerId;
     }
-    public ProductsDomain(String id, String title, String description, String picUrl, int review, double score, double price, double discount, String sellerName, List<String> sizesList, ProductStatus status, String type, String sellerId,String titleInsensitive) {
+    public ProductsDomain(String id, String title, String description, String picUrl, int review, double score, double price, double discount, String sellerName, List<String> sizesList, ProductStatus status, String type, String sellerId, List<String> titleInsensitive) {
         this.id = id;
         this.title = title;
         this.description = description;
@@ -60,11 +60,11 @@ public class ProductsDomain implements Serializable {
         this.titleInsensitive = titleInsensitive;
     }
 
-    public String getTitleInsensitive() {
+    public List<String> getTitleInsensitive() {
         return titleInsensitive;
     }
 
-    public void setTitleInsensitive(String titleInsensitive) {
+    public void setTitleInsensitive(List<String> titleInsensitive) {
         this.titleInsensitive = titleInsensitive;
     }
 

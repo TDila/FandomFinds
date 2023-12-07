@@ -180,7 +180,7 @@
             android:orientation="horizontal"
             android:padding="10dp">
 
-            <ImageView
+            <de.hdodenhof.circleimageview.CircleImageView
                 android:id="@+id/phItemSellerImg"
                 android:layout_width="50dp"
                 android:layout_height="50dp"
@@ -199,6 +199,7 @@
         </LinearLayout>
 
         <LinearLayout
+            android:id="@+id/sellerLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"

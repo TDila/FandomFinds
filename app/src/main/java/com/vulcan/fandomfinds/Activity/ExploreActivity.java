@@ -27,6 +27,7 @@ import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.Filter;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.vulcan.fandomfinds.Adapter.ExploreProductsAdapter;
@@ -125,7 +126,7 @@ public class ExploreActivity extends AppCompatActivity {
         ExploreSellerAdapter sellerAdapter = new ExploreSellerAdapter(items,ExploreActivity.this);
         recyclerView.setAdapter(sellerAdapter);
 
-        firestore.collection("Sellers").limit(3).where(Filter.or(Filter.equalTo("sellerName",text),Filter.equalTo("sellerNameInsensitive",text))).whereEqualTo("profileStatus", SellerProfileStatus.COMPLETE).get()
+        firestore.collection("Sellers").limit(3).whereArrayContains("sellerNameInsensitive",text).whereEqualTo("profileStatus", SellerProfileStatus.COMPLETE).get()
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                     @Override
                     public void onComplete(@NonNull Task<QuerySnapshot> task) {
@@ -146,7 +147,7 @@ public class ExploreActivity extends AppCompatActivity {
         ExploreProductsAdapter exploreProductsAdapter = new ExploreProductsAdapter(itemsProduct,ExploreActivity.this);
         recyclerViewProduct.setAdapter(exploreProductsAdapter);
 
-        firestore.collection("Products").where(Filter.or(Filter.equalTo("title",text), Filter.equalTo("titleInsensitive",text))).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+        firestore.collection("Products").whereArrayContains("titleInsensitive",text).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
                 if(task.isSuccessful()){
@@ -182,7 +183,7 @@ public class ExploreActivity extends AppCompatActivity {
         ExploreSellerAdapter sellerAdapter = new ExploreSellerAdapter(items,ExploreActivity.this);
         recyclerView.setAdapter(sellerAdapter);
 
-        firestore.collection("Sellers").whereEqualTo("profileStatus", SellerProfileStatus.COMPLETE).addSnapshotListener(new EventListener<QuerySnapshot>() {
+        firestore.collection("Sellers").limit(10).whereEqualTo("profileStatus", SellerProfileStatus.COMPLETE).addSnapshotListener(new EventListener<QuerySnapshot>() {
             @Override
             public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException error) {
                 for (DocumentChange change : value.getDocumentChanges()){

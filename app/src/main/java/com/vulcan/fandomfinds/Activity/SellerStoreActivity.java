@@ -144,29 +144,31 @@ public class SellerStoreActivity extends AppCompatActivity {
 //                        }
 //                    }
 //                }
-                for (DocumentChange change : value.getDocumentChanges()){
-                    ProductsDomain item = change.getDocument().toObject(ProductsDomain.class);
-                    switch (change.getType()){
-                        case ADDED:
-                            items.add(item);
-                        case MODIFIED:
-                            ProductsDomain old = items.stream().filter(i -> i.getId().equals(item.getId())).findFirst().orElse(null);
-                            if(old != null){
-                                old.setDescription(item.getDescription());
-                                old.setPrice(item.getPrice());
-                                old.setPicUrl(item.getPicUrl());
-                                old.setTitle(item.getTitle());
-                                old.setDiscount(item.getDiscount());
-                                old.setType(item.getType());
-                                old.setSizesList(item.getSizesList());
-                            }
-                            break;
-                        case REMOVED:
-                            items.remove(item);
+                if(value.size() != 0){
+                    for (DocumentChange change : value.getDocumentChanges()){
+                        ProductsDomain item = change.getDocument().toObject(ProductsDomain.class);
+                        switch (change.getType()){
+                            case ADDED:
+                                items.add(item);
+                            case MODIFIED:
+                                ProductsDomain old = items.stream().filter(i -> i.getId().equals(item.getId())).findFirst().orElse(null);
+                                if(old != null){
+                                    old.setDescription(item.getDescription());
+                                    old.setPrice(item.getPrice());
+                                    old.setPicUrl(item.getPicUrl());
+                                    old.setTitle(item.getTitle());
+                                    old.setDiscount(item.getDiscount());
+                                    old.setType(item.getType());
+                                    old.setSizesList(item.getSizesList());
+                                }
+                                break;
+                            case REMOVED:
+                                items.remove(item);
+                        }
                     }
-                }
 
-                sellerStoreItemAdapter.notifyDataSetChanged();
+                    sellerStoreItemAdapter.notifyDataSetChanged();
+                }
             }
         });
     }

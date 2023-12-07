@@ -89,9 +89,9 @@ public class MainActivity extends AppCompatActivity {
             searchUserProcess();
         }
 
+        initSellerRecyclerView();
         initNewArrivalRecyclerView();
         initDealsRecyclerView();
-        initSellerRecyclerView();
         loadBottomNavigationBar();
     }
 
@@ -213,36 +213,39 @@ public class MainActivity extends AppCompatActivity {
         SellerAdapter adapterSeller = new SellerAdapter(items);
         recyclerViewSeller.setAdapter(adapterSeller);
 
-        firestore.collection("Sellers").whereEqualTo("profileStatus", SellerProfileStatus.COMPLETE).addSnapshotListener(new EventListener<QuerySnapshot>() {
+        firestore.collection("Sellers").limit(10).whereEqualTo("profileStatus", SellerProfileStatus.COMPLETE).addSnapshotListener(new EventListener<QuerySnapshot>() {
             @Override
             public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException error) {
-                for (DocumentChange change : value.getDocumentChanges()){
-                    SellerDomain item = change.getDocument().toObject(SellerDomain.class);
-                    switch (change.getType()){
-                        case ADDED:
-                            items.add(item);
-                        case MODIFIED:
-                            SellerDomain old = items.stream().filter(i -> i.getId().equals(item.getId())).findFirst().orElse(null);
-                            if(old != null){
-                                old.setSellerName(item.getSellerName());
-                                old.setFname(item.getFname());
-                                old.setLname(item.getLname());
-                                old.setBio(item.getBio());
-                                old.setFollowers(item.getFollowers());
-                                old.setProfileStatus(item.getProfileStatus());
-                                old.setProfilePicUrl(item.getProfilePicUrl());
-                            }
-                            break;
-                        case REMOVED:
-                            items.remove(item);
+                if(value.size() != 0){
+                    for (DocumentChange change : value.getDocumentChanges()){
+                        SellerDomain item = change.getDocument().toObject(SellerDomain.class);
+                        switch (change.getType()){
+                            case ADDED:
+                                items.add(item);
+                            case MODIFIED:
+                                SellerDomain old = items.stream().filter(i -> i.getId().equals(item.getId())).findFirst().orElse(null);
+                                if(old != null){
+                                    old.setSellerName(item.getSellerName());
+                                    old.setFname(item.getFname());
+                                    old.setLname(item.getLname());
+                                    old.setBio(item.getBio());
+                                    old.setFollowers(item.getFollowers());
+                                    old.setProfileStatus(item.getProfileStatus());
+                                    old.setProfilePicUrl(item.getProfilePicUrl());
+                                }
+                                break;
+                            case REMOVED:
+                                items.remove(item);
+                        }
                     }
-                }
                 adapterSeller.notifyDataSetChanged();
+                }
             }
         });
     }
 
     private void initNewArrivalRecyclerView(){
+        System.out.println("new arrival");
         ArrayList<ProductsDomain> items = new ArrayList<>();
 
         RecyclerView recyclerViewNewArrival = findViewById(R.id.new_arrival);
@@ -251,35 +254,35 @@ public class MainActivity extends AppCompatActivity {
         DealsAdapter dealsAdapter = new DealsAdapter(items);
         recyclerViewNewArrival.setAdapter(dealsAdapter);
 
-        firestore.collection("Products").addSnapshotListener(new EventListener<QuerySnapshot>() {
+        firestore.collection("Products").limit(10).addSnapshotListener(new EventListener<QuerySnapshot>() {
             @Override
             public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException error) {
-                for (DocumentChange change : value.getDocumentChanges()){
-                    ProductsDomain product = change.getDocument().toObject(ProductsDomain.class);
-                    switch (change.getType()){
-                        case ADDED:
-                            items.add(product);
-                        case MODIFIED:
-                            ProductsDomain old = items.stream().filter(i -> i.getId().equals(product.getId())).findFirst().orElse(null);
-                            if(old != null){
-                                old.setTitle(product.getTitle());
-                                old.setDescription(product.getDescription());
-                                old.setPicUrl(product.getPicUrl());
-                                old.setReview(product.getReview());
-                                old.setPrice(product.getPrice());
-                                old.setDiscount(product.getDiscount());
-                                old.setSellerName(product.getSellerName());
-                                old.setSizesList(product.getSizesList());
-                                old .setStatus(product.getStatus());
-                                old.setType(product.getType());
-                                old.setTitleInsensitive(product.getTitleInsensitive());
-                            }
-                            break;
-                        case REMOVED:
-                            items.remove(product);
+                    for (DocumentChange change : value.getDocumentChanges()){
+                        ProductsDomain product = change.getDocument().toObject(ProductsDomain.class);
+                        switch (change.getType()){
+                            case ADDED:
+                                items.add(product);
+                            case MODIFIED:
+                                ProductsDomain old = items.stream().filter(i -> i.getId().equals(product.getId())).findFirst().orElse(null);
+                                if(old != null){
+                                    old.setTitle(product.getTitle());
+                                    old.setDescription(product.getDescription());
+                                    old.setPicUrl(product.getPicUrl());
+                                    old.setReview(product.getReview());
+                                    old.setPrice(product.getPrice());
+                                    old.setDiscount(product.getDiscount());
+                                    old.setSellerName(product.getSellerName());
+                                    old.setSizesList(product.getSizesList());
+                                    old .setStatus(product.getStatus());
+                                    old.setType(product.getType());
+                                    old.setTitleInsensitive(product.getTitleInsensitive());
+                                }
+                                break;
+                            case REMOVED:
+                                items.remove(product);
+                        }
                     }
-                }
-                dealsAdapter.notifyDataSetChanged();
+                    dealsAdapter.notifyDataSetChanged();
             }
         });
     }
@@ -293,7 +296,7 @@ public class MainActivity extends AppCompatActivity {
         DealsAdapter dealsAdapter = new DealsAdapter(items);
         recyclerViewDeals.setAdapter(dealsAdapter);
 
-        firestore.collection("Products").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+        firestore.collection("Products").limit(10).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
                 if(task.isSuccessful()){
