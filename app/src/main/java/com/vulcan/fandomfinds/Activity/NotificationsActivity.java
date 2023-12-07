@@ -34,7 +34,7 @@ import com.vulcan.fandomfinds.R;
 import java.util.ArrayList;
 
 public class NotificationsActivity extends AppCompatActivity {
-    ImageView backButton;
+    ImageView backButton,emptyNotifications;
     FirebaseAuth auth;
     FirebaseUser user;
     FirebaseFirestore firestore;
@@ -42,6 +42,7 @@ public class NotificationsActivity extends AppCompatActivity {
     SellerDomain seller;
     CustomerDomain customer;
     LoadingDialog loadingDialog;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -56,6 +57,8 @@ public class NotificationsActivity extends AppCompatActivity {
 
     private void initComponents() {
         backButton = findViewById(R.id.notify_back_btn);
+        emptyNotifications = findViewById(R.id.emptyNotifications);
+        emptyNotifications.setVisibility(View.GONE);
 
         auth = FirebaseAuth.getInstance();
         user = auth.getCurrentUser();
@@ -106,6 +109,9 @@ public class NotificationsActivity extends AppCompatActivity {
                         snapshot.getReference().collection("Notifications").orderBy("dateTime", Query.Direction.ASCENDING).addSnapshotListener(new EventListener<QuerySnapshot>() {
                             @Override
                             public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException error) {
+                                if(value.size() == 0){
+                                    emptyNotifications.setVisibility(View.VISIBLE);
+                                }
                                 for (DocumentChange change : value.getDocumentChanges()){
                                     NotificationDomain notification = change.getDocument().toObject(NotificationDomain.class);
                                     switch (change.getType()){

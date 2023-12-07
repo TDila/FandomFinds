@@ -243,6 +243,15 @@
                     android:backgroundTint="@color/yellow"
                     android:textColor="@color/black"
                     android:text="@string/seller_store_save_update_button_text" />
+
+                <Button
+                    android:id="@+id/sellerStoreDeleteButton"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:backgroundTint="@color/red"
+                    android:text="@string/seller_store_update_delete_delete_button_text"
+                    android:textSize="18dp" />
             </LinearLayout>
 
         </LinearLayout>

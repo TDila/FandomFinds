@@ -203,4 +203,6 @@
     <string name="profile_info_change_password_hint_old">Old Password</string>
     <string name="forgotPasswordText"><u>Forgot Password</u></string>
     <string name="verify_code_button_text">VERIFY</string>
+    <string name="seller_store_update_delete_delete_button_text">DELETE</string>
+    <string name="no_merchandise_text">No Merchandise Currently</string>
 </resources>

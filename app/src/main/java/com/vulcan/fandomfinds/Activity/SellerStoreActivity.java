@@ -40,7 +40,7 @@ public class SellerStoreActivity extends AppCompatActivity {
     SellerDomain seller;
     String userString;
     private Button button;
-    private LinearLayout ordersLayout;
+    private LinearLayout ordersLayout,noMerchLayout;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -71,7 +71,6 @@ public class SellerStoreActivity extends AppCompatActivity {
                 String userString = (new Gson()).toJson(seller);
                 intent.putExtra("user",userString);
                 startActivity(intent);
-                finish();
             }
         });
         ordersLayout.setOnClickListener(new View.OnClickListener() {
@@ -88,6 +87,8 @@ public class SellerStoreActivity extends AppCompatActivity {
     public void initComponents(){
         button = findViewById(R.id.sellerStoreAddNewProductButton);
         ordersLayout = findViewById(R.id.ordersLayout);
+        noMerchLayout = findViewById(R.id.noMerchLayout);
+        noMerchLayout.setVisibility(View.GONE);
 
         firestore = FirebaseFirestore.getInstance();
         firebaseAuth = FirebaseAuth.getInstance();
@@ -104,7 +105,9 @@ public class SellerStoreActivity extends AppCompatActivity {
         firestore.collection("Products").whereEqualTo("sellerId",seller.getId()).addSnapshotListener(new EventListener<QuerySnapshot>() {
             @Override
             public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException error) {
-                if(value.size() != 0){
+                    if(value.size() == 0){
+                        noMerchLayout.setVisibility(View.VISIBLE);
+                    }
                     for (DocumentChange change : value.getDocumentChanges()){
                         ProductsDomain item = change.getDocument().toObject(ProductsDomain.class);
                         switch (change.getType()){
@@ -125,7 +128,6 @@ public class SellerStoreActivity extends AppCompatActivity {
                             case REMOVED:
                                 items.remove(item);
                         }
-                    }
 
                     sellerStoreItemAdapter.notifyDataSetChanged();
                 }

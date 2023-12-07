@@ -91,7 +91,6 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
         holder.closeButtonImg.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                System.out.println("close");
                 firestore.collection("Customers").whereEqualTo("email",user.getEmail()).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                     @Override
                     public void onComplete(@NonNull Task<QuerySnapshot> task) {
@@ -103,7 +102,26 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
                                             public void onComplete(@NonNull Task<QuerySnapshot> task) {
                                                 if(task.isSuccessful()){
                                                     for(QueryDocumentSnapshot snapshot : task.getResult()){
-                                                        System.out.println("delete");
+                                                        snapshot.getReference().delete();
+                                                    }
+                                                }
+                                            }
+                                        });
+                            }
+                        }
+                    }
+                });
+                firestore.collection("Sellers").whereEqualTo("email",user.getEmail()).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if(task.isSuccessful()){
+                            for (QueryDocumentSnapshot snapshot : task.getResult()){
+                                snapshot.getReference().collection("Notifications").whereEqualTo("id",items.get(position).getId())
+                                        .get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                                            @Override
+                                            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                                                if(task.isSuccessful()){
+                                                    for(QueryDocumentSnapshot snapshot : task.getResult()){
                                                         snapshot.getReference().delete();
                                                     }
                                                 }
@@ -122,8 +140,6 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
                     Intent intent = new Intent(holder.itemView.getContext(), PurchaseHistoryActivity.class);
                     intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
                     holder.itemView.getContext().startActivity(intent);
-                }else if(items.get(position).getType().equals(NotifyType.PRODUCT_RELEASE)){
-                    Toast.makeText(holder.itemView.getContext(),"PRODUCT RELEASE",Toast.LENGTH_SHORT).show();
                 }
             }
         });

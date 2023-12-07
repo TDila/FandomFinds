@@ -9,6 +9,8 @@ import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Build;
@@ -46,6 +48,7 @@ import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.google.gson.Gson;
 import com.squareup.picasso.Picasso;
+import com.vulcan.fandomfinds.Animations.DeletingDialog;
 import com.vulcan.fandomfinds.Animations.LoadingDialog;
 import com.vulcan.fandomfinds.Animations.SavingDataDialog;
 import com.vulcan.fandomfinds.Domain.Follower;
@@ -75,7 +78,7 @@ public class SellerStoreSaveUpdateActivity extends AppCompatActivity {
     private RadioButton sizeExraSmall,sizeSmall,sizeMedium,sizeLarge,sizeExtraLarge,sizeExtraExtraLarge;
     private LinearLayout sizesLayout;
     private double itemDiscount;
-    private Button sellerStoreSaveUpdateButton;
+    private Button sellerStoreSaveUpdateButton,sellerStoreDeleteButton;
     private ProductsDomain product;
     private Uri imagePath;
     SellerDomain seller;
@@ -85,6 +88,7 @@ public class SellerStoreSaveUpdateActivity extends AppCompatActivity {
     FirebaseStorage firebaseStorage;
     SavingDataDialog savingDataDialog;
     LoadingDialog loadingDialog;
+    DeletingDialog deletingDialog;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -101,6 +105,7 @@ public class SellerStoreSaveUpdateActivity extends AppCompatActivity {
     private void loadProductDetails() {
         product = (ProductsDomain) getIntent().getSerializableExtra("item");
         if(product != null){
+            sellerStoreDeleteButton.setVisibility(View.VISIBLE);
             sellerStoreSaveUpdateItemTitle.setText(product.getTitle());
             sellerStoreSaveUpdateItemDes.setText(product.getDescription());
             price.setText(String.valueOf(product.getPrice()));
@@ -177,10 +182,6 @@ public class SellerStoreSaveUpdateActivity extends AppCompatActivity {
         findViewById(R.id.sellerStoreSaveUpdateBackButton).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-//                Intent intent = new Intent(SellerStoreSaveUpdateActivity.this,SellerStoreActivity.class);
-//                String sellerString = (new Gson()).toJson(seller);
-//                intent.putExtra("user",sellerString);
-//                startActivity(intent);
                 finish();
             }
         });
@@ -234,6 +235,27 @@ public class SellerStoreSaveUpdateActivity extends AppCompatActivity {
                 activityResultLauncher.launch(Intent.createChooser(intent,"Select Image"));
             }
         });
+        sellerStoreDeleteButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                AlertDialog.Builder builder = new AlertDialog.Builder(SellerStoreSaveUpdateActivity.this);
+                builder.setMessage("Are you sure you want to delete this Merchandise?")
+                                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        deletingDialog.show();
+                                        deleteProduct();
+                                    }
+                                }).setNegativeButton("No", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.dismiss();
+                            }
+                        });
+                AlertDialog alertDialog = builder.create();
+                alertDialog.show();
+            }
+        });
     }
 
     private void loadItemTypes() {
@@ -276,6 +298,8 @@ public class SellerStoreSaveUpdateActivity extends AppCompatActivity {
         sizeExtraExtraLarge = findViewById(R.id.sizeExtraExtraLarge);
         sellerStoreSaveUpdateItemImg = findViewById(R.id.sellerStoreSaveUpdateItemImg);
         sellerStoreSaveUpdateButton = findViewById(R.id.sellerStoreSaveUpdateButton);
+        sellerStoreDeleteButton = findViewById(R.id.sellerStoreDeleteButton);
+        sellerStoreDeleteButton.setVisibility(View.GONE);
 
         firebaseAuth = FirebaseAuth.getInstance();
         user = firebaseAuth.getCurrentUser();
@@ -284,6 +308,7 @@ public class SellerStoreSaveUpdateActivity extends AppCompatActivity {
 
         savingDataDialog = new SavingDataDialog(SellerStoreSaveUpdateActivity.this);
         loadingDialog = new LoadingDialog(SellerStoreSaveUpdateActivity.this);
+        deletingDialog = new DeletingDialog(SellerStoreSaveUpdateActivity.this);
     }
 
     public void calculateNewPrice(){
@@ -640,4 +665,39 @@ public class SellerStoreSaveUpdateActivity extends AppCompatActivity {
         NotificationDomain notification = new NotificationDomain(notifyId,NotifyType.PRODUCT_RELEASE,title,message,product.getPicUrl(),datetime);
         snapshot.getReference().collection("Notifications").add(notification);
     }
+
+    private void deleteProduct() {
+        if(product != null){
+            firestore.collection("Products").whereEqualTo("id",product.getId()).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                @Override
+                public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                    if(task.isSuccessful()){
+                        for (QueryDocumentSnapshot snapshot : task.getResult()){
+                            snapshot.getReference().delete().addOnSuccessListener(new OnSuccessListener<Void>() {
+                                @Override
+                                public void onSuccess(Void unused) {
+                                    deletingDialog.cancel();
+                                    Toast.makeText(SellerStoreSaveUpdateActivity.this,"Product deleted successfully!",Toast.LENGTH_LONG).show();
+                                    finish();
+                                }
+                            }).addOnFailureListener(new OnFailureListener() {
+                                @Override
+                                public void onFailure(@NonNull Exception e) {
+                                    deletingDialog.cancel();
+                                    Toast.makeText(SellerStoreSaveUpdateActivity.this,"Deletion process Failed! Try again later.",Toast.LENGTH_LONG).show();
+                                }
+                            });
+                        }
+                    }
+                }
+            }).addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception e) {
+                    deletingDialog.cancel();
+                    Toast.makeText(SellerStoreSaveUpdateActivity.this,"Merch doesn't exists! Try again later.",Toast.LENGTH_LONG).show();
+                }
+            });
+        }
+    }
 }
+

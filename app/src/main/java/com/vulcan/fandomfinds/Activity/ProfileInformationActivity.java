@@ -188,12 +188,7 @@ public class ProfileInformationActivity extends AppCompatActivity {
         profileImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-//                checkPermission();
-                Intent intent = new Intent();
-                intent.setAction(Intent.ACTION_GET_CONTENT);
-                intent.setType("image/*");
-
-                activityResultLauncher.launch(Intent.createChooser(intent,"Select Image"));
+                checkPermission();
             }
         });
         saveChangesButton.setOnClickListener(new View.OnClickListener() {
@@ -525,7 +520,7 @@ public class ProfileInformationActivity extends AppCompatActivity {
                     @Override
                     public void onPermissionGranted(PermissionGrantedResponse permissionGrantedResponse) {
                         Intent intent = new Intent();
-                        intent.setAction(Intent.ACTION_GET_CONTENT);
+                        intent.setAction(Intent.ACTION_OPEN_DOCUMENT);
                         intent.setType("image/*");
 
                         activityResultLauncher.launch(Intent.createChooser(intent,"Select Image"));
@@ -655,15 +650,6 @@ public class ProfileInformationActivity extends AppCompatActivity {
             loadingDialog.cancel();
             Toast.makeText(ProfileInformationActivity.this,"Please fill the password fields!",Toast.LENGTH_LONG).show();
         }
-//        firebaseAuth.sendPasswordResetEmail(firebaseUser.getEmail())
-//                .addOnCompleteListener(new OnCompleteListener<Void>() {
-//                    @Override
-//                    public void onComplete(@NonNull Task<Void> task) {
-//                        if (task.isSuccessful()) {
-//                            Toast.makeText(ProfileInformationActivity.this,"Email sent",Toast.LENGTH_LONG).show();
-//                        }
-//                    }
-//                });
     }
 
 }

@@ -159,7 +159,9 @@ public class CartActivity extends AppCompatActivity{
                             }else if (seller != null){
                                 saveBuyer(documentReference1,seller,product.getSellerId());
                             }
+
                             findBuyer(product);
+                            findSeller(product,order);
                         }
                     });
                 }
@@ -177,6 +179,32 @@ public class CartActivity extends AppCompatActivity{
         editor.apply();
         loadingDialog.cancel();
         Toast.makeText(CartActivity.this,"Successfully Made the Order!",Toast.LENGTH_LONG).show();
+    }
+
+    private void findSeller(ProductsDomain product,OrderDomain order) {
+        firestore.collection("Sellers").whereEqualTo("id",product.getSellerId()).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                if(task.isSuccessful()){
+                    for (QueryDocumentSnapshot snapshot : task.getResult()){
+                        saveNotificationSeller(product,snapshot,order);
+                    }
+                }
+            }
+        });
+    }
+
+    private void saveNotificationSeller(ProductsDomain product, QueryDocumentSnapshot snapshot,OrderDomain order) {
+        String datetime = null;
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+            DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM//dd HH:mm:ss");
+            datetime = dtf.format(LocalDateTime.now());
+        }
+        String notifyId = "NOTI_"+String.format("%06d",new Random().nextInt(999999));
+        String title = "New order has been placed!";
+        String message = "Exciting news! Your product, "+product.getTitle()+", has been ordered. Order ID: "+order.getId()+", Quantity: "+order.getItemCount()+", Total: "+order.getTotalPrice()+". Kindly process and dispatch at your earliest convenience.";
+        NotificationDomain notification = new NotificationDomain(notifyId,NotifyType.NEW_ORDER,title,message,product.getPicUrl(),datetime);
+        snapshot.getReference().collection("Notifications").add(notification);
     }
 
     private void findBuyer(ProductsDomain product) {
@@ -207,8 +235,6 @@ public class CartActivity extends AppCompatActivity{
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
             DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
             datetime = dtf.format(LocalDateTime.now());
-        }
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
         }
         String notifyId = "NOTI_"+String.format("%06d",new Random().nextInt(999999));
         String title = "Your order has been placed!";

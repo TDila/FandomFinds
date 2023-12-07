@@ -216,7 +216,6 @@ public class MainActivity extends AppCompatActivity {
         firestore.collection("Sellers").limit(10).whereEqualTo("profileStatus", SellerProfileStatus.COMPLETE).addSnapshotListener(new EventListener<QuerySnapshot>() {
             @Override
             public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException error) {
-                if(value.size() != 0){
                     for (DocumentChange change : value.getDocumentChanges()){
                         SellerDomain item = change.getDocument().toObject(SellerDomain.class);
                         switch (change.getType()){
@@ -239,7 +238,6 @@ public class MainActivity extends AppCompatActivity {
                         }
                     }
                 adapterSeller.notifyDataSetChanged();
-                }
             }
         });
     }
