@@ -14,6 +14,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -26,10 +27,12 @@ import com.google.firebase.firestore.QuerySnapshot;
 import com.google.gson.Gson;
 import com.vulcan.fandomfinds.Activity.BillingShippingActivity;
 import com.vulcan.fandomfinds.Adapter.SocialMediaAdapter;
+import com.vulcan.fandomfinds.Adapter.StoreLocationAdapter;
 import com.vulcan.fandomfinds.Domain.BillingShippingDomain;
 import com.vulcan.fandomfinds.Domain.SellerDomain;
 import com.vulcan.fandomfinds.Domain.SocialMedia;
 import com.vulcan.fandomfinds.Domain.SocialMediaDomain;
+import com.vulcan.fandomfinds.Domain.StoreLocationDomain;
 import com.vulcan.fandomfinds.R;
 
 import java.util.ArrayList;
@@ -38,6 +41,7 @@ public class SellerAboutFragment extends Fragment {
     FirebaseFirestore firestore;
     SellerDomain seller;
     TextView description,sellerAboutPhone,sellerAboutEmail;
+    LinearLayout availableStoresLayout;
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -53,6 +57,8 @@ public class SellerAboutFragment extends Fragment {
 
         String sellerString = getArguments().getString("seller");
         seller = (new Gson()).fromJson(sellerString,SellerDomain.class);
+
+        availableStoresLayout = fragment.findViewById(R.id.availableStoresLayout);
 
         if(seller != null){
             description = fragment.findViewById(R.id.seller_about_frag_desc);
@@ -78,6 +84,13 @@ public class SellerAboutFragment extends Fragment {
             recyclerView.setLayoutManager(new LinearLayoutManager(getContext(),LinearLayoutManager.VERTICAL,false));
             SocialMediaAdapter socialMediaAdapter = new SocialMediaAdapter(items);
             recyclerView.setAdapter(socialMediaAdapter);
+
+            ArrayList<StoreLocationDomain> locations = new ArrayList<>();
+
+            RecyclerView storeList = fragment.findViewById(R.id.storesList);
+            storeList.setLayoutManager(new LinearLayoutManager(getContext(),LinearLayoutManager.VERTICAL,false));
+            StoreLocationAdapter storeLocationAdapter = new StoreLocationAdapter(locations,getContext());
+            storeList.setAdapter(storeLocationAdapter);
 
             firestore.collection("Sellers").whereEqualTo("id",seller.getId()).get()
                     .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
@@ -144,6 +157,30 @@ public class SellerAboutFragment extends Fragment {
                                                                     sellerAboutPhone.setText("NONE");
                                                                 }
                                                             }
+                                                        }
+                                                    }
+                                                }
+                                            }).addOnFailureListener(new OnFailureListener() {
+                                                @Override
+                                                public void onFailure(@NonNull Exception e) {
+                                                    Toast.makeText(getContext(),"Details Loading Failed! Try Again Later.",Toast.LENGTH_LONG).show();
+                                                }
+                                            });
+
+                                    snapshot.getReference().collection("Stores").get()
+                                            .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                                                @Override
+                                                public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                                                    if(task.isSuccessful()){
+                                                        if(task.getResult().size() == 0){
+                                                            availableStoresLayout.setVisibility(View.GONE);
+                                                        }else{
+                                                            availableStoresLayout.setVisibility(View.VISIBLE);
+                                                            for (QueryDocumentSnapshot snapshot1 : task.getResult()){
+                                                                StoreLocationDomain storeLocationDomain = snapshot1.toObject(StoreLocationDomain.class);
+                                                                locations.add(new StoreLocationDomain(storeLocationDomain.getId(),storeLocationDomain.getName(),storeLocationDomain.getLat(),storeLocationDomain.getLng()));
+                                                            }
+                                                            storeLocationAdapter.notifyDataSetChanged();
                                                         }
                                                     }
                                                 }

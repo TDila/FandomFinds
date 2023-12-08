@@ -484,6 +484,10 @@ public class SellerPublicProfileActivity extends AppCompatActivity {
         SellerStoreFragment sellerStoreFragment = new SellerStoreFragment();
         sellerStoreFragment.setArguments(bundle);
 
+        for (Fragment fragment : getSupportFragmentManager().getFragments()){
+            getSupportFragmentManager().beginTransaction().remove(fragment).commit();
+        }
+
         getSupportFragmentManager()
                 .beginTransaction()
                 .add(R.id.fragmentContainerView5,sellerStoreFragment,null)

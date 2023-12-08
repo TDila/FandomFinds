@@ -75,6 +75,7 @@
     <string name="social_media_name">Social Meida Name</string>
     <string name="social_media_link">Social Media Link</string>
     <string name="seller_about_frag_social_media">Social Media</string>
+    <string name="seller_about_available_stores">Available Stores</string>
     <string name="seller_store_fragment_deals_title">Deals</string>
     <string name="seller_store_fragment_other_title">Other</string>
     <string name="seller_public_profile_follow">follow</string>
@@ -182,6 +183,7 @@
     <string name="ph_item_order_size_value">XS/S/M/L/XL/XXL</string>
     <string name="complete_your_profile">Complete your profile in order to to publish your seller account! (First name, Last name and Social Media links are optional.)</string>
     <string name="seller_store_orders_title">ORDERS</string>
+    <string name="seller_store_map_title">MAP</string>
     <string name="orders_title">ORDERS</string>
     <string name="orders_new_orders_title">New Orders</string>
     <string name="orders_noNewOrdersTitle">No New Orders</string>
@@ -206,4 +208,9 @@
     <string name="seller_store_update_delete_delete_button_text">DELETE</string>
     <string name="no_merchandise_text">No Merchandise Currently</string>
     <string name="splash_version">V 1.0.0</string>
+
+    //map
+    <string name="map_id">4e0d4018eabb7e50</string>
+    <string name="map_location_pickup_button">Save Location</string>
+    <string name="map_searchbar_hint">Enter address...</string>
 </resources>

@@ -76,30 +76,32 @@ public class OrdersActivity extends AppCompatActivity {
         firestore.collection("Orders").whereEqualTo("sellerId",seller.getId()).whereEqualTo("status", OrderStatus.ONGOING).addSnapshotListener(new EventListener<QuerySnapshot>() {
             @Override
             public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException error) {
-                if(value.size() == 0){
-                    noNewOrders.setVisibility(View.VISIBLE);
-                }else{
-                    noNewOrders.setVisibility(View.GONE);
-                }
-                for (DocumentChange change : value.getDocumentChanges()){
-                    OrderDomain order = change.getDocument().toObject(OrderDomain.class);
-                    switch (change.getType()){
-                        case ADDED:
-                            System.out.println("loadNewOrders "+order.getId());
-                            items.add(order);
-                            break;
-                        case MODIFIED:
-                            OrderDomain old = items.stream().filter(i -> i.getId().equals(order.getId())).findFirst().orElse(null);
-                            if(old != null){
-                                old.setStatus(order.getStatus());
-                            }
-                            break;
-                        case REMOVED:
-                            items.remove(order);
-                            break;
+                if(value != null){
+                    if(value.size() == 0){
+                        noNewOrders.setVisibility(View.VISIBLE);
+                    }else{
+                        noNewOrders.setVisibility(View.GONE);
                     }
+                    for (DocumentChange change : value.getDocumentChanges()){
+                        OrderDomain order = change.getDocument().toObject(OrderDomain.class);
+                        switch (change.getType()){
+                            case ADDED:
+                                System.out.println("loadNewOrders "+order.getId());
+                                items.add(order);
+                                break;
+                            case MODIFIED:
+                                OrderDomain old = items.stream().filter(i -> i.getId().equals(order.getId())).findFirst().orElse(null);
+                                if(old != null){
+                                    old.setStatus(order.getStatus());
+                                }
+                                break;
+                            case REMOVED:
+                                items.remove(order);
+                                break;
+                        }
+                    }
+                    adapter.notifyDataSetChanged();
                 }
-                adapter.notifyDataSetChanged();
 
             }
         });
@@ -116,35 +118,37 @@ public class OrdersActivity extends AppCompatActivity {
         firestore.collection("Orders").whereEqualTo("sellerId",seller.getId()).whereEqualTo("status", OrderStatus.COMPLETED).addSnapshotListener(new EventListener<QuerySnapshot>() {
             @Override
             public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException error) {
-                if(value.size() == 0){
-                    noCompletedOrders.setVisibility(View.VISIBLE);
-                }else{
-                    noCompletedOrders.setVisibility(View.GONE);
-                }
-                for (DocumentChange change : value.getDocumentChanges()){
-                    OrderDomain order = change.getDocument().toObject(OrderDomain.class);
-                    switch (change.getType()){
-                        case ADDED:
-                            System.out.println("loadCompleteOrders added : "+order.getId());
-                            items.add(order);
-                            break;
-                        case MODIFIED:
-                            OrderDomain old = items.stream().filter(i -> i.getId().equals(order.getId())).findFirst().orElse(null);
-                            if(old != null){
-                                System.out.println("loadCompleteOrders "+order.getId());
-                                System.out.println("loadCompleteOrders order : "+order.getStatus());
-                                System.out.println("loadCompleteOrders old : "+old.getStatus());
-                                old.setStatus(order.getStatus());
-                                System.out.println("loadCompleteOrders "+old.getStatus());
-                            }
-                            break;
-                        case REMOVED:
-                            System.out.println("loadCompleteOrders remove : "+order.getId());
-                            items.remove(order);
-                            break;
+                if(value != null){
+                    if(value.size() == 0){
+                        noCompletedOrders.setVisibility(View.VISIBLE);
+                    }else{
+                        noCompletedOrders.setVisibility(View.GONE);
                     }
+                    for (DocumentChange change : value.getDocumentChanges()){
+                        OrderDomain order = change.getDocument().toObject(OrderDomain.class);
+                        switch (change.getType()){
+                            case ADDED:
+                                System.out.println("loadCompleteOrders added : "+order.getId());
+                                items.add(order);
+                                break;
+                            case MODIFIED:
+                                OrderDomain old = items.stream().filter(i -> i.getId().equals(order.getId())).findFirst().orElse(null);
+                                if(old != null){
+                                    System.out.println("loadCompleteOrders "+order.getId());
+                                    System.out.println("loadCompleteOrders order : "+order.getStatus());
+                                    System.out.println("loadCompleteOrders old : "+old.getStatus());
+                                    old.setStatus(order.getStatus());
+                                    System.out.println("loadCompleteOrders "+old.getStatus());
+                                }
+                                break;
+                            case REMOVED:
+                                System.out.println("loadCompleteOrders remove : "+order.getId());
+                                items.remove(order);
+                                break;
+                        }
+                    }
+                    adapter.notifyDataSetChanged();
                 }
-                adapter.notifyDataSetChanged();
             }
         });
     }

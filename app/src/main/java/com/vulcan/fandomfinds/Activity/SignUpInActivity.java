@@ -28,15 +28,16 @@ public class SignUpInActivity extends AppCompatActivity {
         firebaseAuth = FirebaseAuth.getInstance();
 
         initComponents();
+        loadSignInFrag();
+        setListeners();
+    }
 
-        FragmentContainerView fragmentContainerView = findViewById(R.id.fragmentContainerView);
-
+    private void loadSignInFrag(){
+        clearFragmentContainer();
         getSupportFragmentManager()
                 .beginTransaction()
                 .add(R.id.fragmentContainerView, loginFragment.class,null)
                 .commit();
-
-        setListeners();
     }
 
     private void setListeners() {
