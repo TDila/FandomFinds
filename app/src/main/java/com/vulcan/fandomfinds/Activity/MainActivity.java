@@ -4,7 +4,9 @@ import androidx.annotation.ArrayRes;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
 import androidx.core.app.NotificationCompat;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -12,9 +14,12 @@ import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.graphics.Color;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.KeyEvent;
 import android.view.View;
@@ -40,6 +45,8 @@ import com.google.gson.Gson;
 import com.vulcan.fandomfinds.Adapter.DealsAdapter;
 import com.vulcan.fandomfinds.Adapter.SellerAdapter;
 import com.vulcan.fandomfinds.Animations.LoadingDialog;
+import com.vulcan.fandomfinds.BroadCastReceiver.MySmsReceiver;
+import com.vulcan.fandomfinds.BroadCastReceiver.SmsReceivedCallback;
 import com.vulcan.fandomfinds.Domain.CustomerDomain;
 import com.vulcan.fandomfinds.Domain.NotificationDomain;
 import com.vulcan.fandomfinds.Domain.ProductsDomain;
@@ -94,6 +101,7 @@ public class MainActivity extends AppCompatActivity {
         initDealsRecyclerView();
         loadBottomNavigationBar();
     }
+
 
     private void setListeners() {
         signUpInButton.setOnClickListener(new View.OnClickListener() {

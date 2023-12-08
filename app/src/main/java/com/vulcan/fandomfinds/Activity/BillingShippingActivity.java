@@ -30,6 +30,8 @@ import com.google.firebase.firestore.QuerySnapshot;
 import com.hbb20.CountryCodePicker;
 import com.vulcan.fandomfinds.Animations.LoadingDialog;
 import com.vulcan.fandomfinds.Animations.SavingDataDialog;
+import com.vulcan.fandomfinds.BroadCastReceiver.MySmsReceiver;
+import com.vulcan.fandomfinds.BroadCastReceiver.SmsReceivedCallback;
 import com.vulcan.fandomfinds.Domain.BillingShippingDomain;
 import com.vulcan.fandomfinds.R;
 
@@ -37,15 +39,17 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
-public class BillingShippingActivity extends AppCompatActivity {
+public class BillingShippingActivity extends AppCompatActivity implements SmsReceivedCallback {
     FirebaseAuth auth;
     FirebaseFirestore firestore;
     private ImageView backButton;
     private EditText shippingAddressField,postalCodeField,paypalAddressField;
-    private Button saveDetailsButton,savePaymentMethodButton;
+    private Button saveDetailsButton,savePaymentMethodButton,verifyButton;
     private PhoneAuthProvider.OnVerificationStateChangedCallbacks callbacks;
     private PhoneAuthProvider.ForceResendingToken resendingToken;
     private LinearLayout verificationLayout;
+    private TextInputEditText verificationCodeField1,verificationCodeField2,verificationCodeField3
+            ,verificationCodeField4,verificationCodeField5,verificationCodeField6;
     String userId;
     String userType;
     BillingShippingDomain billingShipping;
@@ -57,6 +61,7 @@ public class BillingShippingActivity extends AppCompatActivity {
     CountryCodePicker ccp;
     TextInputEditText editTextCarrierNumber;
     TextInputLayout phoneNumberLayout;
+    QueryDocumentSnapshot billingShippingSnapshot;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -66,10 +71,7 @@ public class BillingShippingActivity extends AppCompatActivity {
         loadingDialog.show();
         setListeners();
         loadBillingShippingDetails();
-
-//        IntentFilter intentFilter = new IntentFilter("com.vulcan.intent.VERIFICATION_CODE_RECEIVER");
-//        SMSReceiver smsReceiver = new SMSReceiver();
-//        registerReceiver(smsReceiver,intentFilter);
+        MySmsReceiver.setCallback(this);
 
         callbacks = new PhoneAuthProvider.OnVerificationStateChangedCallbacks() {
             @Override
@@ -92,6 +94,33 @@ public class BillingShippingActivity extends AppCompatActivity {
             }
         };
     }
+
+    @Override
+    public void onSmsReceived(String smsMessage) {
+        for (int i = 1; i <= smsMessage.length() ; i++){
+            switch (i){
+                case 1:
+                    verificationCodeField1.setText(smsMessage.substring(0,1));
+                    break;
+                case 2:
+                    verificationCodeField2.setText(smsMessage.substring(1,2));
+                    break;
+                case 3:
+                    verificationCodeField3.setText(smsMessage.substring(2,3));
+                    break;
+                case 4:
+                    verificationCodeField4.setText(smsMessage.substring(3,4));
+                    break;
+                case 5:
+                    verificationCodeField5.setText(smsMessage.substring(4,5));
+                    break;
+                case 6:
+                    verificationCodeField6.setText(smsMessage.substring(5,6));
+                    break;
+            }
+        }
+        verifyAndSave(smsMessage);
+    }
     private void initComponents() {
         backButton = findViewById(R.id.bs_back_button);
         shippingAddressField = findViewById(R.id.bs_shipping_address);
@@ -99,6 +128,7 @@ public class BillingShippingActivity extends AppCompatActivity {
         saveDetailsButton = findViewById(R.id.bs_save_details);
         savingDataDialog = new SavingDataDialog(BillingShippingActivity.this);
         loadingDialog = new LoadingDialog(BillingShippingActivity.this);
+        verifyButton = findViewById(R.id.verifyButton);
 
         savePaymentMethodButton = findViewById(R.id.savePaymentMethodButton);
 
@@ -114,6 +144,13 @@ public class BillingShippingActivity extends AppCompatActivity {
 
         verificationLayout = findViewById(R.id.verificationLayout);
         verificationLayout.setVisibility(View.GONE);
+
+        verificationCodeField1 = findViewById(R.id.verificationCodeField1);
+        verificationCodeField2 = findViewById(R.id.verificationCodeField2);
+        verificationCodeField3 = findViewById(R.id.verificationCodeField3);
+        verificationCodeField4 = findViewById(R.id.verificationCodeField4);
+        verificationCodeField5 = findViewById(R.id.verificationCodeField5);
+        verificationCodeField6 = findViewById(R.id.verificationCodeField6);
     }
     private void setListeners() {
         backButton.setOnClickListener(new View.OnClickListener() {
@@ -153,6 +190,12 @@ public class BillingShippingActivity extends AppCompatActivity {
                         }
                     });
                 }
+            }
+        });
+        verifyButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                verifyAndSave();
             }
         });
     }
@@ -286,13 +329,9 @@ public class BillingShippingActivity extends AppCompatActivity {
                                                                 @Override
                                                                 public void onSuccess(Void unused) {
                                                                     if(billingShipping.getMobileNumber() == null || !billingShipping.getMobileNumber().equals(mobileNumber)) {
-                                                                        if(ccp.isValidFullNumber()){
-                                                                            billingShipping.setMobileNumber(mobileNumber);
-                                                                            verifyAndStoreMobile(snapshot1);
-                                                                        }else{
-                                                                            savingDataDialog.cancel();
-                                                                            Toast.makeText(BillingShippingActivity.this,"Saved Successfully!",Toast.LENGTH_LONG).show();
-                                                                        }
+                                                                        billingShipping.setMobileNumber(mobileNumber);
+                                                                        verificationLayout.setVisibility(View.VISIBLE);
+                                                                        verifyAndStoreMobile(snapshot1);
                                                                     }else{
                                                                         savingDataDialog.cancel();
                                                                         Toast.makeText(BillingShippingActivity.this,"Saved Successfully!",Toast.LENGTH_LONG).show();
@@ -331,6 +370,7 @@ public class BillingShippingActivity extends AppCompatActivity {
     private void verifyAndStoreMobile(QueryDocumentSnapshot snapshot1) {
         String mobileNumber = billingShipping.getMobileNumber();
         if(ccp.isValidFullNumber()){
+            billingShippingSnapshot = snapshot1;
             PhoneAuthProvider.verifyPhoneNumber(
                     PhoneAuthOptions.newBuilder(auth)
                             .setPhoneNumber(mobileNumber)
@@ -344,6 +384,57 @@ public class BillingShippingActivity extends AppCompatActivity {
             billingShipping.setMobileNumber(null);
             Toast.makeText(BillingShippingActivity.this,"Please Enter Valid Phone Number",Toast.LENGTH_LONG).show();
         }
+    }
+
+    private void verifyAndSave(String smsMessage){
+        loadingDialog.show();
+        System.out.println(smsMessage);
+        System.out.println(verificationId);
+        if(verificationId.equals(smsMessage)){
+            saveMobileNumber();
+        }else{
+            loadingDialog.cancel();
+            Toast.makeText(BillingShippingActivity.this,"Enter correct verification code!",Toast.LENGTH_LONG).show();
+        }
+    }
+
+    private void verifyAndSave(){
+        loadingDialog.show();
+        String verficationCode = verificationCodeField1.getText().toString()+verificationCodeField2.getText().toString()+verificationCodeField3.getText().toString()
+                +verificationCodeField4.getText().toString()+verificationCodeField5.getText().toString()+verificationCodeField6.getText().toString();
+        System.out.println(verficationCode);
+        if(verficationCode != null & verficationCode.length() == 6){
+            saveMobileNumber();
+        }else{
+            Toast.makeText(BillingShippingActivity.this,"Enter verification code!",Toast.LENGTH_LONG).show();
+        }
+    }
+
+    private void saveMobileNumber() {
+        if(billingShippingSnapshot != null){
+            String mobileNumber = billingShipping.getMobileNumber();
+            Map<String,Object> map = new HashMap<>();
+            map.put("mobileNumber",mobileNumber);
+            billingShippingSnapshot.getReference().update(map).addOnSuccessListener(new OnSuccessListener<Void>() {
+                @Override
+                public void onSuccess(Void unused) {
+                    clear();
+                    Toast.makeText(BillingShippingActivity.this,"Saved Successfully!",Toast.LENGTH_LONG).show();
+                }
+            }).addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception e) {
+                    clear();
+                    Toast.makeText(BillingShippingActivity.this,"Saving Process Failed! Try Again later.",Toast.LENGTH_LONG).show();
+                }
+            });
+        }
+    }
+
+    private void clear(){
+        billingShippingSnapshot = null;
+        loadingDialog.cancel();
+        verificationLayout.setVisibility(View.GONE);
     }
 
     public void savePaymentMethod(){
