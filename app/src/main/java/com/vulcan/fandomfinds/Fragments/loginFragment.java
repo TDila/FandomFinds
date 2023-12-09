@@ -262,7 +262,6 @@ public class loginFragment extends Fragment {
             new ActivityResultCallback<ActivityResult>() {
                 @Override
                 public void onActivityResult(ActivityResult o) {
-                    loadingDialog.show();
                     handleSignInResult(o.getData());
                 }
             });

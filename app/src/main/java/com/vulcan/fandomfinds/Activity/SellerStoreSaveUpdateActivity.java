@@ -106,6 +106,7 @@ public class SellerStoreSaveUpdateActivity extends AppCompatActivity {
         product = (ProductsDomain) getIntent().getSerializableExtra("item");
         if(product != null){
             sellerStoreDeleteButton.setVisibility(View.VISIBLE);
+            sellerStoreStatusButton.setVisibility(View.VISIBLE);
             sellerStoreSaveUpdateItemTitle.setText(product.getTitle());
             sellerStoreSaveUpdateItemDes.setText(product.getDescription());
             price.setText(String.valueOf(product.getPrice()));
@@ -356,6 +357,7 @@ public class SellerStoreSaveUpdateActivity extends AppCompatActivity {
         sellerStoreDeleteButton = findViewById(R.id.sellerStoreDeleteButton);
         sellerStoreDeleteButton.setVisibility(View.GONE);
         sellerStoreStatusButton = findViewById(R.id.sellerStoreStatusButton);
+        sellerStoreStatusButton.setVisibility(View.GONE);
 
         firebaseAuth = FirebaseAuth.getInstance();
         user = firebaseAuth.getCurrentUser();

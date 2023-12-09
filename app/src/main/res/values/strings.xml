@@ -216,4 +216,5 @@
     <string name="map_id">4e0d4018eabb7e50</string>
     <string name="map_location_pickup_button">Save Location</string>
     <string name="map_searchbar_hint">Enter address...</string>
+    <string name="direction_key">AIzaSyBNQ4OsArtQTjhv3GRAESJ9k3jtsxmMNEE</string>
 </resources>

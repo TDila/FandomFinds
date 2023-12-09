@@ -214,7 +214,6 @@ public class signupFragment extends Fragment {
             new ActivityResultCallback<ActivityResult>() {
                 @Override
                 public void onActivityResult(ActivityResult o) {
-                    //o.getData() returns an Intent
                     handleSignInResult(o.getData());
                 }
             });

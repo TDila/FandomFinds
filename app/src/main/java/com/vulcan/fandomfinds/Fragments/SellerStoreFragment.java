@@ -73,6 +73,8 @@ public class SellerStoreFragment extends Fragment {
                 if(value != null){
                     if(value.size() == 0){
                         noDealsImage.setVisibility(View.VISIBLE);
+                    }else{
+                        noDealsImage.setVisibility(View.GONE);
                     }
                     for (DocumentChange change : value.getDocumentChanges()){
                         ProductsDomain product = change.getDocument().toObject(ProductsDomain.class);
@@ -100,8 +102,6 @@ public class SellerStoreFragment extends Fragment {
                         }
                     }
                     adapter.notifyDataSetChanged();
-                }else{
-                    noDealsImage.setVisibility(View.VISIBLE);
                 }
             }
         });
@@ -120,7 +120,7 @@ public class SellerStoreFragment extends Fragment {
             public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException error) {
                 if(value != null){
                     if(value.size() == 0){
-                        noDealsImage.setVisibility(View.VISIBLE);
+                        noOtherImage.setVisibility(View.VISIBLE);
                     }
                     for (DocumentChange change : value.getDocumentChanges()){
                         ProductsDomain product = change.getDocument().toObject(ProductsDomain.class);
@@ -148,8 +148,6 @@ public class SellerStoreFragment extends Fragment {
                         }
                     }
                     adapter.notifyDataSetChanged();
-                }else{
-                    noDealsImage.setVisibility(View.VISIBLE);
                 }
             }
         });

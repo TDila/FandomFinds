@@ -293,35 +293,26 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
     }
 
     public void getDirection(LatLng start, LatLng end){
-        //1
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl("https://maps.googleapis.com/maps/api/directions/")
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
 
-        //2
         DirectionApi directionApi = retrofit.create(DirectionApi.class);
 
-        //4
         String origin = start.latitude+","+start.longitude;
         String destination = end.latitude+","+end.longitude;
-        System.out.println(origin);
-        System.out.println(destination);
         String key = "AIzaSyBNQ4OsArtQTjhv3GRAESJ9k3jtsxmMNEE";
-
-        //3
+        
         Call<JsonObject> apiJson = directionApi.getJson(origin,destination,true,key);
         apiJson.enqueue(new Callback<JsonObject>() {
             @Override
             public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
                 JsonObject body = response.body();
-                System.out.println(body);
                 JsonArray routes = body.getAsJsonArray("routes");
-                System.out.println(routes.size());
 
                 JsonObject route = routes.get(0).getAsJsonObject();
                 JsonObject overviewPolyline = route.getAsJsonObject("overview_polyline");
-                Log.i(TAG,overviewPolyline.toString());
 
                 List<LatLng> points = PolyUtil.decode(overviewPolyline.get("points").getAsString());
 
