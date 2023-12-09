@@ -184,6 +184,8 @@
     <string name="complete_your_profile">Complete your profile in order to to publish your seller account! (First name, Last name and Social Media links are optional.)</string>
     <string name="seller_store_orders_title">ORDERS</string>
     <string name="seller_store_map_title">MAP</string>
+    <string name="seller_store_follower_title">FOLLOWERS</string>
+    <string name="seller_store_followers">0</string>
     <string name="orders_title">ORDERS</string>
     <string name="orders_new_orders_title">New Orders</string>
     <string name="orders_noNewOrdersTitle">No New Orders</string>
@@ -206,6 +208,7 @@
     <string name="forgotPasswordText"><u>Forgot Password</u></string>
     <string name="verify_code_button_text">VERIFY &amp; SAVE</string>
     <string name="seller_store_update_delete_delete_button_text">DELETE</string>
+    <string name="seller_store_make_unavailable">UNAVAILABLE</string>
     <string name="no_merchandise_text">No Merchandise Currently</string>
     <string name="splash_version">V 1.0.0</string>
 

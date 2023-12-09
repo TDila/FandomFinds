@@ -40,7 +40,7 @@ public class SellerStoreActivity extends AppCompatActivity {
     SellerDomain seller;
     String userString;
     private Button button;
-    private LinearLayout ordersLayout,noMerchLayout,mapLayout;
+    private LinearLayout ordersLayout,noMerchLayout,mapLayout,followersLayout;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -90,6 +90,15 @@ public class SellerStoreActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+        followersLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(SellerStoreActivity.this,FollwersActivity.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+                intent.putExtra("user",userString);
+                startActivity(intent);
+            }
+        });
     }
 
     public void initComponents(){
@@ -98,6 +107,7 @@ public class SellerStoreActivity extends AppCompatActivity {
         noMerchLayout = findViewById(R.id.noMerchLayout);
         noMerchLayout.setVisibility(View.GONE);
         mapLayout = findViewById(R.id.mapLayout);
+        followersLayout = findViewById(R.id.followersLayout);
 
         firestore = FirebaseFirestore.getInstance();
         firebaseAuth = FirebaseAuth.getInstance();

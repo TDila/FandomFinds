@@ -78,7 +78,7 @@ public class SellerStoreSaveUpdateActivity extends AppCompatActivity {
     private RadioButton sizeExraSmall,sizeSmall,sizeMedium,sizeLarge,sizeExtraLarge,sizeExtraExtraLarge;
     private LinearLayout sizesLayout;
     private double itemDiscount;
-    private Button sellerStoreSaveUpdateButton,sellerStoreDeleteButton;
+    private Button sellerStoreSaveUpdateButton,sellerStoreDeleteButton,sellerStoreStatusButton;
     private ProductsDomain product;
     private Uri imagePath;
     SellerDomain seller;
@@ -123,6 +123,12 @@ public class SellerStoreSaveUpdateActivity extends AppCompatActivity {
                 spinner.setSelection(2);
             }else if (type.equals("Other")){
                 spinner.setSelection(3);
+            }
+
+            if(product.getStatus().equals(ProductStatus.AVAILABLE)){
+                sellerStoreStatusButton.setText("UNAVAILABLE");
+            }else if(product.getStatus().equals(ProductStatus.OUT_OF_STOCK)){
+                sellerStoreStatusButton.setText(String.valueOf(ProductStatus.AVAILABLE));
             }
 
             if(product.getSizesList() != null){
@@ -256,6 +262,55 @@ public class SellerStoreSaveUpdateActivity extends AppCompatActivity {
                 alertDialog.show();
             }
         });
+        sellerStoreStatusButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                loadingDialog.show();
+                checkProductStatus();
+            }
+        });
+    }
+
+    private void checkProductStatus() {
+        if(product != null){
+            Map<String,Object> map = new HashMap<>();
+            if(product.getStatus().equals(ProductStatus.AVAILABLE)){
+                map.put("status",String.valueOf(ProductStatus.OUT_OF_STOCK));
+                changeStatus(map,"AVAILABLE");
+            }else if(product.getStatus().equals(ProductStatus.OUT_OF_STOCK)){
+                map.put("status",String.valueOf(ProductStatus.AVAILABLE));
+                changeStatus(map,"UNAVAILABLE");
+            }
+        }else{
+            loadingDialog.cancel();
+        }
+    }
+
+    private void changeStatus(Map<String,Object> map,String changedStatus){
+        firestore.collection("Products").whereEqualTo("id",product.getId())
+                .get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if (task.isSuccessful()){
+                            for (QueryDocumentSnapshot snapshot : task.getResult()){
+                                snapshot.getReference().update(map).addOnSuccessListener(new OnSuccessListener<Void>() {
+                                    @Override
+                                    public void onSuccess(Void unused) {
+                                        loadingDialog.cancel();
+                                        sellerStoreStatusButton.setText(changedStatus);
+                                        Toast.makeText(SellerStoreSaveUpdateActivity.this,"Status Successfully Updated!",Toast.LENGTH_LONG).show();
+                                    }
+                                }).addOnFailureListener(new OnFailureListener() {
+                                    @Override
+                                    public void onFailure(@NonNull Exception e) {
+                                        loadingDialog.cancel();
+                                        Toast.makeText(SellerStoreSaveUpdateActivity.this,"Failed to update status!",Toast.LENGTH_LONG).show();
+                                    }
+                                });
+                            }
+                        }
+                    }
+                });
     }
 
     private void loadItemTypes() {
@@ -300,6 +355,7 @@ public class SellerStoreSaveUpdateActivity extends AppCompatActivity {
         sellerStoreSaveUpdateButton = findViewById(R.id.sellerStoreSaveUpdateButton);
         sellerStoreDeleteButton = findViewById(R.id.sellerStoreDeleteButton);
         sellerStoreDeleteButton.setVisibility(View.GONE);
+        sellerStoreStatusButton = findViewById(R.id.sellerStoreStatusButton);
 
         firebaseAuth = FirebaseAuth.getInstance();
         user = firebaseAuth.getCurrentUser();
